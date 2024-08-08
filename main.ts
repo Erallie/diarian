@@ -5,12 +5,14 @@ import { CalendarView } from './calendar-view';
 const CALENDAR_VIEW_TYPE = "calendar-view";
 // Remember to rename these classes and interfaces!
 
-interface DiariumSettings {
-    mySetting: string;
+export interface DiariumSettings {
+    format: string;
+    folder: string;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
-    mySetting: 'default'
+    format: 'default',
+    folder: ''
 }
 
 export default class Diarium extends Plugin {
