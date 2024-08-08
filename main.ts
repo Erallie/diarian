@@ -1,5 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf } from 'obsidian';
 import { CalendarView } from './calendar-view';
+import { momentToRegex } from './get-daily-notes';
 
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
@@ -8,11 +9,13 @@ const CALENDAR_VIEW_TYPE = "calendar-view";
 export interface DiariumSettings {
     format: string;
     folder: string;
+    headerFormat: string;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
-    format: 'default',
-    folder: ''
+    format: 'YYYY-MM-DD',
+    folder: '',
+    headerFormat: 'dddd, MMMM Do, YYYY'
 }
 
 export default class Diarium extends Plugin {
@@ -27,6 +30,7 @@ export default class Diarium extends Plugin {
         const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             new Notice('This is a notice!');
+            console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
         ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -74,7 +78,7 @@ export default class Diarium extends Plugin {
         });
 
         // This adds a settings tab so the user can configure various aspects of the plugin
-        this.addSettingTab(new SampleSettingTab(this.app, this));
+        this.addSettingTab(new DiariumSettingTab(this.app, this));
 
         // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
         // Using this function will automatically remove the event listener when this plugin is disabled.
@@ -123,7 +127,7 @@ class SampleModal extends Modal {
     }
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class DiariumSettingTab extends PluginSettingTab {
     plugin: Diarium;
 
     constructor(app: App, plugin: Diarium) {
@@ -137,13 +141,13 @@ class SampleSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         new Setting(containerEl)
-            .setName('Setting #1')
-            .setDesc('It\'s a secret')
+            .setName('Header format')
+            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for how to format this setting.')
             .addText(text => text
-                .setPlaceholder('Enter your secret')
-                .setValue(this.plugin.settings.mySetting)
+                .setPlaceholder('dddd, MMMM Do, YYYY')
+                .setValue(this.plugin.settings.headerFormat)
                 .onChange(async (value) => {
-                    this.plugin.settings.mySetting = value;
+                    this.plugin.settings.headerFormat = value;
                     await this.plugin.saveSettings();
                 }));
     }

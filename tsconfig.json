@@ -12,14 +12,21 @@
         "importHelpers": true,
         "isolatedModules": true,
         "strictNullChecks": true,
+        "allowSyntheticDefaultImports": true,
         "lib": [
             "DOM",
             "ES5",
             "ES6",
-            "ES7"
+            "ES7",
+            "es2021" //ADDED THIS
         ]
     },
     "include": [
         "**/*.ts"
-    ]
+,
+"main.tsx",
+"context.js",
+"context.tsx",
+"hooks.tsx"
+]
 }
