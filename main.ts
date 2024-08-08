@@ -1,20 +1,16 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf, Platform, FileView } from 'obsidian';
 import { CalendarView } from './calendar-view';
-import { momentToRegex } from './get-daily-notes';
+import { getDailyNoteSettings, momentToRegex } from './get-daily-notes';
 
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 // Remember to rename these classes and interfaces!
 
 export interface DiariumSettings {
-    format: string;
-    folder: string;
     headerFormat: string;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
-    format: 'YYYY-MM-DD',
-    folder: '',
     headerFormat: 'dddd, MMMM Do, YYYY'
 }
 
@@ -30,7 +26,7 @@ export default class Diarium extends Plugin {
         const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             new Notice('This is a notice!');
-            console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
+            // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
         ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -43,7 +39,7 @@ export default class Diarium extends Plugin {
         this.addCommand({
             id: 'open-calendar-view',
             name: 'Open calendar view',
-            callback: async () => {
+            callback: () => {
                 this.openCalendar();
                 // new SampleModal(this.app).open();
             }
@@ -105,7 +101,9 @@ export default class Diarium extends Plugin {
     async openCalendar() {
         const workspace = this.app.workspace;
         workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
-        const leaf = workspace.getLeaf();
+        const leaf = workspace.getLeaf(
+            !Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView,
+        );
         await leaf.setViewState({ type: CALENDAR_VIEW_TYPE });
         workspace.revealLeaf(leaf);
     }
@@ -142,13 +140,15 @@ class DiariumSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Header format')
-            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for how to format this setting.')
+            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for info on how to format this setting.')
             .addText(text => text
                 .setPlaceholder('dddd, MMMM Do, YYYY')
                 .setValue(this.plugin.settings.headerFormat)
                 .onChange(async (value) => {
                     this.plugin.settings.headerFormat = value;
                     await this.plugin.saveSettings();
+                    getDailyNoteSettings();
+                    console.log("format = " + this.plugin.settings.format);
                 }));
     }
 }

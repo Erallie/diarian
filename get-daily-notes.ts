@@ -1,13 +1,8 @@
-import { App, Vault, getActiveFileView } from 'obsidian';
+import { App, Vault, normalizePath, Notice } from 'obsidian';
 import Diarium from './main';
 import { DiariumSettings } from './main';
 
 const vault: Vault = app.vault;
-
-const allFiles = vault.getFiles();
-
-const targetPath = 'your/desired/path'; // Replace with your target path
-const filteredFiles = allFiles.filter(file => file.path.startsWith(targetPath));
 
 export function momentToRegex(format: string): RegExp {
     const cardinal = (maxTeens: number) => {
@@ -121,35 +116,45 @@ export class DailyNotesHandler extends Diarium {
 
         const allFiles = this.app.vault.getFiles();
         const filteredFiles = allFiles.filter(file => {
-            let regexString = getDailyNoteSettings().folder + getDailyNoteSettings().format;
-            regexString = regexString.replaceAll(/([\\\.\^\$\*\+\?\|\(\)\[\]\{\}])/g, "\\$1")
-            regexString = regexString.replaceAll()
-            const regex = new RegExp(regexString, "g");
-            file.path.startsWith(regex)
+            let regexString = normalizePath(getDailyNoteSettings().folder) + '/' + normalizePath(getDailyNoteSettings().format);
+            const regex = momentToRegex(regexString);
+            const index = file.path.search(regex);
+            return index == 0;
         });
         return filteredFiles;
     };
 }
 
-export function getDailyNoteSettings(): DiariumSettings {
-    /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L37 */
+
+export function dailyNotesEnabled(): boolean {
+    // from https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/index.ts#L12C1-L23C2
+    const { app } = window;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
+    if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
+        return true;
+    }
+}
+
+export function getDailyNoteSettings() {
+/* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { internalPlugins, plugins } = <any>window.app;
+        const { internalPlugins } = <any>window.app;
 
         const { folder, format } =
             internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
+        console.log("Daily note settings found.\n\tformat = " + format);
         return {
             format: format,
             folder: folder?.trim() || "",
-            headerFormat: this.headerFormat
         };
     } catch (err) {
+        // new Notice("No custom daily note settings found!");
         console.info("No custom daily note settings found!", err);
         return {
             format: 'YYYY-MM-DD',
             folder: '',
-            headerFormat: 'dddd, MMMM Do, YYYY'
         };
     }
 }
