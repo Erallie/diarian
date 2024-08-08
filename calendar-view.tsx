@@ -5,21 +5,21 @@ import { Calendar } from 'react-calendar';
 // import 'react-calendar/dist/Calendar.css';
 import { useState } from 'react';
 import moment from 'moment';
-import Diarium from './main';
-
-interface CalendarViewProps {
-    plugin: Plugin;
-}
+import type Diarium from './main';
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 
+interface ContainerProps {
+    headerFormat: string;
+}
+
 export class CalendarView extends ItemView {
     root: Root | null = null;
-    plugin: Plugin;
+    plugin: Diarium;
 
-    constructor(leaf: WorkspaceLeaf, props: CalendarViewProps) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarium) {
         super(leaf);
-        this.plugin = props.plugin;
+        this.plugin = plugin;
     }
 
     getViewType() {
@@ -38,7 +38,7 @@ export class CalendarView extends ItemView {
                 {/* <Container headerFormat='dddd, MMMM Do, YYYY' /> */}
                 {/* <Container headerFormat={headerFormat} /> */}
                 <Container headerFormat={this.plugin.settings.headerFormat} />
-            </StrictMode>,
+            </StrictMode>
         );
     }
 
@@ -47,8 +47,7 @@ export class CalendarView extends ItemView {
     }
 }
 
-const Container = (props: { headerFormat: string }) => {
-    const { headerFormat } = props;
+const Container = ({ headerFormat }: ContainerProps) => {
     function isSameDay(date1, date2) {
         return (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear());
     }
