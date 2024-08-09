@@ -167,7 +167,7 @@ export function getNoteByMoment(moment: any) {
     let format = getDailyNoteSettings().format;
     let path = moment.format(format);
     path = normalizePath(getDailyNoteSettings().folder + '/' + path + '.md');
-    console.log(path);
+    // console.log(path);
     const note = this.app.vault.getFileByPath(path);
     if (note === null) {
         console.warn('[Diarium] Warning:\n\tCould not get any notes with the date ' + moment.format(format) + '.')

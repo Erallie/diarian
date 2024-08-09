@@ -9,11 +9,19 @@ const CALENDAR_VIEW_TYPE = "calendar-view";
 export interface DiariumSettings {
     headingFormat: string;
     previewLength: number;
+    openInNewPane: boolean;
+    useCallout: boolean;
+    showNoteTitle: boolean;
+    useQuote: boolean;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
     headingFormat: 'dddd, MMMM Do, YYYY',
-    previewLength: 250
+    previewLength: 250,
+    openInNewPane: true,
+    useCallout: true,
+    showNoteTitle: true,
+    useQuote: true
 }
 
 export default class Diarium extends Plugin {
@@ -166,6 +174,18 @@ class DiariumSettingTab extends PluginSettingTab {
 
         const previewLengthError = containerEl.createEl('p');
 
+        new Setting(containerEl)
+            .setName("Open in new pane")
+            .setDesc("Open the notes in a new pane/tab by default")
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(this.plugin.settings.openInNewPane)
+                    .onChange((value) => {
+                        this.plugin.settings.openInNewPane = value;
+                        void this.plugin.saveSettings();
+                    });
+            });
+
         previewLength
             .addText(text => text
                 .setPlaceholder('250')
@@ -182,6 +202,39 @@ class DiariumSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }
                 }))
+
+        const calloutsDescription = new DocumentFragment();
+        calloutsDescription.textContent =
+            "Use callouts to render note previews, using their styles based on current theme. ";
+        calloutsDescription.createEl("a", {
+            text: "More info",
+            attr: {
+                href: "https://help.obsidian.md/Editing+and+formatting/Callouts",
+            },
+        });
+
+        new Setting(containerEl)
+            .setName("Use Obsidian callouts for note previews")
+            .setDesc(calloutsDescription)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.useCallout).onChange((value) => {
+                    this.plugin.settings.useCallout = value;
+                    void this.plugin.saveSettings();
+                    this.display();
+                }),
+            );
+
+        if (!this.plugin.settings.useCallout) {
+            new Setting(containerEl)
+                .setName("Use quote element for note previews")
+                .setDesc("Format note previews using the HTML quote element")
+                .addToggle((toggle) =>
+                    toggle.setValue(this.plugin.settings.useQuote).onChange((value) => {
+                        this.plugin.settings.useQuote = value;
+                        void this.plugin.saveSettings();
+                    }),
+                );
+        }
 
     }
 }
