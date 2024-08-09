@@ -14,7 +14,6 @@ const CALENDAR_VIEW_TYPE = "calendar-view";
 interface ContainerProps {
     headingFormat: string;
     dailyNotes: TFile[];
-    previewLength: number;
     view: View;
     plugin: Diarium;
     app: App;
@@ -46,7 +45,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                <Container headingFormat={this.plugin.settings.headingFormat} dailyNotes={getAllDailyNotes()} previewLength={this.plugin.settings.previewLength} view={this.view} plugin={this.plugin} app={this.app} />
+                <Container headingFormat={this.plugin.settings.headingFormat} dailyNotes={getAllDailyNotes()} view={this.view} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
@@ -57,7 +56,7 @@ export class CalendarView extends ItemView {
 
 }
 
-const Container = ({ headingFormat, dailyNotes, previewLength, view, plugin, app }: ContainerProps) => {
+const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerProps) => {
     const filledDates = getDates(dailyNotes);
     function isSameDay(date1: any, date2: any) {
         // return (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear());

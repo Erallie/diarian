@@ -115,7 +115,7 @@ export default class Diarium extends Plugin {
         const workspace = this.app.workspace;
         workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
         const leaf = workspace.getLeaf(
-            !Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView,
+            (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
         );
         await leaf.setViewState({ type: CALENDAR_VIEW_TYPE });
         workspace.revealLeaf(leaf);
@@ -151,14 +151,23 @@ class DiariumSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        const headingFormat = new Setting(containerEl)
+        new Setting(containerEl).setName('General').setHeading();
+
+        const headingFormatDescription = new DocumentFragment();
+        headingFormatDescription.textContent =
+            "The moment.js format for headings. ";
+        headingFormatDescription.createEl("a", {
+            text: "More info",
+            attr: {
+                href: "https://momentjs.com/docs/#/displaying/format/",
+            },
+        });
+        const sampleFormatContainer = headingFormatDescription.createEl('p', { text: 'Headings will appear as: ' });
+        const sampleFormat = sampleFormatContainer.createSpan({ cls: 'text-accent' });
+
+        new Setting(containerEl)
             .setName('Heading format')
-            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for info on how to format this setting.');
-
-        const sampleFormatContainer = containerEl.createEl('p', { text: 'Headings will appear as: ' });
-        const sampleFormat = sampleFormatContainer.createSpan();
-
-        headingFormat
+            .setDesc(headingFormatDescription)
             .addMomentFormat(text => text
                 .setDefaultFormat('dddd, MMMM Do, YYYY')
                 .setValue(this.plugin.settings.headingFormat)
@@ -166,16 +175,14 @@ class DiariumSettingTab extends PluginSettingTab {
                 .onChange(async (value) => {
                     this.plugin.settings.headingFormat = value;
                     await this.plugin.saveSettings();
-                }))
+                }));
 
-        const previewLength = new Setting(containerEl)
-            .setName('Note preview length')
-            .setDesc('The number of characters of content a note preview should show in the Calendar and On this day views.');
 
-        const previewLengthError = containerEl.createEl('p');
+
+        new Setting(containerEl).setName('Note previews').setHeading();
 
         new Setting(containerEl)
-            .setName("Open in new pane")
+            .setName("Open in a new pane")
             .setDesc("Open the notes in a new pane/tab by default")
             .addToggle((toggle) => {
                 toggle
@@ -186,26 +193,23 @@ class DiariumSettingTab extends PluginSettingTab {
                     });
             });
 
-        previewLength
-            .addText(text => text
-                .setPlaceholder('250')
-                .setValue(this.plugin.settings.previewLength.toString())
+
+        new Setting(containerEl)
+            .setName('Preview length')
+            .setDesc('The number of characters of content a note preview should show in the Calendar and On this day views.')
+            .addSlider(slider => slider
+                .setLimits(0, 500, 10)
+                .setValue(this.plugin.settings.previewLength)
+                .setDynamicTooltip()
                 .onChange(async (value) => {
-                    const number = Number.parseInt(value);
-                    if (Number.isNaN(number)) {
-                        previewLengthError.empty();
-                        previewLengthError.createEl('span', { text: `${value} is not a number!`, cls: 'setting-error' })
-                    }
-                    else {
-                        previewLengthError.empty();
-                        this.plugin.settings.previewLength = number;
-                        await this.plugin.saveSettings();
-                    }
-                }))
+                    this.plugin.settings.previewLength = value;
+                    await this.plugin.saveSettings();
+                })
+            )
 
         const calloutsDescription = new DocumentFragment();
         calloutsDescription.textContent =
-            "Use callouts to render note previews, using their styles based on current theme. ";
+            "Use callouts to render note previews, using their styles based on the current theme. ";
         calloutsDescription.createEl("a", {
             text: "More info",
             attr: {
@@ -214,7 +218,7 @@ class DiariumSettingTab extends PluginSettingTab {
         });
 
         new Setting(containerEl)
-            .setName("Use Obsidian callouts for note previews")
+            .setName("Use callouts to display content")
             .setDesc(calloutsDescription)
             .addToggle((toggle) =>
                 toggle.setValue(this.plugin.settings.useCallout).onChange((value) => {
@@ -226,7 +230,7 @@ class DiariumSettingTab extends PluginSettingTab {
 
         if (!this.plugin.settings.useCallout) {
             new Setting(containerEl)
-                .setName("Use quote element for note previews")
+                .setName("Use quote elements to display content")
                 .setDesc("Format note previews using the HTML quote element")
                 .addToggle((toggle) =>
                     toggle.setValue(this.plugin.settings.useQuote).onChange((value) => {

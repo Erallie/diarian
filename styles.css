@@ -10,6 +10,9 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-error);
 }
 
+.text-accent {
+    color: var(--text-accent)
+}
 
 /* Calendar classes */
 .react-calendar {

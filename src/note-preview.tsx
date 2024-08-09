@@ -33,12 +33,20 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
                 view,
             );
         }
-    });
+    })();
 
-    const onClick = (evt: MouseEvent) => {
+    /* const onClick = (evt: MouseEvent) => {
         const isMiddleButton = evt.button === 1;
         const newLeaf =
             Keymap.isModEvent(evt) || isMiddleButton || plugin.settings.openInNewPane;
+
+        void app.workspace.getLeaf(newLeaf).openFile(note);
+    }; */
+
+    const onClick = (evt: any) => {
+        const isMiddleButton = evt.button === 1;
+        const newLeaf =
+            /* Keymap.isModEvent(evt) || */ isMiddleButton || plugin.settings.openInNewPane;
 
         void app.workspace.getLeaf(newLeaf).openFile(note);
     };
