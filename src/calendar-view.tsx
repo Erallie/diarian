@@ -114,7 +114,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
         showNotesNode = <p>There are no notes on this day.</p>;
     }
     return (
-        <div>
+        <div className='calendar-container'>
             <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} />
             <h1>{moment(selectedDate).format(headingFormat)}</h1>
             {showNotesNode}
