@@ -6,11 +6,17 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.setting-error {
+    color: var(--text-error);
+}
+
+
+/* Calendar classes */
 .react-calendar {
     width: 350px;
     max-width: 100%;
-    background: white;
-    border: 1px solid #a0a096;
+    background: var(--background-primary);
+        /* border: 1px solid #a0a096; */
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
 }
@@ -60,12 +66,13 @@ If your plugin does not need CSS, delete this file.
 }
 
 .react-calendar__navigation button:disabled {
-    background-color: #f0f0f0;
+    background-color: var(--background-primary-alt);
+        /* Test to make sure this is good */
 }
 
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-    background-color: #e6e6e6;
+    background-color: var(--interactive-hover);
 }
 
 .react-calendar__month-view__weekdays {
@@ -90,13 +97,13 @@ If your plugin does not need CSS, delete this file.
 }
 
 .react-calendar__month-view__days__day--weekend {
-    color: #d10000;
+    color: var(--text-muted);
 }
 
 .react-calendar__month-view__days__day--neighboringMonth,
 .react-calendar__decade-view__years__year--neighboringDecade,
 .react-calendar__century-view__decades__decade--neighboringCentury {
-    color: #757575;
+    color: var(--text-faint);
 }
 
 .react-calendar__year-view .react-calendar__tile,
@@ -116,42 +123,42 @@ If your plugin does not need CSS, delete this file.
 }
 
 .react-calendar__tile:disabled {
-    background-color: #f0f0f0;
-    color: #ababab;
+    background-color: var(--background-primary-alt);
+        color: var(--text-faint);
 }
 
 .react-calendar__month-view__days__day--neighboringMonth:disabled,
 .react-calendar__decade-view__years__year--neighboringDecade:disabled,
 .react-calendar__century-view__decades__decade--neighboringCentury:disabled {
-    color: #cdcdcd;
+    color: var(--text-faint);
 }
 
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
-    background-color: #e6e6e6;
+    background-color: var(--interactive-hover);
 }
 
 .react-calendar__tile--now {
-    background: #ffff76;
+    background: var(--interactive-accent);
 }
 
 .react-calendar__tile--now:enabled:hover,
 .react-calendar__tile--now:enabled:focus {
-    background: #ffffa9;
+    background: var(--interactive-accent-hover);
 }
 
 .react-calendar__tile--hasActive {
-    background: #76baff;
+    background: var(--interactive-accent);
 }
 
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-    background: #a9d4ff;
+    background: var(--interactive-accent-hover);
 }
 
 .react-calendar__tile--active {
-    background: #006edc;
-    color: white;
+    background: var(--interactive-accent);
+        color: var(--text-on-accent);
 }
 
 .react-calendar__tile--active:enabled:hover,

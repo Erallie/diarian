@@ -1,7 +1,6 @@
 import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
 import Diarium from 'main';
 import moment from 'moment';
-import { DiariumSettings } from 'main';
 
 // const vault: Vault = app.vault;
 
@@ -112,7 +111,7 @@ export function momentToRegex(format: string): RegExp {
 
 
 export function getDailyNoteSettings() {
-/* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
+    /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // const { internalPlugins } = <any>window.app;
@@ -164,10 +163,14 @@ export function getDates(notes: TFile[]) {
 }
 
 export function getNoteByMoment(moment: any) {
-    let path = normalizePath(moment.format(getDailyNoteSettings().format));
-    path = normalizePath(getDailyNoteSettings().folder + '/') + path;
-    const note = this.app.vault.getFileByPath(path)
+    // console.log(moment.format(getDailyNoteSettings().format));
+    let format = getDailyNoteSettings().format;
+    let path = moment.format(format);
+    path = normalizePath(getDailyNoteSettings().folder + '/' + path + '.md');
+    console.log(path);
+    const note = this.app.vault.getFileByPath(path);
     if (note === null) {
-        console.warn('[Diarium] Warning:\n\tCould not get any with the date ' + moment.toString() + '.')
+        console.warn('[Diarium] Warning:\n\tCould not get any notes with the date ' + moment.format(format) + '.')
     }
+    return note;
 }

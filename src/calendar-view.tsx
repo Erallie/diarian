@@ -1,28 +1,36 @@
 import { StrictMode } from "react";
-import { Plugin, ItemView, WorkspaceLeaf, TFile } from "obsidian";
+import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getDates, getAllDailyNotes, getNoteByMoment } from "get-daily-notes";
+import { getDates, getAllDailyNotes, getNoteByMoment } from "./get-daily-notes";
 import { usePlugin } from "./hooks";
+import NotePreview from './note-preview';
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 
 interface ContainerProps {
-    headerFormat: string;
+    headingFormat: string;
     dailyNotes: TFile[];
     previewLength: number;
+    view: View;
+    plugin: Diarium;
+    app: App;
 }
 
 export class CalendarView extends ItemView {
     root: Root | null = null;
     plugin: Diarium;
+    view: View;
+    app: App;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Diarium) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarium, view: View, app: App) {
         super(leaf);
         this.plugin = plugin;
+        this.view = view;
+        this.app = app;
     }
 
     getViewType() {
@@ -38,7 +46,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                <Container headerFormat={this.plugin.settings.headerFormat} dailyNotes={getAllDailyNotes()} previewLength={this.plugin.settings.previewLength} />
+                <Container headingFormat={this.plugin.settings.headingFormat} dailyNotes={getAllDailyNotes()} previewLength={this.plugin.settings.previewLength} view={this.view} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
@@ -49,10 +57,10 @@ export class CalendarView extends ItemView {
 
 }
 
-const Container = ({ headerFormat, dailyNotes, previewLength }: ContainerProps) => {
+const Container = ({ headingFormat, dailyNotes, previewLength, view, plugin, app }: ContainerProps) => {
     const filledDates = getDates(dailyNotes);
     function isSameDay(date1: any, date2: any) {
-// return (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear());
+        // return (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear());
 
         return (date1.date() == date2.date() && date1.month() == date2.month() && date1.year() == date2.year());
 
@@ -61,7 +69,7 @@ const Container = ({ headerFormat, dailyNotes, previewLength }: ContainerProps) 
     const today = moment(new Date());
     const [selectedDate, setDate] = useState(new Date());
 
-    function tileClassName({ date, view }) {
+    function tileClassName({ date, view }: any) {
         // Add class to tiles in month view only
         if (view === 'month') {
             // Check if a date React-Calendar wants to check is on the list of dates to add class to
@@ -83,27 +91,33 @@ const Container = ({ headerFormat, dailyNotes, previewLength }: ContainerProps) 
         setDate(nextDate)
     } */
 
-    let filteredNotes = [];
+    let filteredDates = [];
     let showNotesNode;
-    if ((filteredNotes = filledDates.filter(dDate => isSameDay(moment(selectedDate), dDate))).length !== 0) {
-        let notesToShow = [];
+    if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(selectedDate), dDate))).length !== 0) {
         let i = 0;
-        for (let note of filteredNotes) {
-            showNotesNode = notesToShow.map(note =>
-                <>
-                    <h3 key={note.id}>{note.title}</h3>
-                    <p></p>
-                </>
-            );
+        let notesToShow: any = [];
+        for (let date of filteredDates) {
+            let note: TFile = getNoteByMoment(date);
+            notesToShow[i] = {
+                note: note,
+                id: i
+            };
+            i++;
         }
+
+        showNotesNode = notesToShow.map(note =>
+            <>
+                <NotePreview key={note.id} note={note.note} view={view} plugin={plugin} app={app} />
+            </>
+        );
     }
     else {
-            showNotesNode = <p>There are no notes on this day.</p>;
+        showNotesNode = <p>There are no notes on this day.</p>;
     }
     return (
         <div>
             <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} />
-            <h1>{moment(selectedDate).format(headerFormat)}</h1>
+            <h1>{moment(selectedDate).format(headingFormat)}</h1>
             {showNotesNode}
         </div>
     )

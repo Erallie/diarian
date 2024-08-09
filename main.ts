@@ -1,28 +1,30 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf, Platform, FileView } from 'obsidian';
-import { CalendarView } from './calendar-view';
-import { getDailyNoteSettings, momentToRegex } from './get-daily-notes';
+import { App, View, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf, Platform, FileView, MomentFormatComponent } from 'obsidian';
+import { CalendarView } from './src/calendar-view';
+import { getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
 
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 // Remember to rename these classes and interfaces!
 
 export interface DiariumSettings {
-    headerFormat: string;
+    headingFormat: string;
     previewLength: number;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
-    headerFormat: 'dddd, MMMM Do, YYYY',
+    headingFormat: 'dddd, MMMM Do, YYYY',
     previewLength: 250
 }
 
 export default class Diarium extends Plugin {
     settings: DiariumSettings;
+    view: View;
+    app: App;
 
     async onload() {
         await this.loadSettings();
 
-        this.registerView(CALENDAR_VIEW_TYPE, (leaf) => new CalendarView(leaf, this));
+        this.registerView(CALENDAR_VIEW_TYPE, (leaf) => new CalendarView(leaf, this, this.view, this.app));
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-calendar-search', 'Open calendar', (evt: MouseEvent) => {
@@ -141,18 +143,45 @@ class DiariumSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        new Setting(containerEl)
-            .setName('Header format')
-            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for info on how to format this setting.')
-            .addText(text => text
-                .setPlaceholder('dddd, MMMM Do, YYYY')
-                .setValue(this.plugin.settings.headerFormat)
+        const headingFormat = new Setting(containerEl)
+            .setName('Heading format')
+            .setDesc('The moment.js format for headings. See https://momentjs.com/docs/#/displaying/format/ for info on how to format this setting.');
+
+        const sampleFormatContainer = containerEl.createEl('p', { text: 'Headings will appear as: ' });
+        const sampleFormat = sampleFormatContainer.createSpan();
+
+        headingFormat
+            .addMomentFormat(text => text
+                .setDefaultFormat('dddd, MMMM Do, YYYY')
+                .setValue(this.plugin.settings.headingFormat)
+                .setSampleEl(sampleFormat)
                 .onChange(async (value) => {
-                    this.plugin.settings.headerFormat = value;
+                    this.plugin.settings.headingFormat = value;
                     await this.plugin.saveSettings();
-                    getDailyNoteSettings();
-                    console.log("format = " + this.plugin.settings.format);
-                }));
+                }))
+
+        const previewLength = new Setting(containerEl)
+            .setName('Note preview length')
+            .setDesc('The number of characters of content a note preview should show in the Calendar and On this day views.');
+
+        const previewLengthError = containerEl.createEl('p');
+
+        previewLength
+            .addText(text => text
+                .setPlaceholder('250')
+                .setValue(this.plugin.settings.previewLength.toString())
+                .onChange(async (value) => {
+                    const number = Number.parseInt(value);
+                    if (Number.isNaN(number)) {
+                        previewLengthError.empty();
+                        previewLengthError.createEl('span', { text: `${value} is not a number!`, cls: 'setting-error' })
+                    }
+                    else {
+                        previewLengthError.empty();
+                        this.plugin.settings.previewLength = number;
+                        await this.plugin.saveSettings();
+                    }
+                }))
 
     }
 }
