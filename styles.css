@@ -18,7 +18,7 @@ If your plugin does not need CSS, delete this file.
 .react-calendar {
     width: 350px;
     max-width: 100%;
-    background: var(--background-primary);
+    background-color: var(--background-primary);
         /* border: 1px solid #a0a096; */
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
@@ -66,6 +66,7 @@ If your plugin does not need CSS, delete this file.
 .react-calendar__navigation button {
     min-width: 44px;
     background: none;
+    border-radius: 0;
 }
 
 .react-calendar__navigation button:disabled {
@@ -90,7 +91,7 @@ If your plugin does not need CSS, delete this file.
     padding: 0.5em;
 }
 
-.react-calendar__month-view__weekNumbers .react-calendar__tile {
+.react-calendar__month-view__weekNumbers button.react-calendar__tile {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,23 +110,24 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-faint);
 }
 
-.react-calendar__year-view .react-calendar__tile,
-.react-calendar__decade-view .react-calendar__tile,
-.react-calendar__century-view .react-calendar__tile {
+.react-calendar__year-view button.react-calendar__tile,
+.react-calendar__decade-view button.react-calendar__tile,
+.react-calendar__century-view button.react-calendar__tile {
     padding: 2em 0.5em;
 }
 
-.react-calendar__tile {
+button.react-calendar__tile {
     max-width: 100%;
     padding: 10px 6.6667px;
-    background: none;
+    /* background: none; */
+        border-radius: 0;
     text-align: center;
     line-height: 16px;
     font: inherit;
     font-size: 0.833em;
 }
 
-.react-calendar__tile:disabled {
+button.react-calendar__tile:disabled {
     background-color: var(--background-primary-alt);
         color: var(--text-faint);
 }
@@ -136,43 +138,54 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-faint);
 }
 
-.react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus {
+button.react-calendar__tile:enabled:hover,
+button.react-calendar__tile:enabled:focus {
     background-color: var(--interactive-hover);
 }
 
-.react-calendar__tile--now {
-    background: var(--interactive-accent);
+button.react-calendar__tile--now {
+    background-color: var(--interactive-accent);
 }
 
-.react-calendar__tile--now:enabled:hover,
-.react-calendar__tile--now:enabled:focus {
-    background: var(--interactive-accent-hover);
+button.react-calendar__tile--now:enabled:hover,
+button.react-calendar__tile--now:enabled:focus {
+    background-color: var(--interactive-accent-hover);
 }
 
-.react-calendar__tile--hasActive {
-    background: var(--interactive-accent);
+button.react-calendar__tile--hasActive {
+    background-color: var(--interactive-accent);
 }
 
-.react-calendar__tile--hasActive:enabled:hover,
-.react-calendar__tile--hasActive:enabled:focus {
-    background: var(--interactive-accent-hover);
+button.react-calendar__tile--hasActive:enabled:hover,
+button.react-calendar__tile--hasActive:enabled:focus {
+    background-color: var(--interactive-accent-hover);
 }
 
-.react-calendar__tile--active {
-    background: var(--interactive-accent);
+button.react-calendar__tile--active {
+    background-color: var(--interactive-accent);
+    /* background-color: hsl(var(--accent-h), var(--accent-s), max(calc(var(--accent-l) - 5%), 10%)); */
         color: var(--text-on-accent);
 }
 
-.react-calendar__tile--active:enabled:hover,
-.react-calendar__tile--active:enabled:focus {
-    background: #1087ff;
+button.react-calendar__tile--active:enabled:hover,
+button.react-calendar__tile--active:enabled:focus {
+    background-color: var(--interactive-accent-hover);
 }
 
-.react-calendar--selectRange .react-calendar__tile--hover {
-    background-color: #e6e6e6;
+.react-calendar--selectRange button.react-calendar__tile--hover {
+    background-color: var(--interactive-hover);
 }
 
-.filled-date {
-    color: #000000;
+button.filled-date {
+    /* background-color: hsl(var(--accent-h), max(calc(var(--accent-s) - 10%), 10%), min(calc(var(--accent-l) + 5%), 90%)); */
+    /* background-color: hsl(var(--accent-h), max(calc(var(--accent-s) - 25%), 10%), max(calc(var(--accent-l) - 5%), 10%)); */
+    background-color: hsl(var(--accent-h), var(--accent-s), max(calc(var(--accent-l) - 5%), 10%));
+    /* background-color: var(--interactive-accent); */
+    color: var(--text-on-accent);
+}
+
+button.filled-date:enabled:hover,
+button.filled-date:enabled:focus {
+    background-color: var(--interactive-accent-hover);
+    color: var(--text-on-accent);
 }

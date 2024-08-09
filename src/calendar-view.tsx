@@ -76,7 +76,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
                 return 'filled-date';
             }
             else if (isSameDay(moment(date), today)) { //DON'T KNOW IF I NEED THIS
-                return 'react-calendar__tile--now';
+                return 'react-calendar__tile--active';
             }
             else {
                 return 'react-calendar__tile';
