@@ -99,7 +99,9 @@ const Container = ({ headerFormat, dailyNotes, previewLength }: ContainerProps) 
                     <p></p>
                 </>
             );
-    } else {
+        }
+    }
+    else {
             showNotesNode = <p>There are no notes on this day.</p>;
     }
     return (
