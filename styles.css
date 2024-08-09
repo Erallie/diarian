@@ -6,7 +6,7 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
-/* .react-calendar {
+.react-calendar {
     width: 350px;
     max-width: 100%;
     background: white;
@@ -161,6 +161,8 @@ If your plugin does not need CSS, delete this file.
 
 .react-calendar--selectRange .react-calendar__tile--hover {
     background-color: #e6e6e6;
-} */
+}
 
-.filled-date {}
+.filled-date {
+    color: #000000;
+}

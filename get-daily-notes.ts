@@ -1,6 +1,7 @@
-import { App, Vault, normalizePath, Notice } from 'obsidian';
-import Diarium from './main';
-import { DiariumSettings } from './main';
+import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
+import Diarium from 'main';
+import moment from 'moment';
+import { DiariumSettings } from 'main';
 
 const vault: Vault = app.vault;
 
@@ -109,10 +110,10 @@ export function momentToRegex(format: string): RegExp {
     return new RegExp(newString, "g");
 }
 
-export class DailyNotesHandler extends Diarium {
+/* export class DailyNotesHandler extends Diarium {
     app: App;
 
-    getFilesInPath = (path: string) => {
+    getDailyNotes() {
 
         const allFiles = this.app.vault.getFiles();
         const filteredFiles = allFiles.filter(file => {
@@ -123,10 +124,23 @@ export class DailyNotesHandler extends Diarium {
         });
         return filteredFiles;
     };
-}
+
+    getDates() {
+        const allDailyNotes = this.getDailyNotes();
+        let allDates = [];
+        let i = 0;
+        for (let note of allDailyNotes) {
+            let baseName = note.path + '/' + note.name;
+            baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
+            const noteDate = moment(baseName, getDailyNoteSettings().format);
+            allDates[i] = noteDate;
+        }
+        return allDates;
+    }
+} */
 
 
-export function dailyNotesEnabled(): boolean {
+/* export function dailyNotesEnabled(): boolean {
     // from https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/index.ts#L12C1-L23C2
     const { app } = window;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,7 +148,7 @@ export function dailyNotesEnabled(): boolean {
     if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
         return true;
     }
-}
+} */
 
 export function getDailyNoteSettings() {
 /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
@@ -144,17 +158,45 @@ export function getDailyNoteSettings() {
 
         const { folder, format } =
             internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
-        console.log("Daily note settings found.\n\tformat = " + format);
+        // console.log("Daily note settings found.\n\tformat = " + format);
         return {
             format: format,
             folder: folder?.trim() || "",
         };
     } catch (err) {
-        // new Notice("No custom daily note settings found!");
+        new Notice("No custom daily note settings found!");
         console.info("No custom daily note settings found!", err);
         return {
             format: 'YYYY-MM-DD',
             folder: '',
         };
     }
+}
+
+
+export function getDailyNotes() {
+
+    const allFiles = this.app.vault.getFiles();
+    const filteredFiles = allFiles.filter(file => {
+        let regexString = normalizePath(getDailyNoteSettings().format);
+        const regex = momentToRegex(regexString);
+        const index = (file.path + '/' + file.name).search(regex);
+        return index == getDailyNoteSettings().folder.length + 1;
+    });
+    console.log(filteredFiles.length);
+    return filteredFiles;
+};
+
+export function getDates(notes: TFile[]) {
+    let allDates = [];
+    let i = 0;
+    for (let note of notes) {
+        let baseName = note.path + '/' + note.name;
+        baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
+        const noteDate = moment(baseName, getDailyNoteSettings().format);
+        allDates[i] = noteDate;
+        i++;
+    }
+    // console.log(allDates[allDates.length - 1].toString());
+    return allDates;
 }
