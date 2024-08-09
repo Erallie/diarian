@@ -8,10 +8,12 @@ const CALENDAR_VIEW_TYPE = "calendar-view";
 
 export interface DiariumSettings {
     headerFormat: string;
+    previewLength: number;
 }
 
 const DEFAULT_SETTINGS: DiariumSettings = {
-    headerFormat: 'dddd, MMMM Do, YYYY'
+    headerFormat: 'dddd, MMMM Do, YYYY',
+    previewLength: 250
 }
 
 export default class Diarium extends Plugin {

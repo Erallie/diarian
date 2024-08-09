@@ -3,7 +3,7 @@ import Diarium from 'main';
 import moment from 'moment';
 import { DiariumSettings } from 'main';
 
-const vault: Vault = app.vault;
+// const vault: Vault = app.vault;
 
 export function momentToRegex(format: string): RegExp {
     const cardinal = (maxTeens: number) => {
@@ -110,51 +110,13 @@ export function momentToRegex(format: string): RegExp {
     return new RegExp(newString, "g");
 }
 
-/* export class DailyNotesHandler extends Diarium {
-    app: App;
-
-    getDailyNotes() {
-
-        const allFiles = this.app.vault.getFiles();
-        const filteredFiles = allFiles.filter(file => {
-            let regexString = normalizePath(getDailyNoteSettings().folder) + '/' + normalizePath(getDailyNoteSettings().format);
-            const regex = momentToRegex(regexString);
-            const index = file.path.search(regex);
-            return index == 0;
-        });
-        return filteredFiles;
-    };
-
-    getDates() {
-        const allDailyNotes = this.getDailyNotes();
-        let allDates = [];
-        let i = 0;
-        for (let note of allDailyNotes) {
-            let baseName = note.path + '/' + note.name;
-            baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
-            const noteDate = moment(baseName, getDailyNoteSettings().format);
-            allDates[i] = noteDate;
-        }
-        return allDates;
-    }
-} */
-
-
-/* export function dailyNotesEnabled(): boolean {
-    // from https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/index.ts#L12C1-L23C2
-    const { app } = window;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
-    if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
-        return true;
-    }
-} */
 
 export function getDailyNoteSettings() {
 /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { internalPlugins } = <any>window.app;
+        // const { internalPlugins } = <any>window.app;
+        const { internalPlugins } = this.app;
 
         const { folder, format } =
             internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
@@ -174,7 +136,7 @@ export function getDailyNoteSettings() {
 }
 
 
-export function getDailyNotes() {
+export function getAllDailyNotes() {
 
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter(file => {
@@ -199,4 +161,13 @@ export function getDates(notes: TFile[]) {
     }
     // console.log(allDates[allDates.length - 1].toString());
     return allDates;
+}
+
+export function getNoteByMoment(moment: any) {
+    let path = normalizePath(moment.format(getDailyNoteSettings().format));
+    path = normalizePath(getDailyNoteSettings().folder + '/') + path;
+    const note = this.app.vault.getFileByPath(path)
+    if (note === null) {
+        console.warn('[Diarium] Warning:\n\tCould not get any with the date ' + moment.toString() + '.')
+    }
 }
