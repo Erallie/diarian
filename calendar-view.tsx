@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { Plugin, ItemView, WorkspaceLeaf, TFile } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar } from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
@@ -35,13 +34,10 @@ export class CalendarView extends ItemView {
     }
 
     async onOpen() {
-        // const headerFormat = this.plugin.settings.headerFormat;
         this.root = createRoot(this.containerEl.children[1]);
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                {/* <Container headerFormat='dddd, MMMM Do, YYYY' /> */}
-                {/* <Container headerFormat={headerFormat} /> */}
                 <Container headerFormat={this.plugin.settings.headerFormat} dailyNotes={getAllDailyNotes()} previewLength={this.plugin.settings.previewLength} />
             </StrictMode>
         );
@@ -107,11 +103,8 @@ const Container = ({ headerFormat, dailyNotes, previewLength }: ContainerProps) 
     return (
         <div>
             <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} />
-            {/* set "formatDay" to be changed in the settings */}
             <h1>{moment(selectedDate).format(headerFormat)}</h1>
             {showNotesNode}
-            {/* Add functionality to display  */}
-            {/* <h4>Hello, React!</h4> */}
         </div>
     )
 };
