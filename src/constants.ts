@@ -4,7 +4,7 @@ export enum Unit {
     day = "day",
     week = "week",
     month = "month",
-    year = "year",
+    year = "year"
 };
 
 export const getTimeSpanTitle = (number: number, unit: Unit) =>
@@ -15,7 +15,7 @@ export enum logLevel {
     log = "log",
     info = "info",
     warn = "warn",
-    error = "error";
+    error = "error"
 }
 
 export function printToConsole(level: logLevel, message: string) { // level = {log, info, warn, error}
