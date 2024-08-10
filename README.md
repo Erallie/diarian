@@ -1,7 +1,7 @@
 # Diarium
 This is a plugin for [Obsidian](https://obsidian.md) that adds functionality from the [Diarium](https://diariumapp.com/) journal app.
 ## Key features
-- Supports daily notes that have the date or time specified in the file path instead of just the file name. This allows for nested daily notes sorted by year, month, or day (etc).
+- Supports daily notes that have the date or time specified in the file path instead of just the file name. This allows for nested daily notes sorted in folders by year, month, or day (etc).
 	- This is unlike most other plugins I’ve encountered on the Obsidian marketplace.
 - Supports multiple notes per day.
 	- The number of dots on each day is the number of notes that exist on that day.
