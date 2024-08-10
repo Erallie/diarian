@@ -89,6 +89,35 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
     /* function showNotes(nextDate) {
         setDate(nextDate)
     } */
+    function tileContent({ date, view }) {
+        if (view === 'month') {
+            let filteredDates = [];
+            if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(date), dDate))).length !== 0) {
+                let content: any = [];
+                let i = 0;
+                for (let date of filteredDates) {
+                    content[i] = {
+                        id: i,
+                        date: date
+                    }
+                    i++;
+                }
+
+                const Dots = () => content.map(content =>
+                    <>
+                        {/* <svg key={content.id} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="calendar-dot"><circle cx="12.1" cy="12.1" r="1" /></svg> */}
+                        <span className='calendar-dot'>•</span>
+                    </>
+                );
+                return (
+                    <div className='dot-container'>
+                        <Dots />
+                    </div>
+                )
+            }
+
+        }
+    }
 
     let filteredDates = [];
     let showNotesNode;
@@ -115,7 +144,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
     }
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} />
+            <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <h1>{moment(selectedDate).format(headingFormat)}</h1>
             {showNotesNode}
         </div>

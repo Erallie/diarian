@@ -24,6 +24,24 @@ If your plugin does not need CSS, delete this file.
     padding-right: min(50px, 5%); */
     /* background-color: var(--background-secondary); */
 }
+span.calendar-dot {
+    padding: 0;
+    letter-spacing: 0.2em;
+}
+
+div.dot-container {
+    max-width: 50%;
+    max-height: calc(100% + 1.1em);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    padding-top: 0;
+    padding-bottom: 0;
+    /* margin-top: 0;
+    margin-bottom: 0; */
+    line-height: 0.5em;
+    display: block;
+    overflow-y: clip;
+}
 /* Calendar classes */
 .react-calendar {
     width: 350px;
@@ -63,6 +81,7 @@ If your plugin does not need CSS, delete this file.
     margin: 0;
     border: 0;
     outline: none;
+        border-radius: 0;
 }
 
 .react-calendar button:enabled:hover {
@@ -78,7 +97,6 @@ If your plugin does not need CSS, delete this file.
 .react-calendar__navigation button {
     min-width: 44px;
     background: none;
-    border-radius: 0;
 }
 
 .react-calendar__navigation button:disabled {
@@ -105,6 +123,7 @@ If your plugin does not need CSS, delete this file.
 
 .react-calendar__month-view__weekNumbers button.react-calendar__tile {
     display: flex;
+        /* width: 100%; */
     align-items: center;
     justify-content: center;
     font: inherit;
@@ -132,7 +151,6 @@ button.react-calendar__tile {
     max-width: 100%;
     padding: 10px 6.6667px;
     /* background: none; */
-        border-radius: 0;
     text-align: center;
     line-height: 16px;
     font: inherit;
@@ -200,4 +218,8 @@ button.filled-date:enabled:hover,
 button.filled-date:enabled:focus {
     background-color: var(--interactive-accent-hover);
     color: var(--text-on-accent);
+}
+button.filled-date>* {
+    margin-left: auto;
+    margin-right: auto;
 }

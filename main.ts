@@ -1,4 +1,4 @@
-import { App, View, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, ItemView, WorkspaceLeaf, Platform, FileView, MomentFormatComponent } from 'obsidian';
+import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent } from 'obsidian';
 import { CalendarView } from './src/calendar-view';
 import { getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
 
@@ -37,7 +37,8 @@ export default class Diarium extends Plugin {
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-calendar-search', 'Open calendar', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
-            this.openCalendar();
+            // this.openCalendar();
+            new SelectView(this.app, this).open();
             // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
@@ -57,6 +58,7 @@ export default class Diarium extends Plugin {
                 // new SampleModal(this.app).open();
             }
         });
+
         // This adds an editor command that can perform some operation on the current editor instance
         /* this.addCommand({
             id: 'sample-editor-command',
@@ -122,21 +124,55 @@ export default class Diarium extends Plugin {
     }
 }
 
-/* class SampleModal extends Modal {
-    constructor(app: App) {
+class SelectView extends Modal {
+    plugin: Diarium;
+
+    constructor(app: App, plugin: Diarium) {
         super(app);
+        this.plugin = plugin;
     }
 
     onOpen() {
         const { contentEl } = this;
-        contentEl.setText('Woah!');
+        contentEl.setText('Open view');
+
+        contentEl.createEl('br');
+
+        const openCalendarButton = new DocumentFragment();
+        /* openCalendarButton.textContent =
+            "The moment.js format for headings. "; */
+        openCalendarButton.createEl('img', {
+            text: "Open calendar",
+            attr: {
+                src: "Attachments/icons/lucide-calendar-search.svg"
+            },
+        });
+        openCalendarButton.createEl('span', { text: ' Open calendar' });
+
+        new ButtonComponent(contentEl)
+            .setIcon('lucide-calendar-search')
+            .setButtonText(openCalendarButton)
+            .onClick(() => {
+                this.plugin.openCalendar();
+                this.close();
+            });
+
+        new ButtonComponent(contentEl)
+            // .setIcon('lucide-rotate-cw')
+            .setIcon('lucide-clock')
+            // .setButtonText('Open on this day')
+            .onClick(() => {
+                this.plugin.openCalendar();
+                this.close();
+            })
+
     }
 
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
     }
-} */
+}
 
 class DiariumSettingTab extends PluginSettingTab {
     plugin: Diarium;
