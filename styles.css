@@ -46,7 +46,8 @@ div.dot-container {
 .react-calendar {
     width: 350px;
     max-width: 100%;
-    background-color: var(--background-primary);
+    background: none;
+        /* background-color: var(--background-primary); */
         /* border: 1px solid #a0a096; */
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
@@ -61,6 +62,7 @@ div.dot-container {
 .react-calendar--doubleView .react-calendar__viewContainer {
     display: flex;
     margin: -0.5em;
+    white-space: nowrap;
 }
 
 .react-calendar--doubleView .react-calendar__viewContainer>* {
@@ -78,11 +80,16 @@ div.dot-container {
 }
 
 .react-calendar button {
-    margin: 0;
-    border: 0;
-    outline: medium solid var(--background-primary);
+    /* margin: 0.1rem 0.2rem; */
+        /* border: none; */
+        border: 0.1em solid var(--background-primary);
         border-radius: 0;
         box-shadow: none;
+        /* width: calc(100% - 0.1rem); */
+            /* width: 14.2857142857%; */
+            /* width: 100%; */
+            /* display: flex; */
+            height: 2.5rem;
 }
 
 .react-calendar button:enabled:hover {
@@ -97,7 +104,8 @@ div.dot-container {
 
 .react-calendar__navigation button {
     min-width: 44px;
-    background-color: var(--background-secondary-alt);
+        background-color: var(--interactive-normal);
+        /* margin: 0.05rem 0.1rem; */
 }
 
 .react-calendar__navigation button:disabled {
@@ -110,6 +118,7 @@ div.dot-container {
     background-color: var(--interactive-hover);
 }
 
+/* .react-calendar__month-view--weekNumbers */
 .react-calendar__month-view__weekdays {
     text-align: center;
     text-transform: uppercase;
@@ -118,11 +127,17 @@ div.dot-container {
     font-weight: bold;
 }
 
+/* The weekday text */
 .react-calendar__month-view__weekdays__weekday {
     padding: 0.5em;
+    display: flex;
+        justify-content: center;
+        /* text-decoration: none; */
 }
 
-.react-calendar__month-view__weekNumbers button.react-calendar__tile {
+/* not sure whether this is working */
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+    /* .react-calendar__month-view--weekNumbers button.react-calendar__tile { */
     display: flex;
         /* width: 100%; */
     align-items: center;
@@ -132,6 +147,9 @@ div.dot-container {
     font-weight: bold;
 }
 
+/* .react-calendar__month-view__days button {
+    display: flex;
+} */
 .react-calendar__month-view__days__day--weekend {
     color: var(--text-muted);
 }
@@ -142,16 +160,18 @@ div.dot-container {
     color: var(--text-faint);
 }
 
-.react-calendar__year-view button.react-calendar__tile,
-.react-calendar__decade-view button.react-calendar__tile,
-.react-calendar__century-view button.react-calendar__tile {
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
     padding: 2em 0.5em;
 }
 
-button.react-calendar__tile {
+button.react-calendar__tile,
+.react-calendar__tile {
     max-width: 100%;
     padding: 10px 6.6667px;
     /* background: none; */
+    background-color: var(--interactive-normal);
     text-align: center;
     line-height: 16px;
     font: inherit;
@@ -174,43 +194,10 @@ button.react-calendar__tile:enabled:focus {
     background-color: var(--interactive-hover);
 }
 
-button.react-calendar__tile--now {
-    background-color: var(--interactive-accent);
-}
-
-button.react-calendar__tile--now:enabled:hover,
-button.react-calendar__tile--now:enabled:focus {
-    background-color: var(--interactive-accent-hover);
-}
-
-button.react-calendar__tile--hasActive {
-    background-color: var(--interactive-accent);
-}
-
-button.react-calendar__tile--hasActive:enabled:hover,
-button.react-calendar__tile--hasActive:enabled:focus {
-    background-color: var(--interactive-accent-hover);
-}
-
-button.react-calendar__tile--active {
-    background-color: var(--interactive-accent);
-    /* background-color: hsl(var(--accent-h), var(--accent-s), max(calc(var(--accent-l) - 5%), 10%)); */
-        color: var(--text-on-accent);
-}
-
-button.react-calendar__tile--active:enabled:hover,
-button.react-calendar__tile--active:enabled:focus {
-    background-color: var(--interactive-accent-hover);
-}
-
-.react-calendar--selectRange button.react-calendar__tile--hover {
-    background-color: var(--interactive-hover);
-}
-
 button.filled-date {
     /* background-color: hsl(var(--accent-h), max(calc(var(--accent-s) - 10%), 10%), min(calc(var(--accent-l) + 5%), 90%)); */
     /* background-color: hsl(var(--accent-h), max(calc(var(--accent-s) - 25%), 10%), max(calc(var(--accent-l) - 5%), 10%)); */
-    background-color: hsl(var(--accent-h), var(--accent-s), max(calc(var(--accent-l) - 5%), 10%));
+    background-color: hsl(var(--accent-h), var(--accent-s), max(var(--accent-l) - 6%, 10%));
     /* background-color: var(--interactive-accent); */
     color: var(--text-on-accent);
 }
@@ -220,7 +207,53 @@ button.filled-date:enabled:focus {
     background-color: var(--interactive-accent-hover);
     color: var(--text-on-accent);
 }
+
 button.filled-date>* {
     margin-left: auto;
     margin-right: auto;
+}
+
+/* Now is today */
+button.react-calendar__tile--now,
+.react-calendar__tile--now {
+    /* background-color: var(--interactive-accent); */
+    /* background-color: hsl(var(--accent-h), max(calc(var(--accent-s) - 10%), 10%), min(calc(var(--accent-l) + 5%), 90%)); */
+    background-color: hsl(var(--accent-h), var(--accent-s), min(var(--accent-l) + 6%, 90%));
+    /* background-color: black; */
+    color: var(--text-on-accent);
+}
+
+button.react-calendar__tile--now:enabled:hover,
+button.react-calendar__tile--now:enabled:focus {
+    background-color: var(--interactive-accent-hover);
+}
+
+button.react-calendar__tile--hasActive {
+    background-color: var(--interactive-accent);
+        /* background-color: black; */
+}
+
+button.react-calendar__tile--hasActive:enabled:hover,
+button.react-calendar__tile--hasActive:enabled:focus {
+    background-color: var(--interactive-accent-hover);
+}
+
+/* Active is the one that's selected */
+button.react-calendar__tile--active,
+button.react-calendar__tile--active:enabled:hover,
+button.react-calendar__tile--active:enabled:focus {
+    /* background-color: var(--interactive-accent); */
+    background-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), max(var(--accent-l) - 5%, 10%));
+        color: var(--text-on-accent);
+}
+
+/* button.react-calendar__tile--active:enabled:hover,
+button.react-calendar__tile--active:enabled:focus {
+    background-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), min(var(--accent-l) + 5%, 90%));
+        color: var(--text-on-accent-inverted);
+    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+.react-calendar--selectRange button.react-calendar__tile--hover {
+    background-color: var(--interactive-hover);
 }

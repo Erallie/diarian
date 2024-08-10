@@ -76,7 +76,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
                 return 'filled-date';
             }
             else if (isSameDay(moment(date), today)) { //DON'T KNOW IF I NEED THIS
-                return 'react-calendar__tile--active';
+                return 'react-calendar__tile--now';
             }
             else {
                 return 'react-calendar__tile';
@@ -105,7 +105,6 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
 
                 const Dots = () => content.map(content =>
                     <>
-                        {/* <svg key={content.id} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="calendar-dot"><circle cx="12.1" cy="12.1" r="1" /></svg> */}
                         <span className='calendar-dot'>•</span>
                     </>
                 );
