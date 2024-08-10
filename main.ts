@@ -122,20 +122,18 @@ class SelectView extends Modal {
 
         contentEl.createEl('br');
 
-        const openCalendarButton = new DocumentFragment();
-        /* openCalendarButton.textContent =
-            "The moment.js format for headings. "; */
+        /* const openCalendarButton = new DocumentFragment();
         openCalendarButton.createEl('img', {
             text: "Open calendar",
             attr: {
                 src: "Attachments/icons/lucide-calendar-search.svg"
             },
         });
-        openCalendarButton.createEl('span', { text: ' Open calendar' });
+        openCalendarButton.createEl('span', { text: ' Open calendar' }); */
 
         new ButtonComponent(contentEl)
             .setIcon('lucide-calendar-search')
-            .setButtonText(openCalendarButton)
+            .setButtonText('Open calendar')
             .onClick(() => {
                 this.plugin.openCalendar();
                 this.close();

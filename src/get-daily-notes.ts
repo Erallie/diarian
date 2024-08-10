@@ -139,7 +139,7 @@ export function getDailyNoteSettings() {
 export function getAllDailyNotes() {
 
     const allFiles = this.app.vault.getFiles();
-    const filteredFiles = allFiles.filter(file => {
+    const filteredFiles = allFiles.filter((file: TFile) => {
         let regexString = normalizePath(getDailyNoteSettings().format);
         const regex = momentToRegex(regexString);
         const index = (file.path + '/' + file.name).search(regex);

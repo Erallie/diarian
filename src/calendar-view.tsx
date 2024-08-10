@@ -89,7 +89,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
     /* function showNotes(nextDate) {
         setDate(nextDate)
     } */
-    function tileContent({ date, view }) {
+    function tileContent({ date, view }: any) {
         if (view === 'month') {
             let filteredDates = [];
             if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(date), dDate))).length !== 0) {
@@ -103,7 +103,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
                     i++;
                 }
 
-                const Dots = () => content.map(content =>
+                const Dots = () => content.map((content: any) =>
                     <>
                         <span className='calendar-dot'>•</span>
                     </>
@@ -132,7 +132,7 @@ const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerPr
             i++;
         }
 
-        showNotesNode = notesToShow.map(note =>
+        showNotesNode = notesToShow.map((note: any) =>
             <>
                 <NotePreview key={note.id} note={note.note} view={view} plugin={plugin} app={app} />
             </>

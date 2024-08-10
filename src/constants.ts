@@ -20,7 +20,7 @@ export enum logLevel {
 
 export function printToConsole(level: logLevel, message: string) { // level = {log, info, warn, error}
     let levelText = "";
-    var print;
+    var print = (toPrint: string) => { };
     let partialMsg: string | DocumentFragment = '';
     const pluginName = ""; //REPLACE THIS IN EACH STEP
     let newMsg = message.replaceAll("\n", "\n\t");
