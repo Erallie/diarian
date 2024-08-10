@@ -80,8 +80,9 @@ div.dot-container {
 .react-calendar button {
     margin: 0;
     border: 0;
-    outline: none;
+    outline: medium solid var(--background-primary);
         border-radius: 0;
+        box-shadow: none;
 }
 
 .react-calendar button:enabled:hover {
@@ -96,7 +97,7 @@ div.dot-container {
 
 .react-calendar__navigation button {
     min-width: 44px;
-    background: none;
+    background-color: var(--background-secondary-alt);
 }
 
 .react-calendar__navigation button:disabled {
