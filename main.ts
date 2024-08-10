@@ -1,28 +1,12 @@
 import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent } from 'obsidian';
 import { CalendarView } from './src/calendar-view';
+import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
 import { getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
 
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 // Remember to rename these classes and interfaces!
 
-export interface DiariumSettings {
-    headingFormat: string;
-    previewLength: number;
-    openInNewPane: boolean;
-    useCallout: boolean;
-    showNoteTitle: boolean;
-    useQuote: boolean;
-}
-
-const DEFAULT_SETTINGS: DiariumSettings = {
-    headingFormat: 'dddd, MMMM Do, YYYY',
-    previewLength: 250,
-    openInNewPane: true,
-    useCallout: true,
-    showNoteTitle: true,
-    useQuote: true
-}
 
 export default class Diarium extends Plugin {
     settings: DiariumSettings;
@@ -171,110 +155,5 @@ class SelectView extends Modal {
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
-    }
-}
-
-class DiariumSettingTab extends PluginSettingTab {
-    plugin: Diarium;
-
-    constructor(app: App, plugin: Diarium) {
-        super(app, plugin);
-        this.plugin = plugin;
-    }
-
-    display(): void {
-        const { containerEl } = this;
-
-        containerEl.empty();
-
-        new Setting(containerEl).setName('General').setHeading();
-
-        const headingFormatDescription = new DocumentFragment();
-        headingFormatDescription.textContent =
-            "The moment.js format for headings. ";
-        headingFormatDescription.createEl("a", {
-            text: "More info",
-            attr: {
-                href: "https://momentjs.com/docs/#/displaying/format/",
-            },
-        });
-        const sampleFormatContainer = headingFormatDescription.createEl('p', { text: 'Headings will appear as: ' });
-        const sampleFormat = sampleFormatContainer.createSpan({ cls: 'text-accent' });
-
-        new Setting(containerEl)
-            .setName('Heading format')
-            .setDesc(headingFormatDescription)
-            .addMomentFormat(text => text
-                .setDefaultFormat('dddd, MMMM Do, YYYY')
-                .setValue(this.plugin.settings.headingFormat)
-                .setSampleEl(sampleFormat)
-                .onChange(async (value) => {
-                    this.plugin.settings.headingFormat = value;
-                    await this.plugin.saveSettings();
-                }));
-
-
-
-        new Setting(containerEl).setName('Note previews').setHeading();
-
-        new Setting(containerEl)
-            .setName("Open in a new pane")
-            .setDesc("Open the notes in a new pane/tab by default")
-            .addToggle((toggle) => {
-                toggle
-                    .setValue(this.plugin.settings.openInNewPane)
-                    .onChange((value) => {
-                        this.plugin.settings.openInNewPane = value;
-                        void this.plugin.saveSettings();
-                    });
-            });
-
-
-        new Setting(containerEl)
-            .setName('Preview length')
-            .setDesc('The number of characters of content a note preview should show in the Calendar and On this day views.')
-            .addSlider(slider => slider
-                .setLimits(0, 500, 10)
-                .setValue(this.plugin.settings.previewLength)
-                .setDynamicTooltip()
-                .onChange(async (value) => {
-                    this.plugin.settings.previewLength = value;
-                    await this.plugin.saveSettings();
-                })
-            )
-
-        const calloutsDescription = new DocumentFragment();
-        calloutsDescription.textContent =
-            "Use callouts to render note previews, using their styles based on the current theme. ";
-        calloutsDescription.createEl("a", {
-            text: "More info",
-            attr: {
-                href: "https://help.obsidian.md/Editing+and+formatting/Callouts",
-            },
-        });
-
-        new Setting(containerEl)
-            .setName("Use callouts to display content")
-            .setDesc(calloutsDescription)
-            .addToggle((toggle) =>
-                toggle.setValue(this.plugin.settings.useCallout).onChange((value) => {
-                    this.plugin.settings.useCallout = value;
-                    void this.plugin.saveSettings();
-                    this.display();
-                }),
-            );
-
-        if (!this.plugin.settings.useCallout) {
-            new Setting(containerEl)
-                .setName("Use quote elements to display content")
-                .setDesc("Format note previews using the HTML quote element")
-                .addToggle((toggle) =>
-                    toggle.setValue(this.plugin.settings.useQuote).onChange((value) => {
-                        this.plugin.settings.useQuote = value;
-                        void this.plugin.saveSettings();
-                    }),
-                );
-        }
-
     }
 }

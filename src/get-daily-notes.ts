@@ -1,6 +1,7 @@
 import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
 import Diarium from 'main';
 import moment from 'moment';
+import { printToConsole, logLevel } from './constants';
 
 // const vault: Vault = app.vault;
 
@@ -126,7 +127,7 @@ export function getDailyNoteSettings() {
         };
     } catch (err) {
         new Notice("No custom daily note settings found!");
-        console.info("No custom daily note settings found!", err);
+        printToConsole(logLevel.info, `No custom daily note settings found!\n${err}`);
         return {
             format: 'YYYY-MM-DD',
             folder: '',
@@ -144,7 +145,7 @@ export function getAllDailyNotes() {
         const index = (file.path + '/' + file.name).search(regex);
         return index == getDailyNoteSettings().folder.length + 1;
     });
-    console.log(filteredFiles.length);
+    // console.log(filteredFiles.length);
     return filteredFiles;
 };
 
@@ -170,7 +171,7 @@ export function getNoteByMoment(moment: any) {
     // console.log(path);
     const note = this.app.vault.getFileByPath(path);
     if (note === null) {
-        console.warn('[Diarium] Warning:\n\tCould not get any notes with the date ' + moment.format(format) + '.')
+        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(format)}.`);
     }
     return note;
 }

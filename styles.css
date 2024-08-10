@@ -228,17 +228,23 @@ button.react-calendar__tile--now:enabled:focus {
     background-color: var(--interactive-accent-hover);
 }
 
-button.react-calendar__tile--hasActive {
-    background-color: var(--interactive-accent);
-        /* background-color: black; */
-}
-
+/* button.react-calendar__tile--hasActive {
+    background-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), max(var(--accent-l) - 5%, 10%));
+        color: var(--text-on-accent);
+} */
+/* button.react-calendar__tile--hasActive,
 button.react-calendar__tile--hasActive:enabled:hover,
 button.react-calendar__tile--hasActive:enabled:focus {
-    background-color: var(--interactive-accent-hover);
-}
+    background-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), max(var(--accent-l) - 5%, 10%));
+        color: var(--text-on-accent);
+    }
+    
+    */
 
 /* Active is the one that's selected */
+button.react-calendar__tile--hasActive,
+button.react-calendar__tile--hasActive:enabled:hover,
+button.react-calendar__tile--hasActive:enabled:focus,
 button.react-calendar__tile--active,
 button.react-calendar__tile--active:enabled:hover,
 button.react-calendar__tile--active:enabled:focus {
