@@ -126,8 +126,9 @@ export function getDailyNoteSettings() {
             folder: folder?.trim() || "",
         };
     } catch (err) {
-        new Notice("No custom daily note settings found!");
-        printToConsole(logLevel.info, `No custom daily note settings found!\n${err}`);
+        const errorText = "No custom daily note settings found!"
+        new Notice(errorText);
+        printToConsole(logLevel.info, `${errorText}\n${err}`);
         return {
             format: 'YYYY-MM-DD',
             folder: '',

@@ -1,5 +1,6 @@
 import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent } from 'obsidian';
 import { CalendarView } from './src/calendar-view';
+import { ImportView } from './src/import-journal';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
 import { getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
 
@@ -19,7 +20,7 @@ export default class Diarium extends Plugin {
         this.registerView(CALENDAR_VIEW_TYPE, (leaf) => new CalendarView(leaf, this, this.view, this.app));
 
         // This creates an icon in the left ribbon.
-        const ribbonIconEl = this.addRibbonIcon('lucide-calendar-search', 'Open calendar', (evt: MouseEvent) => {
+        const ribbonIconEl = this.addRibbonIcon('lucide-calendar-search', 'Open Diarium view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             // this.openCalendar();
             new SelectView(this.app, this).open();
@@ -40,6 +41,26 @@ export default class Diarium extends Plugin {
             callback: () => {
                 this.openCalendar();
                 // new SampleModal(this.app).open();
+            }
+        });
+
+        this.addCommand({
+            id: 'open-on-this-day',
+            name: 'Open on this day',
+            icon: 'lucide-clock',
+            callback: () => {
+                // this.openCalendar();
+                // new SampleModal(this.app).open();
+            }
+        });
+
+        this.addCommand({
+            id: 'open-importer',
+            name: 'Open importer',
+            icon: 'lucide-import',
+            callback: () => {
+                // this.openCalendar();
+                new ImportView(this.app, this).open();
             }
         });
 
@@ -118,9 +139,9 @@ class SelectView extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        contentEl.setText('Open view');
+        // contentEl.setText('Open view');
 
-        contentEl.createEl('br');
+        // contentEl.createEl('br');
 
         /* const openCalendarButton = new DocumentFragment();
         openCalendarButton.createEl('img', {
@@ -142,9 +163,18 @@ class SelectView extends Modal {
         new ButtonComponent(contentEl)
             // .setIcon('lucide-rotate-cw')
             .setIcon('lucide-clock')
-            // .setButtonText('Open on this day')
+            .setButtonText('Open on this day')
             .onClick(() => {
                 this.plugin.openCalendar();
+                this.close();
+            })
+        
+        new ButtonComponent(contentEl)
+            // .setIcon('lucide-rotate-cw')
+            // .setIcon('lucide-clock')
+            .setButtonText('Open importer')
+            .onClick(() => {
+                new ImportView(this.app, this.plugin).open();
                 this.close();
             })
 

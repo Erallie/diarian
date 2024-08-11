@@ -18,6 +18,8 @@ export enum logLevel {
     error = "error"
 }
 
+export const DEFAULT_FORMAT = 'YYYY-MM-DD';
+
 export function printToConsole(level: logLevel, message: string) { // level = {log, info, warn, error}
     let levelText = "";
     var print = (toPrint: string) => { };
@@ -48,9 +50,8 @@ export function printToConsole(level: logLevel, message: string) { // level = {l
             skipPrint = true;
     }
     if (!skipPrint) {
-        partialMsg = "[" + pluginName + "] compile step:\n\t" + newMsg;
         print(`[${pluginName}]${levelText}:\n\t${newMsg}`);
     }
-    new Notice(partialMsg);
+    new Notice(newMsg);
 }
 /* ^^^ COPY AND PASTE THE ABOVE TO EVERY COMPILE STEP THAT PRINTS TO THE CONSOLE. ^^^ */
