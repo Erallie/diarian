@@ -1,15 +1,82 @@
-import { App, Modal, Setting, Notice, Vault } from 'obsidian';
+import { App, Modal, Setting, Notice, Vault, TFile, FileManager } from 'obsidian';
+// import * as zip from "@zip.js/zip.js";
+import { Writer, ZipReader, BlobReader, TextWriter, Reader } from '@zip.js/zip.js';
 import Diarium from 'main';
 import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
 import moment from 'moment';
 import { getDailyNoteSettings } from './get-daily-notes';
 
+/* enum attachDirs {
+    defaultDir = "The folder specified in Settings → Files and links",
+    dailyNotesDir = "The folder specified in Settings → Daily notes",
+    dailyNotesSubDir = "A subfolder under the folder in Settings → Daily notes",
+    noteDir = "The same folder as its note",
+    noteSubdir = "A subfolder under its note's folder",
+    customDir = 'The folder specified below'
+} */
+
+/* export interface ImportSettings {
+    attachDir: attachDirs;
+    subDir: string;
+}
+
+export const DEFAULT_SETTINGS: ImportSettings = {
+    attachDir: attachDirs.defaultDir,
+    subDir: 'Attachments'
+} */
+
+class BinaryStringWriter extends Writer {
+    // binaryString;
+
+    constructor() {
+        super();
+        this.binaryString = "";
+    }
+
+    writeUint8Array(array/* : Uint8Array */) {
+        for (let indexCharacter = 0; indexCharacter < array.length; indexCharacter++) {
+            this.binaryString += String.fromCharCode(array[indexCharacter]);
+        }
+    }
+
+    getData() {
+        return this.binaryString;
+    }
+}
+
+class BinaryStringReader extends Reader {
+    // binaryString;
+    // size;
+
+    constructor(binaryString) {
+        super();
+        this.binaryString = binaryString;
+    }
+
+    init() {
+        super.init();
+        this.size = this.binaryString.length;
+    }
+
+    readUint8Array(offset/* : number */, length) {
+        const result = new Uint8Array(length);
+        for (let indexCharacter = 0; indexCharacter < length; indexCharacter++) {
+            result[indexCharacter] = this.binaryString.charCodeAt(indexCharacter + offset) & 0xFF;
+        }
+        return result;
+    }
+}
+
 export class ImportView extends Modal {
     plugin: Diarium;
+    /* attachDir: string;
+    subDir: string; */
 
     constructor(app: App, plugin: Diarium) {
         super(app);
         this.plugin = plugin;
+        /* this.attachDir = attachDirs.defaultDir;
+        this.attachDir = 'Attachments'; */
     }
 
 
@@ -17,24 +84,32 @@ export class ImportView extends Modal {
         const { contentEl } = this;
         new Setting(contentEl).setName('Import journal').setHeading();
 
-        contentEl.createEl('br');
+        // contentEl.createEl('br');
 
         const instrDiv = contentEl.createDiv({ cls: 'instructions' });
 
         const instrDesc = new DocumentFragment();
         const instrList = instrDesc.createEl('ol', { cls: 'instructions' });
-        instrList.createEl('li', { text: 'Export your Diarium journal as a JSON (.json) file' });
-        const step1List = instrList.createEl('ol', { cls: 'instructions' });
-        const list1 = step1List.createEl('li')
-        list1.createEl('strong', { text: 'Uncheck' });
-        list1.createEl('span', { text: ' the option \'Create separate file for each entry\'.' });
-        const list2 = step1List.createEl('li')
-        list2.createEl('strong', { text: 'Check' });
-        list2.createEl('span', { text: ' the option \'Create separate files for attachments\'.' });
-        const list3 = step1List.createEl('li', { text: 'Select ' });
-        list3.createEl('strong', { text: 'Export' });
+        const list1 = instrList.createEl('li', { text: 'Open ' }); 
+        list1.createEl('strong', { text: 'Diarium' });
+        list1.createEl('span', {text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
+        list1.createEl('span', { text: ' tab.' });
+        const list2 = instrList.createEl('li', {text: 'Under '})
+        list2.createEl('strong', { text: 'File format' });
+        list2.createEl('span', { text: ', select ' }).createEl('strong', { text: 'JSON (.json)' });
+        list2.createEl('span', { text: '.' });
+        const list3 = instrList.createEl('li')
+        list3.createEl('strong', { text: 'Uncheck' });
+        list3.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate file for each entry' });
         list3.createEl('span', { text: '.' });
-        instrList.createEl('li', { text: 'Decompress the exported zip file.' }); //Change this wording!
+        const list4 = instrList.createEl('li')
+        list4.createEl('strong', { text: 'Check' });
+        list4.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate files for attachments' });
+        list4.createEl('span', { text: '.' });
+        const list5 = instrList.createEl('li', { text: 'Select ' });
+        list5.createEl('strong', { text: 'Export' });
+        list5.createEl('span', { text: '.' });
+        // instrList.createEl('li', { text: 'Decompress the exported zip file.' }); //Change this wording!
 
 
         new Setting(instrDiv).setName('Instructions').setDesc(instrDesc).setHeading();
@@ -49,22 +124,107 @@ export class ImportView extends Modal {
         });
         openCalendarButton.createEl('span', { text: ' Open calendar' }); */
 
-        const jsonFileSetting = new Setting(this.contentEl).setName("Choose json file").setDesc("Select the exported .json file containing your Diarium journal");
+        /* const jsonFileSetting = new Setting(this.contentEl).setName("Choose json file").setDesc("Select the exported .json file containing your Diarium journal");
         const jsonFile = jsonFileSetting.controlEl.createEl("input", {
             attr: {
                 type: "file",
                 multiple: false,
                 accept: ".json"
             }
-        });
+        }); */
 
-        const attachFolderSetting = new Setting(this.contentEl).setName("Choose media folder").setDesc("Select the root folder labelled \'media\' containing your attachments.");
-        const attachFolder = attachFolderSetting.controlEl.createEl("input", {
+        const zipFileSetting = new Setting(this.contentEl)
+            .setName("Choose zip file")
+            .setDesc("Select the zip file exported from Diarium.");
+        const zipFile = zipFileSetting.controlEl.createEl("input", {
             attr: {
-                type: "folder",
-                multiple: false
+                type: "file",
+                multiple: false,
+                accept: ".zip"
             }
         });
+
+        /* let folderPath = '';
+
+        jsonFile.addEventListener('change', (event) => {
+            const input = event.target as HTMLInputElement;
+            const files = input.files;
+            if (files !== null && files.length > 0) {
+                const firstFilePath = files[0].path; // Assuming consistent path format
+                // Extract the folder path from the first file path
+                folderPath = firstFilePath.substring(0, firstFilePath.lastIndexOf('/'));
+                // printToConsole(logLevel.log, `folderPath = ${folderPath}`);
+            }
+        }); */
+
+        /* const locationSetting = new Setting(this.contentEl)
+            .setName('Location for attachments')
+            .setDesc('Where imported attachments are placed.')
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(attachDirs)
+                    .setValue(this.attachDir)
+                    .onChange((value) => {
+                        this.attachDir = value as attachDirs;
+                        printToConsole(logLevel.log, this.attachDir.toString());
+                        let chosenFolder;
+
+                        if (this.attachDir == 'dailyNotesSubDir') {
+                            chosenFolder = 'the Daily notes folder';
+                        }
+                        else if (this.attachDir == 'noteSubdir') {
+                            chosenFolder = 'the note\'s folder';
+                        }
+
+                        if (this.attachDir == 'dailyNotesSubDir' || this.attachDir == 'noteSubdir') {
+                            toggleDir(true, 'Subfolder name', `If ${chosenFolder} is \"vault/folder\", and you set the subfolder name to \"attachments\", attachments will be saved to \"vault/folder/attachments\".`);
+                        }
+                        else if (this.attachDir == 'customDir') {
+                            toggleDir(true, 'Folder path', 'Imported attachments will be placed in this folder.');
+                        }
+                        else {
+                            printToConsole(logLevel.log, 'notCustomDir');
+                            toggleDir(false);
+                        };
+                    }),
+        );
+
+        const dirDiv = this.contentEl.createDiv(); */
+
+        // use https://docs.obsidian.md/Reference/TypeScript+API/SuggestModal
+        
+        /* const attachFolder = new Setting(this.contentEl).setName('Folder path').addSearch((cb) => {
+            new FolderSuggest(this.app, cb.inputEl, this.plugin);
+            cb.setPlaceholder('Example: folder1/')
+                .setValue(this.plugin.settings.folderName)
+                .onChange((newFolder) => {
+                    this.plugin.settings.folderName = newFolder;
+                    this.plugin.saveSettings();
+                    this.getFilesByFolder();
+                }); */
+
+        /* function toggleDir(show: boolean, name?: string, desc?: string) {
+            switch (show) {
+                case true:
+                    if (name && desc) {
+                        dirDiv.empty();
+                        new Setting(dirDiv)
+                            .setName(name)
+                            .setDesc(desc)
+                            .addText((text) =>
+                                text.setValue(this.subDir)
+                                    .onChange((value) => {
+                                        this.subDir = value;
+                                    }),
+                            );
+                    }
+                    else printToConsole(logLevel.warn, 'toggleDirSetting() cannot be invoked!\nname and/or desc are undefined!');
+                    break;
+                case false:
+                    dirDiv.empty();
+                    break;
+            }
+        } */
 
         const importSetting = new Setting(this.contentEl).setName("Import").setDesc("Begin the importing process.");
         const importButton = importSetting.controlEl.createEl("button");
@@ -73,53 +233,190 @@ export class ImportView extends Modal {
         const errorTextEl = contentEl.createEl('div', { cls: 'setting-error'});
         errorTextEl.empty();
 
+        const importTextEl = contentEl.createEl('div');
+        importTextEl.empty();
+
+        // use https://docs.obsidian.md/Reference/TypeScript+API/ProgressBarComponent instead of importTextEl
+
         function setText(text: any, msg: string) {
             text.empty();
             text.createEl('span', { text: msg });
         }
 
-        const importTextEl = contentEl.createEl('div');
-        importTextEl.empty();
-
         importButton.onclick = async () => {
-            const { files: datafiles } = jsonFile;
+            // const { files: datafiles } = jsonFile;
+            const { files: datafiles } = zipFile;
             if (datafiles === null || !datafiles.length) {
-                const errorText = 'No json file has been selected.';
+                const errorText = 'No zip file has been selected.';
                 printToConsole(logLevel.error, errorText);
                 setText(errorTextEl, errorText);
                 return;
             }
+
             const importText = 'Starting import...'
             setText(importTextEl, importText);
             new Notice(importText);
             
+            
+            /* const input = jsonFile as HTMLInputElement;
+            const files = jsonFile.files;
+            let fileFolder = '';
+            if (files !== null && files.length > 0) {
+                const firstFilePath = files[0].path; // Assuming consistent path format
+                // Extract the folder path from the first file path
+                fileFolder = firstFilePath.substring(0, firstFilePath.lastIndexOf('/'));
+                printToConsole(logLevel.log, `folderPath = ${fileFolder}`);
+            } */
+            
+            
             for (let i = 0; i < datafiles.length; i++) {
-                // console.log(`Processing input file ${datafiles[i].name}`);
-                const srctext = await datafiles[i].text();
-                // let is_json: boolean = datafiles[i].name.endsWith(".json");
-                let objdataarray: Array<any> = JSON.parse(srctext);
-                let { format, folder }: any = getDailyNoteSettings();
-                for (const objdata of objdataarray) {
-                    // printToConsole(logLevel.log, objdata.date);
-                    // await callHandler.call(this, objdata, datafiles[i]);
-                    if (format == '') {
-                        /* const errorText = 'No date format is set in the Daily notes core plugin.';
-                        printToConsole(logLevel.error, errorText);
-                        setErrorText(errorText); */
-                        format = DEFAULT_FORMAT;
-                    }
-                    const noteMoment = moment(objdata.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-                    const noteFormat = noteMoment.format(format);
-                    // create the correct folder first.
-                    const newPath = folder + '/' + noteFormat + '.md';
-                    const folderPath = newPath.slice(0, newPath.lastIndexOf('/'));
-                    if (this.app.vault.getFolderByPath(folderPath) === null) {
-                        this.app.vault.createFolder(folderPath);
-                    }
-                    this.app.vault.create(newPath, formatContent(objdata), { ctime: Number.parseInt(noteMoment.format('x')) });
-                    // printToConsole(logLevel.log, noteFormat);
+                // create a BlobReader to read with a ZipReader the zip from a Blob object
+                const reader = new ZipReader(new BlobReader(datafiles[i]));
 
+                // get all entries from the zip
+                const entries = await reader.getEntries();
+
+                // let allNotes: TFile[];
+                // let noteIndex = 0;
+                let { format, folder }: any = getDailyNoteSettings();
+                if (format == '') format = DEFAULT_FORMAT;
+
+                for (let entry of entries) {
+                    //skip if is folder
+                    if (entry.directory) continue;
+
+                    //skip if isn't json
+                    let isJson: boolean = entry.filename.endsWith(".json");
+                    if (!isJson) continue;
+
+                    const text = await entry.getData(
+                        // writer
+                        new TextWriter(),
+                        // options
+                        {
+                            /* onstart: (total) => {
+                                // onprogress callback
+                            } */
+                        }
+                    );
+                    let objdataarray: Array<any> = JSON.parse(text);
+                    for (const objdata of objdataarray) {
+                        const noteMoment = moment(objdata.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
+                        const noteFormat = noteMoment.format(format);
+
+                        // create the correct folder first.
+                        const newPath = folder + '/' + noteFormat + '.md';
+                        const folderPath = newPath.slice(0, newPath.lastIndexOf('/'));
+                        if (!this.app.vault.getFolderByPath(folderPath)) {
+                            this.app.vault.createFolder(folderPath);
+                        }
+
+                        //create new file
+                        if (this.app.vault.getFileByPath(newPath)) {
+                            // add code here for if the file already exists
+                        }
+                        else {
+                            await this.app.vault.create(newPath, formatContent(objdata), { ctime: Number.parseInt(noteMoment.format('x')) });
+                        }
+
+                    }
+                    break; //REMOVE THIS IF YOU ALLOW IMPORT FOR MULTIPLE JSON FILES WITHIN THE ZIP FILE
                 }
+
+                // close the ZipReader
+                await reader.close();
+
+                const binaryReader = new ZipReader(new BinaryStringReader(datafiles[i]));
+                //deal with attachments
+                for (let entry of entries) {
+                    //skip if is folder
+                    if (entry.directory) continue;
+
+                    //skip if is json
+                    let isJson: boolean = entry.filename.endsWith(".json");
+                    if (isJson) continue;
+
+                    const fullName = entry.filename;
+                    const date = fullName.slice(fullName.indexOf('/') + 1, fullName.lastIndexOf('/'));
+                    const fileMoment = moment(date, 'YYYY-MM-DD_HHmmssSSS');
+                    const name = fullName.slice(fullName.lastIndexOf('/') + 1);
+                    const content = await entry.getData(
+                        // writer
+                        new BinaryStringWriter<Uint8Array >(),
+                        // options
+                        {
+                            /* onstart: (total) => {
+                                // onprogress callback
+                            } */
+                        }
+                    );
+
+                    const note = this.app.vault.getFileByPath(`${folder}/${fileMoment.format(format)}.md`);
+
+                    if (!note) {
+                        printToConsole(logLevel.warn, `Cannot attach file:\n${name} from ${fullName} does not have an associated note!`)
+                        continue;
+                    }
+
+                    /* let filePath;
+                    switch (this.attachDir) {
+                        case 'defaultDir':
+                            filePath = this.app.fileManager.getAvailablePathForAttachment(name, note.path);
+                            break;
+                        case 'dailyNotesDir':
+                            filePath = `${folder}/${name}`;
+                            break;
+                        case 'dailyNotesSubDir':
+                            filePath = `${folder}/${this.subDir}/${name}`;
+                            break;
+                        case 'noteDir':
+                            // if note is in root.
+                            if (!note.parent) filePath = name;
+                                
+                            // if note is not in root.
+                            else filePath = `${note.parent.path}/${name}`;
+
+                            break;
+                        case 'noteSubdir':
+                            // if note is in root.
+                            if (!note.parent) filePath = `${this.subDir}/${name}`;
+
+                            // if note is not in root.
+                            else filePath = `${note.parent.path}/${this.subDir}/${name}`;
+                            break;
+                        case 'customDir':
+                            filePath = `${this.subDir}/${name}`;
+                            break;
+                        default:
+                            printToConsole(logLevel.warn, 'Cannot attach file:\nThe attachment location is not properly specified!');
+                            continue;
+                    } */
+                    
+                    this.app.fileManager.getAvailablePathForAttachment(name, note.path)
+                        .then(filePath => {
+                            const folderPath = filePath.slice(0, filePath.lastIndexOf('/'));
+                            if (!this.app.vault.getFolderByPath(folderPath)) {
+                                this.app.vault.createFolder(folderPath);
+                            }
+
+                            //create new file
+                            if (this.app.vault.getFileByPath(filePath)) {
+                                // add code here for if the file already exists
+                            }
+                            else {
+                                // this is incorrect. it does not write the file correctly.
+                                this.app.vault.createBinary(filePath, content, { ctime: Number.parseInt(fileMoment.format('x')) });
+                            }
+                            this.app.vault.process(note, (data) => {
+                                data += `\n\n![[${filePath}]]`
+                                return data;
+                            }, { ctime: Number.parseInt(fileMoment.format('x')) })
+                            //attach to file
+                        });
+                }
+
+                await binaryReader.close();
+                // console.log(`Processing input file ${datafiles[i].name}`);
 
             }
 

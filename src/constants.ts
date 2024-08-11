@@ -1,6 +1,6 @@
 import { Notice } from 'obsidian';
 
-export enum Unit {
+export const enum Unit {
     day = "day",
     week = "week",
     month = "month",
@@ -11,7 +11,7 @@ export const getTimeSpanTitle = (number: number, unit: Unit) =>
     `${number} ${unit}${number > 1 ? "s" : ""}`;
 
 
-export enum logLevel {
+export const enum logLevel {
     log = "log",
     info = "info",
     warn = "warn",

@@ -24,6 +24,7 @@
 		"typescript": "4.7.4"
 	},
 	"dependencies": {
+		"@zip.js/zip.js": "^2.7.48",
 		"moment": "^2.30.1",
 		"react": "^18.3.1",
 		"react-calendar": "^5.0.0",
