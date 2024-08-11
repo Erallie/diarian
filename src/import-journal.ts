@@ -1,6 +1,6 @@
 import { App, Modal, Setting, Notice, Vault, TFile, FileManager } from 'obsidian';
 // import * as zip from "@zip.js/zip.js";
-import { Writer, ZipReader, BlobReader, TextWriter, Reader } from '@zip.js/zip.js';
+import { Writer, ZipReader, BlobReader, TextWriter, Reader, BlobWriter } from '@zip.js/zip.js';
 import Diarium from 'main';
 import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
 import moment from 'moment';
@@ -289,6 +289,10 @@ export class ImportView extends Modal {
                     let isJson: boolean = entry.filename.endsWith(".json");
                     if (!isJson) continue;
 
+                    if (!entry.getData) {
+                        printToConsole(logLevel.warn, `Cannot get data from ${entry.filename}:\nentry.getData() is undefined.`);
+                        continue;
+                    }
                     const text = await entry.getData(
                         // writer
                         new TextWriter(),
@@ -299,6 +303,7 @@ export class ImportView extends Modal {
                             } */
                         }
                     );
+                    
                     let objdataarray: Array<any> = JSON.parse(text);
                     for (const objdata of objdataarray) {
                         const noteMoment = moment(objdata.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
@@ -324,9 +329,9 @@ export class ImportView extends Modal {
                 }
 
                 // close the ZipReader
-                await reader.close();
+                // await reader.close();
 
-                const binaryReader = new ZipReader(new BinaryStringReader(datafiles[i]));
+                // const binaryReader = new ZipReader(new BlobReader(datafiles[i]));
                 //deal with attachments
                 for (let entry of entries) {
                     //skip if is folder
@@ -340,16 +345,19 @@ export class ImportView extends Modal {
                     const date = fullName.slice(fullName.indexOf('/') + 1, fullName.lastIndexOf('/'));
                     const fileMoment = moment(date, 'YYYY-MM-DD_HHmmssSSS');
                     const name = fullName.slice(fullName.lastIndexOf('/') + 1);
-                    const content = await entry.getData(
-                        // writer
-                        new BinaryStringWriter<Uint8Array >(),
-                        // options
-                        {
-                            /* onstart: (total) => {
-                                // onprogress callback
-                            } */
-                        }
-                    );
+
+                    if (!entry.getData) {
+                        printToConsole(logLevel.warn, `Cannot get data from ${entry.filename}:\nentry.getData() is undefined.`);
+                        continue;
+                    }
+
+                    let content: ArrayBuffer;
+                    await entry.getData(new BlobWriter())
+                        .then(async result => {
+                            await result.arrayBuffer().then(arrayBuffer => {
+                                content = arrayBuffer;
+                            });
+                        });
 
                     const note = this.app.vault.getFileByPath(`${folder}/${fileMoment.format(format)}.md`);
 
@@ -392,7 +400,7 @@ export class ImportView extends Modal {
                             continue;
                     } */
                     
-                    this.app.fileManager.getAvailablePathForAttachment(name, note.path)
+                    await this.app.fileManager.getAvailablePathForAttachment(name, note.path)
                         .then(filePath => {
                             const folderPath = filePath.slice(0, filePath.lastIndexOf('/'));
                             if (!this.app.vault.getFolderByPath(folderPath)) {
@@ -408,14 +416,15 @@ export class ImportView extends Modal {
                                 this.app.vault.createBinary(filePath, content, { ctime: Number.parseInt(fileMoment.format('x')) });
                             }
                             this.app.vault.process(note, (data) => {
-                                data += `\n\n![[${filePath}]]`
+                                data += `\n\n![[${filePath}]]`;
                                 return data;
                             }, { ctime: Number.parseInt(fileMoment.format('x')) })
                             //attach to file
                         });
+                    console.log('got here');
                 }
 
-                await binaryReader.close();
+                await reader.close();
                 // console.log(`Processing input file ${datafiles[i].name}`);
 
             }
@@ -443,6 +452,9 @@ function htmlToMarkdown (value:string ) {
     newValue = newValue.replaceAll('<strong>', '**').replaceAll('</strong>', '**');
     newValue = newValue.replaceAll(/<a href="(?<link>.+)">(?<title>.+)<\/a>/g, `[$<title>]($<link>)`);
     newValue = newValue.replaceAll("<s>", "~~").replaceAll("</s>", "~~");
+
+    const doc = new DOMParser().parseFromString(newValue, 'text/html');
+    return doc.documentElement.textContent;
 
     return newValue;
 }
@@ -491,6 +503,9 @@ function formatContent(array: any) {
         body += htmlToMarkdown(array.html);
     }
 
+    /* const doc = new DOMParser().parseFromString(input, 'text/html');
+    return doc.documentElement.textContent; */
+    
     return frontmatter + body;
 }
 
