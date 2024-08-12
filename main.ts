@@ -1,10 +1,10 @@
-import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent, TFile } from 'obsidian';
+import { App, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf } from 'obsidian';
 import { CalendarView } from './src/calendar-view';
 import { OnThisDayView } from './src/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
-import { getAllDailyNotes, getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
+import { getAllDailyNotes } from './src/get-daily-notes';
 
 
 // Remember to rename these classes and interfaces!
@@ -71,6 +71,7 @@ export default class Diarium extends Plugin {
             name: 'Open on this day',
             icon: 'lucide-clock',
             callback: () => {
+                this.openOnThisDay();
                 // this.openCalendar();
                 // new SampleModal(this.app).open();
             }
@@ -151,6 +152,26 @@ export default class Diarium extends Plugin {
         workspace.revealLeaf(leaf);
     }
 
+    async openOnThisDay() {
+        const { workspace } = this.app;
+
+        let leaf: WorkspaceLeaf | null;
+        const leaves = workspace.getLeavesOfType(ViewType.onThisDayView);
+
+        if (leaves.length > 0) {
+            // A leaf with our view already exists, use that
+            leaf = leaves[0];
+        } else {
+            // Our view could not be found in the workspace, create a new leaf
+            // in the right sidebar for it
+            leaf = workspace.getRightLeaf(false);
+            await leaf?.setViewState({ type: ViewType.onThisDayView, active: true });
+        }
+
+        // "Reveal" the leaf in case it is in a collapsed sidebar
+        workspace.revealLeaf(leaf!);
+    }
+
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
 
@@ -196,6 +217,7 @@ class SelectView extends Modal {
             .setButtonText('Open on this day')
             .onClick(() => {
                 // this.plugin.openCalendar();
+                this.plugin.openOnThisDay();
                 this.close();
             });
         
