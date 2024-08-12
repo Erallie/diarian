@@ -275,27 +275,18 @@ export class ImportView extends Modal {
                         }
                     );
                     
-                    let objdataarray: Array<any> = JSON.parse(text);
-                    for (const objdata of objdataarray) {
-                        const noteMoment = moment(objdata.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-                        const noteFormat = noteMoment.format(format);
-
-                        // create the correct folder first.
-                        const newPath = folder + '/' + noteFormat + '.md';
-                        const folderPath = newPath.slice(0, newPath.lastIndexOf('/'));
-                        if (!this.app.vault.getFolderByPath(folderPath)) {
-                            this.app.vault.createFolder(folderPath);
-                        }
-
-                        //create new file
-                        if (this.app.vault.getFileByPath(newPath)) {
-                            // add code here for if the file already exists
-                        }
-                        else {
-                            await this.app.vault.create(newPath, formatContent(objdata, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
-                        }
-
+                    /* const data = JSON.parse(text);
+                    if (data.date) {
+                        printToConsole(logLevel.log, 'Is separate entry');
+                        await createEntry(data, format, folder);
                     }
+                    else { */
+                    // printToConsole(logLevel.log, 'Contains all entries');
+                    const dataArray: Array<any> = JSON.parse(text);
+                    for (const data of dataArray) {
+                        await createEntry(data, format, folder);
+                    }
+                    /* } */
                     break; //REMOVE THIS IF YOU ALLOW IMPORT FOR MULTIPLE JSON FILES WITHIN THE ZIP FILE
                 }
 
@@ -426,6 +417,26 @@ function htmlToMarkdown (value:string ) {
 
     const doc = new DOMParser().parseFromString(newValue, 'text/html');
     return doc.documentElement.textContent;
+}
+
+async function createEntry(data: any, format: string, folder: string) {
+    const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
+    const noteFormat = noteMoment.format(format);
+
+    // create the correct folder first.
+    const newPath = folder + '/' + noteFormat + '.md';
+    const folderPath = newPath.slice(0, newPath.lastIndexOf('/'));
+    if (!this.app.vault.getFolderByPath(folderPath)) {
+        this.app.vault.createFolder(folderPath);
+    }
+
+    //create new file
+    if (this.app.vault.getFileByPath(newPath)) {
+        // add code here for if the file already exists
+    }
+    else {
+        await this.app.vault.create(newPath, formatContent(data, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
+    }
 }
 
 function formatContent(array: any, moment: any) {

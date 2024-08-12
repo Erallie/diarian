@@ -23,6 +23,7 @@ export default class Diarium extends Plugin {
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             // this.openCalendar();
+            new SelectView(this.app, this).open();
             // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
