@@ -20,10 +20,9 @@ export default class Diarium extends Plugin {
         this.registerView(CALENDAR_VIEW_TYPE, (leaf) => new CalendarView(leaf, this, this.view, this.app));
 
         // This creates an icon in the left ribbon.
-        const ribbonIconEl = this.addRibbonIcon('lucide-calendar-search', 'Open Diarium view', (evt: MouseEvent) => {
+        const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             // this.openCalendar();
-            new SelectView(this.app, this).open();
             // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
@@ -34,6 +33,15 @@ export default class Diarium extends Plugin {
         statusBarItemEl.setText('Status Bar Text'); */
 
         // This adds a simple command that can be triggered anywhere
+        this.addCommand({
+            id: 'select-view',
+            name: 'Select Diarium view',
+            icon: 'lucide-book-heart',
+            callback: () => {
+                new SelectView(this.app, this).open();
+            }
+        })
+
         this.addCommand({
             id: 'open-calendar',
             name: 'Open calendar',
@@ -140,6 +148,7 @@ class SelectView extends Modal {
 
     onOpen() {
         const { contentEl } = this;
+        new Setting(contentEl).setName('Select Diarium view').setHeading()
         // contentEl.setText('Open view');
 
         // contentEl.createEl('br');

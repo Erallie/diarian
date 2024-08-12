@@ -24,16 +24,16 @@ export function printToConsole(level: logLevel, message: string) { // level = {l
     let levelText = "";
     var print = (toPrint: string) => { };
     let partialMsg: string | DocumentFragment = '';
-    const pluginName = ""; //REPLACE THIS IN EACH STEP
+    const pluginName = "Diarium"; //REPLACE THIS IN EACH STEP
     let newMsg = message.replaceAll("\n", "\n\t");
     let skipPrint = false;
     switch (level) {
         case logLevel.log:
-            levelText = "";
+            levelText = " log";
             print = (toPrint: string) => { console.log(toPrint) }
             break;
         case logLevel.info:
-            levelText = "";
+            levelText = " info";
             print = (toPrint: string) => { console.info(toPrint) }
             break;
         case logLevel.warn:
@@ -46,7 +46,7 @@ export function printToConsole(level: logLevel, message: string) { // level = {l
             break;
         default:
             partialMsg = `The debug level for this message is not set:\n\n\t${newMsg}`;
-            console.error(`[${pluginName}]${levelText}:\n\t${newMsg}`);
+            console.error(`[${pluginName}] error:\n\t${partialMsg}`);
             skipPrint = true;
     }
     if (!skipPrint) {
