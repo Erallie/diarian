@@ -455,8 +455,6 @@ function htmlToMarkdown (value:string ) {
 
     const doc = new DOMParser().parseFromString(newValue, 'text/html');
     return doc.documentElement.textContent;
-
-    return newValue;
 }
 
 function formatContent(array: any) {

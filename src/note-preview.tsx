@@ -14,12 +14,20 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
     const ref = useRef<HTMLDivElement | HTMLQuoteElement>(null);
 
     void (async () => {
-        const slicedContent = (await app.vault.cachedRead(note))
+        const preSlicedContent = (await app.vault.cachedRead(note))
             // remove frontmatter
             // .replace(/---.*?---/s, "")
-            .replace(/---.*?---/, "")
+            .replace(/---.*?---/s, "");
+        let slicedContent = preSlicedContent
             // restrict to chosen preview length
             .substring(0, plugin.settings.previewLength);
+        if (slicedContent != preSlicedContent) {
+            slicedContent = slicedContent.slice(0, slicedContent.lastIndexOf(' '));
+            if (/[\.\/\?\!\,\;\:]/.test(slicedContent.charAt(slicedContent.length - 1))){
+                slicedContent = slicedContent.slice(0, slicedContent.length - 1);
+            }
+            slicedContent += '...';
+        }
 
         if (ref.current) {
             // clear the element before rendering, otherwise it will append
