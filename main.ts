@@ -122,7 +122,8 @@ export default class Diarium extends Plugin {
         const workspace = this.app.workspace;
         workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
         const leaf = workspace.getLeaf(
-            (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
+            // (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
+            !Platform.isMobile
         );
         await leaf.setViewState({ type: CALENDAR_VIEW_TYPE });
         workspace.revealLeaf(leaf);
@@ -165,7 +166,7 @@ class SelectView extends Modal {
             .setIcon('lucide-clock')
             .setButtonText('Open on this day')
             .onClick(() => {
-                this.plugin.openCalendar();
+                // this.plugin.openCalendar();
                 this.close();
             })
         

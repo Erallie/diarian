@@ -1,4 +1,4 @@
-import { App, Modal, Setting, Notice, Vault, TFile, FileManager } from 'obsidian';
+import { App, Modal, Setting, Platform } from 'obsidian';
 // import * as zip from "@zip.js/zip.js";
 import { Writer, ZipReader, BlobReader, TextWriter, Reader, BlobWriter } from '@zip.js/zip.js';
 import Diarium from 'main';
@@ -48,10 +48,15 @@ export class ImportView extends Modal {
 
         const instrDesc = new DocumentFragment();
         const instrList = instrDesc.createEl('ol', { cls: 'instructions' });
-        const list1 = instrList.createEl('li', { text: 'Open ' }); 
+        const list1 = instrList.createEl('li', { text: 'Open ' });
         list1.createEl('strong', { text: 'Diarium' });
-        list1.createEl('span', {text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
-        list1.createEl('span', { text: ' tab.' });
+        list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
+        if (Platform.isMobile) {
+            list1.createEl('span', { text: ' menu.' });
+        }
+        else {
+            list1.createEl('span', { text: ' tab.' });
+        }
         const list2 = instrList.createEl('li', {text: 'Under '})
         list2.createEl('strong', { text: 'File format' });
         list2.createEl('span', { text: ', select ' }).createEl('strong', { text: 'JSON (.json)' });
@@ -64,9 +69,17 @@ export class ImportView extends Modal {
         list4.createEl('strong', { text: 'Check' });
         list4.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate files for attachments' });
         list4.createEl('span', { text: '.' });
-        const list5 = instrList.createEl('li', { text: 'Select ' });
-        list5.createEl('strong', { text: 'Export' });
-        list5.createEl('span', { text: '.' });
+        if (!Platform.isIosApp) {
+            const list5 = instrList.createEl('li', { text: 'Select ' });
+            list5.createEl('strong', { text: 'Export' });
+            list5.createEl('span', { text: '.' });
+        }
+        else {
+            const list5 = instrList.createEl('li', { text: 'Select ' });
+            list5.createEl('strong', { text: 'Export → Save to Files' });
+            list5.createEl('span', { text: '  and save the zip file to any location.' });
+            instrList.createEl('li', { text: 'Import your saved zip file below.' });
+        }
         // instrList.createEl('li', { text: 'Decompress the exported zip file.' }); //Change this wording!
 
 
@@ -387,7 +400,8 @@ export class ImportView extends Modal {
             }
 
 
-            const finishedText = 'Import finished!'
+            let finishedText = 'Import finished!'
+            if (Platform.isMobile) finishedText += '\nReopen your vault to access the imported files.';
             setText(importTextEl, finishedText);
             printToConsole(logLevel.info, finishedText);
 
