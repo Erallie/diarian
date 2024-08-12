@@ -52,6 +52,6 @@ export function printToConsole(level: logLevel, message: string) { // level = {l
     if (!skipPrint) {
         print(`[${pluginName}]${levelText}:\n\t${newMsg}`);
     }
-    new Notice(newMsg);
+    new Notice(message);
 }
 /* ^^^ COPY AND PASTE THE ABOVE TO EVERY COMPILE STEP THAT PRINTS TO THE CONSOLE. ^^^ */

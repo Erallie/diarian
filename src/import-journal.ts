@@ -213,7 +213,7 @@ export class ImportView extends Modal {
 
             const importText = 'Starting import...'
             setText(importTextEl, importText);
-            new Notice(importText);
+            printToConsole(logLevel.info, importText);
             
             
             /* const input = jsonFile as HTMLInputElement;
@@ -244,8 +244,8 @@ export class ImportView extends Modal {
                     if (entry.directory) continue;
 
                     //skip if isn't json
-                    let isJson: boolean = entry.filename.endsWith(".json");
-                    if (!isJson) continue;
+                    let isEntry: boolean = entry.filename.endsWith(".json") && !(entry.filename.startsWith('media/'));
+                    if (!isEntry) continue;
 
                     if (!entry.getData) {
                         printToConsole(logLevel.warn, `Cannot get data from ${entry.filename}:\nentry.getData() is undefined.`);
@@ -279,7 +279,7 @@ export class ImportView extends Modal {
                             // add code here for if the file already exists
                         }
                         else {
-                            await this.app.vault.create(newPath, formatContent(objdata), { ctime: Number.parseInt(noteMoment.format('x')) });
+                            await this.app.vault.create(newPath, formatContent(objdata, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
                         }
 
                     }
@@ -296,8 +296,8 @@ export class ImportView extends Modal {
                     if (entry.directory) continue;
 
                     //skip if is json
-                    let isJson: boolean = entry.filename.endsWith(".json");
-                    if (isJson) continue;
+                    let isEntry: boolean = entry.filename.endsWith(".json") && !(entry.filename.startsWith('media/'));
+                    if (isEntry) continue;
 
                     const fullName = entry.filename;
                     const date = fullName.slice(fullName.indexOf('/') + 1, fullName.lastIndexOf('/'));
@@ -379,7 +379,6 @@ export class ImportView extends Modal {
                             }, { ctime: Number.parseInt(fileMoment.format('x')) })
                             //attach to file
                         });
-                    console.log('got here');
                 }
 
                 await reader.close();
@@ -390,7 +389,7 @@ export class ImportView extends Modal {
 
             const finishedText = 'Import finished!'
             setText(importTextEl, finishedText);
-            new Notice(finishedText);
+            printToConsole(logLevel.info, finishedText);
 
             
         }
@@ -415,7 +414,7 @@ function htmlToMarkdown (value:string ) {
     return doc.documentElement.textContent;
 }
 
-function formatContent(array: any) {
+function formatContent(array: any, moment: any) {
     let frontmatter = '---';
     if (array.location) {
         frontmatter += `\nlocation: ${array.location}`;
@@ -445,7 +444,7 @@ function formatContent(array: any) {
         frontmatter += `\nweather: ${array.weather}`
     }
     if (array.sun && array.sun != '') {
-        frontmatter += parseSun(array.date, array.sun);
+        frontmatter += parseSun(array.date, array.sun, moment);
     }
     if (array.lunar && array.lunar != '') {
         frontmatter += `\nlunar phase: ${array.lunar}`
@@ -465,26 +464,41 @@ function formatContent(array: any) {
     return frontmatter + body;
 }
 
-function parseSun(date: string, sun: string) {
+function parseSun(date: string, sun: string, noteMoment: any) {
+    const start = noteMoment.format('YYYY-MM-DD[T]');
+    //2000-12-31T15:14:00
 
-    const start = date.slice(0, 11);
+    // ☀️ Sunrise: 5:32 AM Sunset: 7:39 PM
 
-    const parse = (time: string, meridiem: string) => {
+    const riseText = sun.slice(('☀️ Sunrise: ').length, sun.indexOf(' Sunset:'));
+    const setText = sun.slice(sun.indexOf('Sunset: ') + ('Sunset: ').length);
+
+    // printToConsole(logLevel.log, `Sunrise text = '${sunriseText}'\nSunset text = '${sunsetText}'`);
+    // Sunrise text = '5:28 AM'
+	// Sunset text = '7:43 PM'
+
+    const riseMoment = moment(riseText, 'h:mm A');
+    const setMoment = moment(setText, 'h:mm A');
+
+    const newRiseText = start + riseMoment.format('HH:mm:[00]');
+    const newSetText = start + setMoment.format('HH:mm:[00]');
+
+    /* const parse = (time: string, meridiem: string) => {
         let hour = time.slice(0, time.indexOf(":"));
         const rest = time.slice(time.indexOf(":"));
         if (meridiem == "PM") {
-            const hourNum = Number.parseInt(hour) + 12
+            const hourNum = Number.parseInt(hour) + 12;
             hour = hourNum.toString();
         }
         if (hour.length == 1) {
             hour = "0" + hour;
         }
-        return `${start}${hour}${rest}:00`
+        return `${start}${hour}${rest}:00`;
     }
+    
+    let array = sun.split(' '); */
 
-    let array = sun.split(' ');
-
-    return "\nsunrise: " + parse(array[2], array[3])
-        + "\nsunset: " + parse(array[5], array[6]);
+    return "\nsunrise: " + newRiseText
+        + "\nsunset: " + newSetText;
 
 }
