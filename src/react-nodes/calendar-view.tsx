@@ -5,10 +5,10 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getDates, getNoteByMoment, isSameDay } from "./get-daily-notes";
-import { usePlugin } from "./hooks";
+import { getDates, getNoteByMoment, isSameDay } from "../get-daily-notes";
+import { usePlugin } from "../unused/hooks";
 import NotePreview from './note-preview';
-import { ViewType } from './constants';
+import { ViewType } from '../constants';
 
 interface ContainerProps {
     view: View;

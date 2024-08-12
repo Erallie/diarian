@@ -23,7 +23,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
             .substring(0, plugin.settings.previewLength);
         if (slicedContent != preSlicedContent) {
             slicedContent = slicedContent.slice(0, slicedContent.lastIndexOf(' '));
-            if (/[\.\/\?\!\,\;\:]/.test(slicedContent.charAt(slicedContent.length - 1))){
+            if (/[\.\/\?\!\,\;\:]/.test(slicedContent.charAt(slicedContent.length - 1))) {
                 slicedContent = slicedContent.slice(0, slicedContent.length - 1);
             }
             slicedContent += '...';

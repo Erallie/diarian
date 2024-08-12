@@ -1,6 +1,6 @@
 import { App, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf } from 'obsidian';
-import { CalendarView } from './src/calendar-view';
-import { OnThisDayView } from './src/on-this-day-view';
+import { CalendarView } from './src/react-nodes/calendar-view';
+import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
@@ -220,7 +220,7 @@ class SelectView extends Modal {
                 this.plugin.openOnThisDay();
                 this.close();
             });
-        
+
         new ButtonComponent(contentEl)
             // .setIcon('lucide-rotate-cw')
             // .setIcon('lucide-clock')
