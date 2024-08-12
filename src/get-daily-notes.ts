@@ -1,7 +1,7 @@
 import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
 import Diarium from 'main';
 import moment from 'moment';
-import { printToConsole, logLevel } from './constants';
+import { printToConsole, logLevel, Unit } from './constants';
 
 // const vault: Vault = app.vault;
 
@@ -127,7 +127,6 @@ export function getDailyNoteSettings() {
         };
     } catch (err) {
         const errorText = "No custom daily note settings found!"
-        new Notice(errorText);
         printToConsole(logLevel.info, `${errorText}\n${err}`);
         return {
             format: 'YYYY-MM-DD',
@@ -141,32 +140,80 @@ export function getAllDailyNotes() {
 
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter((file: TFile) => {
-        let regexString = normalizePath(getDailyNoteSettings().format);
-        const regex = momentToRegex(regexString);
-        const index = (file.path + '/' + file.name).search(regex);
-        return index == getDailyNoteSettings().folder.length + 1;
+        const format = getDailyNoteSettings().format;
+        const folder = getDailyNoteSettings().folder;
+        return isDailyNote(file, format, folder);
     });
-    // console.log(filteredFiles.length);
     return filteredFiles;
 };
 
-export function getDates(notes: TFile[]) {
+export function isDailyNote(file: TFile, format?: string, folder?: string) {
+    let newFormat = '';
+    if (format) {
+        newFormat = format;
+    }
+    else {
+        newFormat = '';
+    }
+    let newFolder = '';
+    if (folder) {
+        newFolder = folder;
+    }
+    else {
+        newFolder = '';
+    }
+
+    let regexString = normalizePath(newFormat);
+    const regex = momentToRegex(regexString);
+
+    let path;
+    if (file.path != '') {
+        path = file.path + '/';
+    }
+    else {
+        path = '';
+    }
+
+    const index = (path + file.name).search(regex);
+
+    let checkIndex;
+    if (newFolder != '') {
+        checkIndex = newFolder.length + 1;
+    }
+    else {
+        checkIndex = 0;
+    }
+
+    return index == checkIndex;
+}
+
+export function getDates(notes: TFile[], format?: string) {
+    if (!format) {
+        format = getDailyNoteSettings().format;
+    }
     let allDates = [];
     let i = 0;
     for (let note of notes) {
-        let baseName = note.path + '/' + note.name;
-        baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
-        const noteDate = moment(baseName, getDailyNoteSettings().format);
-        allDates[i] = noteDate;
+        allDates[i] = getDate(note, format);
         i++;
     }
     // console.log(allDates[allDates.length - 1].toString());
     return allDates;
 }
 
+export function getDate(note: TFile, format?: string) {
+    if (!format) {
+        format = getDailyNoteSettings().format;
+    }
+    let baseName = note.path + '/' + note.name;
+    baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
+    const noteDate = moment(baseName, format);
+    return noteDate;
+}
+
 export function getNoteByMoment(moment: any) {
     // console.log(moment.format(getDailyNoteSettings().format));
-    let format = getDailyNoteSettings().format;
+    const format = getDailyNoteSettings().format;
     let path = moment.format(format);
     path = normalizePath(getDailyNoteSettings().folder + '/' + path + '.md');
     // console.log(path);
@@ -175,4 +222,66 @@ export function getNoteByMoment(moment: any) {
         printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(format)}.`);
     }
     return note;
+    //
+}
+
+
+export function isSameDay(date1: any, date2: any) {
+    return (
+        date1.date() == date2.date()
+        && date1.month() == date2.month()
+        && date1.year() == date2.year());
+}
+
+export function getPriorNotes(allNotes: TFile[]) {
+    const now = moment();
+    const format = getDailyNoteSettings().format;
+    let filteredNotes: TFile[] = [];
+    let i = 0;
+    for (let note of allNotes) {
+        let intervalUnit = '';
+        switch (this.app.settings.reviewIntervalUnit) {
+            case Unit.day:
+                intervalUnit = 'days';
+                break;
+            case Unit.week:
+                intervalUnit = 'weeks';
+                break;
+            case Unit.month:
+                intervalUnit = 'months';
+                break;
+            case Unit.year:
+                intervalUnit = 'years';
+                break;
+            default:
+                printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
+                return null;
+        }
+        let delayUnit = '';
+        switch (this.app.settings.reviewDelayUnit) {
+            case Unit.day:
+                delayUnit = 'days';
+                break;
+            case Unit.week:
+                delayUnit = 'weeks';
+                break;
+            case Unit.month:
+                delayUnit = 'months';
+                break;
+            case Unit.year:
+                delayUnit = 'years';
+                break;
+            default:
+                printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
+                return null;
+        }
+        const noteDate = getDate(note, format);
+        const intervalDiff = now.diff(noteDate, intervalUnit as moment.unitOfTime.Diff);
+        const delayDiff = now.diff(noteDate, delayUnit as moment.unitOfTime.Diff);
+        const shouldInclude = (intervalDiff % this.app.settings.reviewInterval == 0) && (delayDiff >= this.app.settings.reviewDelay);
+        if (shouldInclude) filteredNotes[i] = note;
+        printToConsole(logLevel.log, `Added ${note.name}`);
+        i++;
+    }
+    return filteredNotes;
 }

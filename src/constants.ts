@@ -7,6 +7,11 @@ export enum Unit {
     year = "year"
 };
 
+export const enum ViewType {
+    calendarView = 'calendarView',
+    onThisDayView = 'onThisDayView'
+}
+
 export const getTimeSpanTitle = (number: number, unit: Unit) =>
     `${number} ${unit}${number > 1 ? "s" : ""}`;
 

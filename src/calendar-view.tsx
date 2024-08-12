@@ -5,15 +5,13 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getDates, getAllDailyNotes, getNoteByMoment } from "./get-daily-notes";
+import { getDates, getAllDailyNotes, getNoteByMoment, isSameDay } from "./get-daily-notes";
 import { usePlugin } from "./hooks";
 import NotePreview from './note-preview';
 
 const CALENDAR_VIEW_TYPE = "calendar-view";
 
 interface ContainerProps {
-    headingFormat: string;
-    dailyNotes: TFile[];
     view: View;
     plugin: Diarium;
     app: App;
@@ -45,7 +43,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                <Container headingFormat={this.plugin.settings.headingFormat} dailyNotes={getAllDailyNotes()} view={this.view} plugin={this.plugin} app={this.app} />
+                <Container view={this.view} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
@@ -56,14 +54,10 @@ export class CalendarView extends ItemView {
 
 }
 
-const Container = ({ headingFormat, dailyNotes, view, plugin, app }: ContainerProps) => {
+const Container = ({ view, plugin, app }: ContainerProps) => {
+    const headingFormat = plugin.settings.headingFormat;
+    const dailyNotes = plugin.dailyNotes;
     const filledDates = getDates(dailyNotes);
-    function isSameDay(date1: any, date2: any) {
-        // return (date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear());
-
-        return (date1.date() == date2.date() && date1.month() == date2.month() && date1.year() == date2.year());
-
-    }
 
     const today = moment(new Date());
     const [selectedDate, setDate] = useState(new Date());

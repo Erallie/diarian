@@ -59,6 +59,10 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
         void app.workspace.getLeaf(newLeaf).openFile(note);
     };
 
+    /* const onHover = (evt: any) => {
+
+    } */
+
     if (plugin.settings.useCallout) {
         return (
             <div className="callout" onMouseUp={onClick}>

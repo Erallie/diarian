@@ -1,11 +1,12 @@
-import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent } from 'obsidian';
+import { App, View, Modal, Notice, Plugin, PluginSettingTab, Setting, Platform, FileView, ButtonComponent, TFile } from 'obsidian';
 import { CalendarView } from './src/calendar-view';
+import { OnThisDayView } from './src/on-this-day-view';
 import { ImportView } from './src/import-journal';
+import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
-import { getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
+import { getAllDailyNotes, getDailyNoteSettings, momentToRegex } from './src/get-daily-notes';
 
 
-const CALENDAR_VIEW_TYPE = "calendar-view";
 // Remember to rename these classes and interfaces!
 
 
@@ -13,11 +14,15 @@ export default class Diarium extends Plugin {
     settings: DiariumSettings;
     view: View;
     app: App;
+    dailyNotes: TFile[];
 
     async onload() {
         await this.loadSettings();
 
-        this.registerView(CALENDAR_VIEW_TYPE, (leaf) => new CalendarView(leaf, this, this.view, this.app));
+        this.dailyNotes = getAllDailyNotes();
+
+        this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.view, this.app));
+        this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.view, this.app));
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
@@ -34,6 +39,14 @@ export default class Diarium extends Plugin {
         statusBarItemEl.setText('Status Bar Text'); */
 
         // This adds a simple command that can be triggered anywhere
+        this.addCommand({
+            id: 'refresh-notes',
+            name: 'Refresh daily notes',
+            icon: 'lucide-refresh-ccw',
+            callback: () => {
+                this.refreshNotes();
+            }
+        })
         this.addCommand({
             id: 'select-view',
             name: 'Select Diarium view',
@@ -129,13 +142,19 @@ export default class Diarium extends Plugin {
 
     async openCalendar() {
         const workspace = this.app.workspace;
-        workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
+        workspace.detachLeavesOfType(ViewType.calendarView);
         const leaf = workspace.getLeaf(
             // (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
             !Platform.isMobile
         );
-        await leaf.setViewState({ type: CALENDAR_VIEW_TYPE });
+        await leaf.setViewState({ type: ViewType.calendarView });
         workspace.revealLeaf(leaf);
+    }
+
+    refreshNotes() {
+        this.dailyNotes = getAllDailyNotes();
+
+        printToConsole(logLevel.info, 'Daily notes refreshed!');
     }
 }
 
@@ -178,7 +197,7 @@ class SelectView extends Modal {
             .onClick(() => {
                 // this.plugin.openCalendar();
                 this.close();
-            })
+            });
         
         new ButtonComponent(contentEl)
             // .setIcon('lucide-rotate-cw')
@@ -186,6 +205,17 @@ class SelectView extends Modal {
             .setButtonText('Open importer')
             .onClick(() => {
                 new ImportView(this.app, this.plugin).open();
+                this.close();
+            });
+
+        new ButtonComponent(contentEl)
+            // .setIcon('lucide-rotate-cw')
+            // .setIcon('lucide-clock')
+            .setButtonText('Refresh daily notes')
+            .setTooltip('This feature queries the entire vault for daily notes.\nUse this feature sparingly!')
+            .setWarning()
+            .onClick(() => {
+                this.plugin.refreshNotes();
                 this.close();
             })
 
