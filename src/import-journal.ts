@@ -25,48 +25,6 @@ export const DEFAULT_SETTINGS: ImportSettings = {
     subDir: 'Attachments'
 } */
 
-class BinaryStringWriter extends Writer {
-    // binaryString;
-
-    constructor() {
-        super();
-        this.binaryString = "";
-    }
-
-    writeUint8Array(array/* : Uint8Array */) {
-        for (let indexCharacter = 0; indexCharacter < array.length; indexCharacter++) {
-            this.binaryString += String.fromCharCode(array[indexCharacter]);
-        }
-    }
-
-    getData() {
-        return this.binaryString;
-    }
-}
-
-class BinaryStringReader extends Reader {
-    // binaryString;
-    // size;
-
-    constructor(binaryString) {
-        super();
-        this.binaryString = binaryString;
-    }
-
-    init() {
-        super.init();
-        this.size = this.binaryString.length;
-    }
-
-    readUint8Array(offset/* : number */, length) {
-        const result = new Uint8Array(length);
-        for (let indexCharacter = 0; indexCharacter < length; indexCharacter++) {
-            result[indexCharacter] = this.binaryString.charCodeAt(indexCharacter + offset) & 0xFF;
-        }
-        return result;
-    }
-}
-
 export class ImportView extends Modal {
     plugin: Diarium;
     /* attachDir: string;
