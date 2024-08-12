@@ -1,6 +1,6 @@
 import { Notice } from 'obsidian';
 
-export const enum Unit {
+export enum Unit {
     day = "day",
     week = "week",
     month = "month",
