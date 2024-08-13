@@ -181,6 +181,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                         async (value) => {
                             this.plugin.settings.reviewInterval = value;
                             await this.plugin.saveSettings();
+                            this.plugin.refreshViews(false, true);
                             this.display();
                         }
                     ),
@@ -192,6 +193,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                     .onChange((value) => {
                         this.plugin.settings.reviewIntervalUnit = value as Unit;
                         void this.plugin.saveSettings();
+                        this.plugin.refreshViews(false, true);
                         this.display();
                     }),
             );
@@ -226,6 +228,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                         async (value) => {
                             this.plugin.settings.reviewDelay = value;
                             await this.plugin.saveSettings();
+                            this.plugin.refreshViews(false, true);
                             this.display();
                         }
                     ),
@@ -237,6 +240,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                     .onChange((value) => {
                         this.plugin.settings.reviewDelayUnit = value as Unit;
                         void this.plugin.saveSettings();
+                        this.plugin.refreshViews(false, true);
                         this.display();
                     }),
             );

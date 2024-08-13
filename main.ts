@@ -27,7 +27,7 @@ export default class Diarium extends Plugin {
                     if (file instanceof TFile && isDailyNote(file)) {
                         // printToConsole(logLevel.log, file.name);
                         this.dailyNotes[this.dailyNotes.length] = file;
-                        this.refreshViews();
+                        this.refreshViews(true, true);
                     }
                 }));
 
@@ -36,7 +36,7 @@ export default class Diarium extends Plugin {
                     if (file instanceof TFile && isDailyNote(file)) {
                         // printToConsole(logLevel.log, isDailyNote(file).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
-                        this.refreshViews();
+                        this.refreshViews(true, true);
                     }
                 }));
 
@@ -46,7 +46,7 @@ export default class Diarium extends Plugin {
                         this.dailyNotes = this.dailyNotes.filter(thisFile => {
                             return (thisFile != file);
                         })
-                        this.refreshViews();
+                        this.refreshViews(true, true);
                     }
                 }));
 
@@ -163,7 +163,7 @@ export default class Diarium extends Plugin {
     }
 
     onunload() {
-        this.app.unregister()
+        // this.app.unregister()
     }
 
     async loadSettings() {
@@ -226,24 +226,28 @@ export default class Diarium extends Plugin {
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
-        this.refreshViews();
+        this.refreshViews(true, true);
         printToConsole(logLevel.info, 'Daily notes refreshed!');
     }
 
-    refreshViews() {
-        const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
-        for (let leaf of calView) {
-            let view = leaf.view;
-            if (view instanceof CalendarView) {
-                view.refresh(this);
+    refreshViews(refCalView: boolean, refRevView: boolean) {
+        if (refCalView) {
+            const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
+            for (let leaf of calView) {
+                let view = leaf.view;
+                if (view instanceof CalendarView) {
+                    view.refresh(this);
+                }
             }
         }
 
-        const revView = this.app.workspace.getLeavesOfType(ViewType.onThisDayView);
-        for (let leaf of revView) {
-            let view = leaf.view;
-            if (view instanceof OnThisDayView) {
-                view.refresh(this);
+        if (refRevView) {
+            const revView = this.app.workspace.getLeavesOfType(ViewType.onThisDayView);
+            for (let leaf of revView) {
+                let view = leaf.view;
+                if (view instanceof OnThisDayView) {
+                    view.refresh(this);
+                }
             }
         }
     }
@@ -275,7 +279,8 @@ class SelectView extends Modal {
 
         new ButtonComponent(contentEl)
             .setIcon('lucide-calendar-search')
-            .setButtonText('Open calendar')
+            // .setButtonText('Open calendar')
+            .setTooltip('Open calendar')
             .onClick(() => {
                 this.plugin.openCalendar();
                 this.close();
@@ -284,7 +289,8 @@ class SelectView extends Modal {
         new ButtonComponent(contentEl)
             // .setIcon('lucide-rotate-cw')
             .setIcon('lucide-clock')
-            .setButtonText('Open on this day')
+            // .setButtonText('Open on this day')
+            .setTooltip('Open on this day')
             .onClick(() => {
                 // this.plugin.openCalendar();
                 this.plugin.openOnThisDay();
@@ -292,19 +298,19 @@ class SelectView extends Modal {
             });
 
         new ButtonComponent(contentEl)
-            // .setIcon('lucide-rotate-cw')
-            // .setIcon('lucide-clock')
-            .setButtonText('Open importer')
+            .setIcon('lucide-import')
+            // .setButtonText('Open importer')
+            .setTooltip('Open importer')
             .onClick(() => {
                 new ImportView(this.app, this.plugin).open();
                 this.close();
             });
 
         new ButtonComponent(contentEl)
-            // .setIcon('lucide-rotate-cw')
+            .setIcon('lucide-refresh-ccw')
             // .setIcon('lucide-clock')
-            .setButtonText('Refresh daily notes')
-            .setTooltip('This feature queries the entire vault for daily notes.\nUse this feature sparingly!')
+            // .setButtonText('Refresh daily notes')
+            .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
             .setWarning()
             .onClick(() => {
                 this.plugin.refreshNotes();

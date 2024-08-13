@@ -140,8 +140,7 @@ export function getAllDailyNotes() {
 
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter((file: TFile) => {
-        const format = getDailyNoteSettings().format;
-        const folder = getDailyNoteSettings().folder;
+        const { format, folder } = getDailyNoteSettings();
         return isDailyNote(file, format, folder);
     });
     // printToConsole(logLevel.log, filteredFiles.length.toString());
