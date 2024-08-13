@@ -8,6 +8,7 @@ import type Diarium from 'main';
 import { getDates, getNoteByMoment, isSameDay } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
+import { NewDailyNote } from "./new-note";
 
 interface ContainerProps {
     view: View;
@@ -141,7 +142,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     }
 
     function newDailyNote() {
-
+        new NewDailyNote(this.app, this.plugin).open();
     }
 
     return (

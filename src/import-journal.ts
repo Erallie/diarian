@@ -444,7 +444,7 @@ async function createEntry(data: any, format: string, folder: string) {
     } */
 }
 
-export async function writeNote(date: any, content: string, format: string, alteredFolder: string) {
+export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {
 
     /* if (!format || !folder) {
         let { format, folder }: any = getDailyNoteSettings();
@@ -470,10 +470,17 @@ export async function writeNote(date: any, content: string, format: string, alte
     const fileExists = await this.app.vault.getFileByPath(newPath);
     //create new file
     if (fileExists) {
-        return;
+        if (openNote) void this.app.workspace.getLeaf(false).openFile(fileExists);
+        else return;
     }
     else {
         await this.app.vault.create(newPath, content, { ctime: Number.parseInt(date.format('x')) });
+        if (openNote) {
+            const note = this.app.vault.getFileByPath(newPath);
+
+            void this.app.workspace.getLeaf(false).openFile(note);
+        }
+
     }
 
 }

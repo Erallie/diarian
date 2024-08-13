@@ -30,6 +30,8 @@ export class NewDailyNote extends Modal {
     onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
 
+        const modal = this;
+
         /* if (this.date) this.dateString = moment(this.date).format(DATE_FORMAT);
         else this.dateString = moment().format(DATE_FORMAT);
 
@@ -73,7 +75,8 @@ export class NewDailyNote extends Modal {
             if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
             else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
 
-            writeNote(noteDate, '', format, newFolder);
+            writeNote(noteDate, '', format, newFolder, true);
+            modal.close();
         }
 
         function setDate(event: React.ChangeEvent<HTMLInputElement>) {
