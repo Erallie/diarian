@@ -185,10 +185,16 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         checkIndex = 0;
     }
 
-
-    const newName = file.path.slice(checkIndex, file.path.length - 3);
-    // printToConsole(logLevel.log, normalizedPath + " vs " + newName);
-    return moment(newName, normalizedFormat).isValid();
+    const path = file.path;
+    const matchesBookends = path.startsWith(newFolder) && path.endsWith('.md');
+    if (matchesBookends) {
+        const newName = path.slice(checkIndex, path.length - 3);
+        const result = moment(newName, normalizedFormat).isValid();
+        /* if (result) {
+            printToConsole(logLevel.log, newName + " vs " + normalizedFormat); */
+        return result;
+        /* } */
+    }
 
     // return index == checkIndex;
 }
@@ -217,15 +223,21 @@ export function getDate(note: TFile, format?: string) {
     return noteDate;
 }
 
-export function getNoteByMoment(moment: any) {
+export function getNoteByMoment(moment: any, format?: string) {
+    let newFormat = '';
+    if (!format) {
+        newFormat = getDailyNoteSettings().format;
+    }
+    else {
+        newFormat = format;
+    }
     // console.log(moment.format(getDailyNoteSettings().format));
-    const format = getDailyNoteSettings().format;
     let path = moment.format(format);
     path = normalizePath(getDailyNoteSettings().folder + '/' + path + '.md');
     // console.log(path);
     const note = this.app.vault.getFileByPath(path);
     if (note === null) {
-        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(format)}.`);
+        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(newFormat)}.`);
     }
     return note;
     //

@@ -175,6 +175,7 @@ export default class Diarium extends Plugin {
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
 
+        printToConsole(logLevel.log, this.dailyNotes.length.toString());
         const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
         for (let leaf of calView) {
             let view = leaf.view;

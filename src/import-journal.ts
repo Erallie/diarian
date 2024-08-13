@@ -61,14 +61,15 @@ export class ImportView extends Modal {
         list2.createEl('strong', { text: 'File format' });
         list2.createEl('span', { text: ', select ' }).createEl('strong', { text: 'JSON (.json)' });
         list2.createEl('span', { text: '.' });
-        const list3 = instrList.createEl('li')
+        /* const list3 = instrList.createEl('li')
         list3.createEl('strong', { text: 'Uncheck' });
         list3.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate file for each entry' });
-        list3.createEl('span', { text: '.' });
+        list3.createEl('span', { text: '.' }); */
         const list4 = instrList.createEl('li')
         list4.createEl('strong', { text: 'Check' });
         list4.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate files for attachments' });
         list4.createEl('span', { text: '.' });
+        instrList.createEl('li', { text: 'Set the other options according to your liking.' });
         if (!Platform.isIosApp) {
             const list5 = instrList.createEl('li', { text: 'Select ' });
             list5.createEl('strong', { text: 'Export' });
