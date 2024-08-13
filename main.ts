@@ -142,14 +142,32 @@ export default class Diarium extends Plugin {
     }
 
     async openCalendar() {
-        const workspace = this.app.workspace;
+        /* const workspace = this.app.workspace;
         workspace.detachLeavesOfType(ViewType.calendarView);
         const leaf = workspace.getLeaf(
             // (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
             !Platform.isMobile
         );
         await leaf.setViewState({ type: ViewType.calendarView });
-        workspace.revealLeaf(leaf);
+        workspace.revealLeaf(leaf); */
+
+        const { workspace } = this.app;
+
+        let leaf: WorkspaceLeaf | null;
+        const leaves = workspace.getLeavesOfType(ViewType.calendarView);
+
+        if (leaves.length > 0) {
+            // A leaf with our view already exists, use that
+            leaf = leaves[0];
+        } else {
+            // Our view could not be found in the workspace, create a new leaf
+            // in the right sidebar for it
+            leaf = workspace.getLeaf(!Platform.isMobile);
+            await leaf?.setViewState({ type: ViewType.calendarView, active: true });
+        }
+
+        // "Reveal" the leaf in case it is in a collapsed sidebar
+        workspace.revealLeaf(leaf!);
     }
 
     async openOnThisDay() {
@@ -175,7 +193,7 @@ export default class Diarium extends Plugin {
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
 
-        printToConsole(logLevel.log, this.dailyNotes.length.toString());
+        // printToConsole(logLevel.log, this.dailyNotes.length.toString());
         const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
         for (let leaf of calView) {
             let view = leaf.view;

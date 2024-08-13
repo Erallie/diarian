@@ -102,10 +102,10 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
                     i++;
                 }
 
-                const Dots = () => content.map((content: any) =>
-                    <>
-                        <span className='calendar-dot'>•</span>
-                    </>
+                const Dots = () => content.map((innerContent: any) =>
+                    <span key={innerContent.id} className='calendar-dot'>
+                        •
+                    </span>
                 );
                 return (
                     <div className='dot-container'>

@@ -223,7 +223,7 @@ export function getDate(note: TFile, format?: string) {
     return noteDate;
 }
 
-export function getNoteByMoment(moment: any, format?: string) {
+export function getNoteByMoment(moment: any, folder?: string, format?: string) {
     let newFormat = '';
     if (!format) {
         newFormat = getDailyNoteSettings().format;
@@ -231,13 +231,23 @@ export function getNoteByMoment(moment: any, format?: string) {
     else {
         newFormat = format;
     }
+
+    let newFolder = '';
+    if (!folder) {
+        newFolder = getDailyNoteSettings().folder;
+    }
+    else {
+        newFolder = newFolder;
+    }
+
+    const normalizedFormat = normalizePath(newFormat);
     // console.log(moment.format(getDailyNoteSettings().format));
-    let path = moment.format(format);
-    path = normalizePath(getDailyNoteSettings().folder + '/' + path + '.md');
+    let path = moment.format(normalizedFormat);
+    path = normalizePath(newFolder + '/' + path + '.md');
     // console.log(path);
     const note = this.app.vault.getFileByPath(path);
     if (note === null) {
-        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(newFormat)}.`);
+        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(normalizedFormat)}.`);
     }
     return note;
     //
