@@ -1,7 +1,7 @@
 import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
 import Diarium from 'main';
 import moment from 'moment';
-import { printToConsole, logLevel, Unit } from './constants';
+import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
 
 // const vault: Vault = app.vault;
 
@@ -154,8 +154,9 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         newFormat = format;
     }
     else {
-        newFormat = '';
+        newFormat = DEFAULT_FORMAT;
     }
+    
     let newFolder = '';
     if (folder) {
         newFolder = folder;
@@ -165,19 +166,16 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
     }
 
     // let regexString = normalizePath(newFormat);
-    let normalizedPath = normalizePath(newFormat);
+    let normalizedFormat = normalizePath(newFormat);
     // const regex = momentToRegex(regexString);
 
-    let path;
+    /* let path = '';
     if (file.path != '') {
         path = file.path + '/';
     }
-    else {
-        path = '';
-    }
-
+ */
+    
     // const index = (path + file.name).search(regex);
-    let stringToCheck = path + file.name;
 
     let checkIndex;
     if (newFolder != '') {
@@ -187,7 +185,10 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         checkIndex = 0;
     }
 
-    return moment(stringToCheck.slice(checkIndex, stringToCheck.length - 3), normalizedPath).isValid();
+
+    const newName = file.path.slice(checkIndex, file.path.length - 3);
+    // printToConsole(logLevel.log, normalizedPath + " vs " + newName);
+    return moment(newName, normalizedFormat).isValid();
 
     // return index == checkIndex;
 }

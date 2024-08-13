@@ -1,6 +1,6 @@
-import { App, Modal, Setting, Platform } from 'obsidian';
+import { App, Modal, Setting, Platform, TFile, normalizePath } from 'obsidian';
 // import * as zip from "@zip.js/zip.js";
-import { Writer, ZipReader, BlobReader, TextWriter, Reader, BlobWriter } from '@zip.js/zip.js';
+import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarium from 'main';
 import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
 import moment from 'moment';
@@ -57,7 +57,7 @@ export class ImportView extends Modal {
         else {
             list1.createEl('span', { text: ' tab.' });
         }
-        const list2 = instrList.createEl('li', {text: 'Under '})
+        const list2 = instrList.createEl('li', { text: 'Under ' })
         list2.createEl('strong', { text: 'File format' });
         list2.createEl('span', { text: ', select ' }).createEl('strong', { text: 'JSON (.json)' });
         list2.createEl('span', { text: '.' });
@@ -84,7 +84,7 @@ export class ImportView extends Modal {
 
 
         new Setting(instrDiv).setName('Instructions').setDesc(instrDesc).setHeading();
-        
+
 
         /* const openCalendarButton = new DocumentFragment();
         openCalendarButton.createEl('img', {
@@ -163,7 +163,7 @@ export class ImportView extends Modal {
         const dirDiv = this.contentEl.createDiv(); */
 
         // use https://docs.obsidian.md/Reference/TypeScript+API/SuggestModal
-        
+
         /* const attachFolder = new Setting(this.contentEl).setName('Folder path').addSearch((cb) => {
             new FolderSuggest(this.app, cb.inputEl, this.plugin);
             cb.setPlaceholder('Example: folder1/')
@@ -201,7 +201,7 @@ export class ImportView extends Modal {
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
-        const errorTextEl = contentEl.createEl('div', { cls: 'setting-error'});
+        const errorTextEl = contentEl.createEl('div', { cls: 'setting-error' });
         errorTextEl.empty();
 
         const importTextEl = contentEl.createEl('div');
@@ -227,8 +227,8 @@ export class ImportView extends Modal {
             const importText = 'Starting import...'
             setText(importTextEl, importText);
             printToConsole(logLevel.info, importText);
-            
-            
+
+
             /* const input = jsonFile as HTMLInputElement;
             const files = jsonFile.files;
             let fileFolder = '';
@@ -238,19 +238,20 @@ export class ImportView extends Modal {
                 fileFolder = firstFilePath.substring(0, firstFilePath.lastIndexOf('/'));
                 printToConsole(logLevel.log, `folderPath = ${fileFolder}`);
             } */
-            
-            
+
+
+            let { format, folder }: any = getDailyNoteSettings();
+            if (format == '') format = DEFAULT_FORMAT;
+            let newFolder = '';
+            if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
+            else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
+
             for (let i = 0; i < datafiles.length; i++) {
                 // create a BlobReader to read with a ZipReader the zip from a Blob object
                 const reader = new ZipReader(new BlobReader(datafiles[i]));
 
                 // get all entries from the zip
                 const entries = await reader.getEntries();
-
-                // let allNotes: TFile[];
-                // let noteIndex = 0;
-                let { format, folder }: any = getDailyNoteSettings();
-                if (format == '') format = DEFAULT_FORMAT;
 
                 for (let entry of entries) {
                     //skip if is folder
@@ -274,34 +275,30 @@ export class ImportView extends Modal {
                             } */
                         }
                     );
-                    
-                    /* const data = JSON.parse(text);
+
+                    const data = JSON.parse(text);
                     if (data.date) {
                         printToConsole(logLevel.log, 'Is separate entry');
-                        await createEntry(data, format, folder);
+                        await createEntry(data, format, newFolder);
                     }
-                    else { */
-                    // printToConsole(logLevel.log, 'Contains all entries');
-                    const dataArray: Array<any> = JSON.parse(text);
-                    for (const data of dataArray) {
-                        await createEntry(data, format, folder);
+                    else {
+                        // printToConsole(logLevel.log, 'Contains all entries');
+                        const dataArray: Array<any> = JSON.parse(text);
+                        for (const data of dataArray) {
+                            await createEntry(data, format, newFolder);
+                        }
+                        break;
                     }
-                    /* } */
-                    break; //REMOVE THIS IF YOU ALLOW IMPORT FOR MULTIPLE JSON FILES WITHIN THE ZIP FILE
                 }
 
-                // close the ZipReader
-                // await reader.close();
 
-                // const binaryReader = new ZipReader(new BlobReader(datafiles[i]));
-                //deal with attachments
                 for (let entry of entries) {
                     //skip if is folder
                     if (entry.directory) continue;
 
-                    //skip if is json
-                    let isEntry: boolean = entry.filename.endsWith(".json") && !(entry.filename.startsWith('media/'));
-                    if (isEntry) continue;
+                    //skip if isn't attachment
+                    let notAttachment: boolean = entry.filename.endsWith(".json") || !(entry.filename.startsWith('media/'));
+                    if (notAttachment) continue;
 
                     const fullName = entry.filename;
                     const date = fullName.slice(fullName.indexOf('/') + 1, fullName.lastIndexOf('/'));
@@ -321,7 +318,9 @@ export class ImportView extends Modal {
                             });
                         });
 
-                    const note = this.app.vault.getFileByPath(`${folder}/${fileMoment.format(format)}.md`);
+                    const filePath = normalizePath(`${newFolder}${fileMoment.format(format)}.md`);
+
+                    const note = this.app.vault.getFileByPath(filePath);
 
                     if (!note) {
                         printToConsole(logLevel.warn, `Cannot attach file:\n${name} from ${fullName} does not have an associated note!`)
@@ -361,27 +360,10 @@ export class ImportView extends Modal {
                             printToConsole(logLevel.warn, 'Cannot attach file:\nThe attachment location is not properly specified!');
                             continue;
                     } */
-                    
+
                     await this.app.fileManager.getAvailablePathForAttachment(name, note.path)
                         .then(filePath => {
-                            const folderPath = filePath.slice(0, filePath.lastIndexOf('/'));
-                            if (!this.app.vault.getFolderByPath(folderPath)) {
-                                this.app.vault.createFolder(folderPath);
-                            }
-
-                            //create new file
-                            if (this.app.vault.getFileByPath(filePath)) {
-                                // add code here for if the file already exists
-                            }
-                            else {
-                                // this is incorrect. it does not write the file correctly.
-                                this.app.vault.createBinary(filePath, content, { ctime: Number.parseInt(fileMoment.format('x')) });
-                            }
-                            this.app.vault.process(note, (data) => {
-                                data += `\n\n![[${filePath}]]`;
-                                return data;
-                            }, { ctime: Number.parseInt(fileMoment.format('x')) })
-                            //attach to file
+                            createAttachment(note, filePath, content, fileMoment);
                         });
                 }
 
@@ -396,11 +378,10 @@ export class ImportView extends Modal {
             setText(importTextEl, finishedText);
             printToConsole(logLevel.info, finishedText);
 
-            
+
         }
 
     }
-
 
     onClose() {
         const { contentEl } = this;
@@ -408,37 +389,61 @@ export class ImportView extends Modal {
     }
 }
 
-function htmlToMarkdown (value:string ) {
-    let newValue = value.replaceAll('</p><p>', '\n').replaceAll('<p>', '').replaceAll('</p>', '');
-    newValue = newValue.replaceAll('<em>', '*').replaceAll('</em>', '*');
-    newValue = newValue.replaceAll('<strong>', '**').replaceAll('</strong>', '**');
-    newValue = newValue.replaceAll(/<a href="(?<link>.+)">(?<title>.+)<\/a>/g, `[$<title>]($<link>)`);
-    newValue = newValue.replaceAll("<s>", "~~").replaceAll("</s>", "~~");
+async function createAttachment(note: TFile, filePath: string, content: ArrayBuffer, fileMoment: any) {
 
-    const doc = new DOMParser().parseFromString(newValue, 'text/html');
-    return doc.documentElement.textContent;
+    const index = filePath.lastIndexOf('/');
+    if (index != -1) {
+        const folderPath = filePath.slice(0, filePath.lastIndexOf('/'));
+        if (!this.app.vault.getFolderByPath(folderPath)) {
+            this.app.vault.createFolder(folderPath);
+        }
+    }
+
+    /* const exists = await this.app.vault.getFileByPath(filePath);
+    //create new file
+    if (this.app.vault.getFileByPath(filePath)) {
+        // add code here for if the file already exists
+    }
+    else { */
+    // this is incorrect. it does not write the file correctly.
+    this.app.vault.createBinary(filePath, content, { ctime: Number.parseInt(fileMoment.format('x')) });
+    /* } */
+    this.app.vault.process(note, (data: string) => {
+        data += `\n\n![[${filePath}]]`;
+        return data;
+    }, { ctime: Number.parseInt(fileMoment.format('x')) })
+    //attach to file
 }
+
+
 
 async function createEntry(data: any, format: string, folder: string) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
     const noteFormat = noteMoment.format(format);
 
     // create the correct folder first.
-    const newPath = folder + '/' + noteFormat + '.md';
-    const folderPath = newPath.slice(0, newPath.lastIndexOf('/'));
-    if (!this.app.vault.getFolderByPath(folderPath)) {
-        this.app.vault.createFolder(folderPath);
+    let newPath = normalizePath(folder + noteFormat + '.md');
+    const index = newPath.lastIndexOf('/');
+    if (index != -1) {
+        const folderPath = newPath.slice(0, index);
+        // printToConsole(logLevel.log, folderPath);
+        if (!this.app.vault.getFolderByPath(folderPath)) {
+            this.app.vault.createFolder(folderPath);
+        }
     }
 
+    const fileExists = await this.app.vault.getFileByPath(newPath);
     //create new file
-    if (this.app.vault.getFileByPath(newPath)) {
-        // add code here for if the file already exists
+    if (fileExists) {
+        return;
     }
     else {
         await this.app.vault.create(newPath, formatContent(data, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
     }
 }
 
+
+// Transformation functions
 function formatContent(array: any, moment: any) {
     let frontmatter = '---';
     if (array.location) {
@@ -469,18 +474,29 @@ function formatContent(array: any, moment: any) {
         frontmatter += `\nlunar phase: ${array.lunar}`
     }
     frontmatter += '\n---';
-    let body = '\n';
+    let body = '';
     if (array.heading != '') {
-        body += `# ${htmlToMarkdown(array.heading)}\n`;
+        body += `\n# ${htmlToMarkdown(array.heading)}`;
     }
     if (array.html && array.html != '') {
-        body += htmlToMarkdown(array.html);
+        body += `\n${htmlToMarkdown(array.html)}`;
     }
 
     /* const doc = new DOMParser().parseFromString(input, 'text/html');
     return doc.documentElement.textContent; */
-    
+
     return frontmatter + body;
+}
+
+function htmlToMarkdown(value: string) {
+    let newValue = value.replaceAll('</p><p>', '\n').replaceAll('<p>', '').replaceAll('</p>', '');
+    newValue = newValue.replaceAll('<em>', '*').replaceAll('</em>', '*');
+    newValue = newValue.replaceAll('<strong>', '**').replaceAll('</strong>', '**');
+    newValue = newValue.replaceAll(/<a href="(?<link>.+)">(?<title>.+)<\/a>/g, `[$<title>]($<link>)`);
+    newValue = newValue.replaceAll("<s>", "~~").replaceAll("</s>", "~~");
+
+    const doc = new DOMParser().parseFromString(newValue, 'text/html');
+    return doc.documentElement.textContent;
 }
 
 function parseSun(date: string, sun: string, noteMoment: any) {
@@ -494,7 +510,7 @@ function parseSun(date: string, sun: string, noteMoment: any) {
 
     // printToConsole(logLevel.log, `Sunrise text = '${sunriseText}'\nSunset text = '${sunsetText}'`);
     // Sunrise text = '5:28 AM'
-	// Sunset text = '7:43 PM'
+    // Sunset text = '7:43 PM'
 
     const riseMoment = moment(riseText, 'h:mm A');
     const setMoment = moment(setText, 'h:mm A');

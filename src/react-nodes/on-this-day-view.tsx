@@ -71,7 +71,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
     filteredNotes.sort(function (fileA, fileB) {
         const momentA = getDate(fileA);
         const momentB = getDate(fileB);
-        return momentA.diff(momentB);
+        return momentB.diff(momentA);
     })
     let array = [];
     let i = 0;
