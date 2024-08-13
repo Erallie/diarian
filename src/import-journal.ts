@@ -51,11 +51,11 @@ export class ImportView extends Modal {
         const list1 = instrList.createEl('li', { text: 'Open ' });
         list1.createEl('strong', { text: 'Diarium' });
         list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
-        if (!Platform.isMacOS) {
-            list1.createEl('span', { text: ' menu.' });
+        if (Platform.isMacOS && Platform.isDesktop) {
+            list1.createEl('span', { text: ' tab.' });
         }
         else {
-            list1.createEl('span', { text: ' tab.' });
+            list1.createEl('span', { text: ' menu.' });
         }
         const list2 = instrList.createEl('li', { text: 'Under ' })
         list2.createEl('strong', { text: 'File format' });

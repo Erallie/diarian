@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, ButtonComponent } from 'obsidian';
+import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarium from 'main';
 import { Unit, getTimeSpanTitle } from './constants';
 
@@ -148,14 +148,14 @@ export class DiariumSettingTab extends PluginSettingTab {
         }
 
 
-        new Setting(containerEl).setName('On this day review').setHeading();
+        new Setting(containerEl).setName('On this day').setHeading();
 
         const IntervalDescription = new DocumentFragment();
         IntervalDescription.textContent =
             "Notes will be displayed in intervals of this amount of time before the current day.";
         IntervalDescription.createEl("br");
         /* IntervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
-        IntervalDescription.createEl('span', { text: ' Currently set to ' }).createEl("span", {
+        IntervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
             text: "every " + getTimeSpanTitle(this.plugin.settings.reviewInterval, this.plugin.settings.reviewIntervalUnit), cls: 'text-accent'
 
         });
@@ -200,7 +200,7 @@ export class DiariumSettingTab extends PluginSettingTab {
         DelayDescription.textContent =
             "Only notes from this long ago or earlier will be included in the 'On this day' view.";
         DelayDescription.createEl("br");
-        DelayDescription.createEl('span', { text: ' Currently set to ' }).createEl("span", {
+        DelayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
             text: getTimeSpanTitle(this.plugin.settings.reviewDelay, this.plugin.settings.reviewDelayUnit) + " ago or earlier", cls: 'text-accent'
 
         });
@@ -241,9 +241,24 @@ export class DiariumSettingTab extends PluginSettingTab {
                     }),
             );
 
+        let notePaneTitle = 'Open notes in a new ';
+
+        const notePaneDesc = new DocumentFragment();
+        notePaneDesc.textContent =
+            "When clicked, notes will open in a new ";
+        if (Platform.isDesktop) {
+            notePaneTitle += 'tab';
+            notePaneDesc.createEl('span', { text: 'tab by default.' })
+            notePaneDesc.createEl("br");
+            notePaneDesc.createEl('span', { text: 'Middle-clicking a note will always open it in a new pane regardless of this setting.' });
+        }
+        else {
+            notePaneTitle += 'pane';
+            notePaneDesc.createEl('span', { text: 'pane.' })
+        }
         new Setting(containerEl)
-            .setName("Open notes in a new pane")
-            .setDesc("When clicked, notes will open in a new pane/tab by default.")
+            .setName(notePaneTitle)
+            .setDesc(notePaneDesc)
             .addToggle((toggle) => {
                 toggle
                     .setValue(this.plugin.settings.openInNewPane)
