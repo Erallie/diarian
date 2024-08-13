@@ -420,7 +420,8 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 async function createEntry(data: any, format: string, folder: string) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    const noteFormat = noteMoment.format(format);
+    await writeNote(noteMoment, formatContent(data, noteMoment), format, folder);
+    /* const noteFormat = noteMoment.format(format);
 
     // create the correct folder first.
     let newPath = normalizePath(folder + noteFormat + '.md');
@@ -440,7 +441,41 @@ async function createEntry(data: any, format: string, folder: string) {
     }
     else {
         await this.app.vault.create(newPath, formatContent(data, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
+    } */
+}
+
+export async function writeNote(date: any, content: string, format: string, alteredFolder: string) {
+
+    /* if (!format || !folder) {
+        let { format, folder }: any = getDailyNoteSettings();
+        if (format == '') format = DEFAULT_FORMAT;
+        let newFolder = '';
+        if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
+        else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
+    } */
+
+    const noteFormat = date.format(format);
+
+    // create the correct folder first.
+    let newPath = normalizePath(alteredFolder + noteFormat + '.md');
+    const index = newPath.lastIndexOf('/');
+    if (index != -1) {
+        const folderPath = newPath.slice(0, index);
+        // printToConsole(logLevel.log, folderPath);
+        if (!this.app.vault.getFolderByPath(folderPath)) {
+            this.app.vault.createFolder(folderPath);
+        }
     }
+
+    const fileExists = await this.app.vault.getFileByPath(newPath);
+    //create new file
+    if (fileExists) {
+        return;
+    }
+    else {
+        await this.app.vault.create(newPath, content, { ctime: Number.parseInt(date.format('x')) });
+    }
+
 }
 
 

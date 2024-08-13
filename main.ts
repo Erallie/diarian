@@ -5,6 +5,7 @@ import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
 import { getAllDailyNotes, isDailyNote } from './src/get-daily-notes';
+import { NewDailyNote } from './src/react-nodes/new-note';
 
 
 // Remember to rename these classes and interfaces!
@@ -70,6 +71,14 @@ export default class Diarium extends Plugin {
         statusBarItemEl.setText('Status Bar Text'); */
 
         // This adds a simple command that can be triggered anywhere
+        this.addCommand({
+            id: 'new-note',
+            name: 'New daily note',
+            icon: 'lucide-file-plus',
+            callback: () => {
+                new NewDailyNote(this.app, this).open();
+            }
+        })
         this.addCommand({
             id: 'refresh-notes',
             name: 'Refresh daily notes',
@@ -276,6 +285,14 @@ class SelectView extends Modal {
             },
         });
         openCalendarButton.createEl('span', { text: ' Open calendar' }); */
+        new ButtonComponent(contentEl)
+            .setIcon('lucide-file-plus')
+            // .setButtonText('Open calendar')
+            .setTooltip('New daily note')
+            .onClick(() => {
+                new NewDailyNote(this.app, this.plugin).open();
+                this.close();
+            });
 
         new ButtonComponent(contentEl)
             .setIcon('lucide-calendar-search')
