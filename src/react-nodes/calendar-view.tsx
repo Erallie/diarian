@@ -142,7 +142,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     }
 
     function newDailyNote() {
-        new NewDailyNote(this.app, this.plugin).open();
+        new NewDailyNote(this.app, this.plugin, moment(selectedDate)).open();
     }
 
     return (
