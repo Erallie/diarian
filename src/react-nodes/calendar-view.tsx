@@ -132,9 +132,9 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
         }
 
         showNotesNode = notesToShow.map((note: any) =>
-            <>
-                <NotePreview key={note.id} note={note.note} view={view} plugin={plugin} app={app} />
-            </>
+            <div key={note.name}>
+                <NotePreview note={note.note} view={view} plugin={plugin} app={app} />
+            </div>
         );
     }
     else {
