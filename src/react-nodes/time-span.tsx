@@ -26,7 +26,7 @@ export const TimeSpan = ({ notes, thisMoment, wrapper, view, plugin, app }: Prop
         <>
             <h2>{
                 getTimeSpanTitle(
-                    moment().diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff),
+                    Math.round(moment().diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff, true)),
                     unit
                 )
             } ago</h2>
