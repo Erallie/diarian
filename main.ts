@@ -1,10 +1,10 @@
-import { App, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf } from 'obsidian';
+import { App, Vault, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf, FileView } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
-import { getAllDailyNotes } from './src/get-daily-notes';
+import { getAllDailyNotes, isDailyNote } from './src/get-daily-notes';
 
 
 // Remember to rename these classes and interfaces!
@@ -19,10 +19,41 @@ export default class Diarium extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        this.dailyNotes = getAllDailyNotes();
+        this.app.workspace.onLayoutReady(() => {
+            this.dailyNotes = getAllDailyNotes();
 
-        this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.view, this.app));
-        this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.view, this.app));
+            this.registerEvent(
+                this.app.vault.on('rename', (file, oldPath) => {
+                    if (file instanceof TFile && isDailyNote(file)) {
+                        // printToConsole(logLevel.log, file.name);
+                        this.dailyNotes[this.dailyNotes.length] = file;
+                        this.refreshViews();
+                    }
+                }));
+
+            this.registerEvent(
+                this.app.vault.on('create', (file) => {
+                    if (file instanceof TFile && isDailyNote(file)) {
+                        // printToConsole(logLevel.log, isDailyNote(file).toString());
+                        this.dailyNotes[this.dailyNotes.length] = file;
+                        this.refreshViews();
+                    }
+                }));
+
+            this.registerEvent(
+                this.app.vault.on('delete', (file) => {
+                    if (file instanceof TFile && isDailyNote(file)) {
+                        this.dailyNotes = this.dailyNotes.filter(thisFile => {
+                            return (thisFile != file);
+                        })
+                        this.refreshViews();
+                    }
+                }));
+
+
+            this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.view, this.app));
+            this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.view, this.app));
+        })
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
@@ -127,10 +158,12 @@ export default class Diarium extends Plugin {
 
         // When registering intervals, this function will automatically clear the interval when the plugin is disabled.
         // this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+
+
     }
 
     onunload() {
-
+        this.app.unregister()
     }
 
     async loadSettings() {
@@ -192,8 +225,12 @@ export default class Diarium extends Plugin {
 
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
-
         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
+        this.refreshViews();
+        printToConsole(logLevel.info, 'Daily notes refreshed!');
+    }
+
+    refreshViews() {
         const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
         for (let leaf of calView) {
             let view = leaf.view;
@@ -209,8 +246,6 @@ export default class Diarium extends Plugin {
                 view.refresh(this);
             }
         }
-
-        printToConsole(logLevel.info, 'Daily notes refreshed!');
     }
 }
 

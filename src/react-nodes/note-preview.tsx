@@ -38,7 +38,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
                 slicedContent,
                 ref.current,
                 note.path,
-                view,
+                view
             );
         }
     })();

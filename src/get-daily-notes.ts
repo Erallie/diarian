@@ -154,7 +154,7 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         newFormat = format;
     }
     else {
-        newFormat = DEFAULT_FORMAT;
+        newFormat = getDailyNoteSettings().format;
     }
     
     let newFolder = '';
@@ -162,7 +162,7 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         newFolder = folder;
     }
     else {
-        newFolder = '';
+        newFolder = getDailyNoteSettings().folder;
     }
 
     // let regexString = normalizePath(newFormat);
@@ -190,10 +190,10 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
     if (matchesBookends) {
         const newName = path.slice(checkIndex, path.length - 3);
         const result = moment(newName, normalizedFormat).isValid();
-        /* if (result) {
-            printToConsole(logLevel.log, newName + " vs " + normalizedFormat); */
+        // if (result) {
+        // printToConsole(logLevel.log, newName + " vs " + normalizedFormat);
         return result;
-        /* } */
+        // }
     }
 
     // return index == checkIndex;
