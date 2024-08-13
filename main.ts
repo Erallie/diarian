@@ -175,6 +175,15 @@ export default class Diarium extends Plugin {
     refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
 
+        const calView = this.app.workspace.getActiveViewOfType(CalendarView);
+        if (calView) {
+            calView.refresh(this);
+        }
+        const revView = this.app.workspace.getActiveViewOfType(OnThisDayView);
+        if (revView) {
+            revView.refresh(this);
+        }
+
         printToConsole(logLevel.info, 'Daily notes refreshed!');
     }
 }

@@ -51,6 +51,12 @@ export class CalendarView extends ItemView {
         this.root?.unmount();
     }
 
+    async refresh(plugin: Diarium) {
+        this.plugin = plugin;
+        this.onClose();
+        this.onOpen();
+    }
+
 }
 
 const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {

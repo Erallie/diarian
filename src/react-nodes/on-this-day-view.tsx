@@ -51,12 +51,18 @@ export class OnThisDayView extends ItemView {
         this.root?.unmount();
     }
 
+
+    async refresh(plugin: Diarium) {
+        this.plugin = plugin;
+        this.onClose();
+        this.onOpen();
+    }
+
 }
 
 
 const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
     let filteredNotes = getPriorNotes(plugin.dailyNotes, plugin);
-    let format = getDailyNoteSettings().format;
     if (!filteredNotes || filteredNotes.length == 0) {
         return (
             <p>No notes to show.</p>
