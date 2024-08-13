@@ -1,7 +1,7 @@
 # Diarium
 This is a plugin for [Obsidian](https://obsidian.md) that adds functionality from the [Diarium](https://diariumapp.com/) journal app.
 
-This plugin is **not** official to Diarium.
+This plugin is **UNOFFICIAL** to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Key features
 - A calendar view that displays which days have daily notes on them
 	- Open daily notes directly from the calendar.
@@ -17,7 +17,7 @@ This plugin is **not** official to Diarium.
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
 ## Planned features
 Being in early development, there are some important features I have yet to add:
-- The ability to import tracker data when importing from Diarium.
+- The ability to import tracker data when importing from [Diarium](https://diariumapp.com/).
 - The option to display attached images in the Calendar view on the tiles of days that include them.
 - Functionality to insert a dynamic rating into your note.
 ## Credits
