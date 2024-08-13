@@ -42,7 +42,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                <Container view={this.view} plugin={this.plugin} app={this.app} />
+                <CalendarContainer view={this.view} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
@@ -53,7 +53,7 @@ export class CalendarView extends ItemView {
 
 }
 
-const Container = ({ view, plugin, app }: ContainerProps) => {
+const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
     const filledDates = getDates(dailyNotes);

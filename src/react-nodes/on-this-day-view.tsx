@@ -1,14 +1,11 @@
 import { StrictMode } from "react";
 import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { Calendar } from 'react-calendar';
-import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { ViewType, getTimeSpanTitle, Unit } from '../constants';
-import { getDates, getAllDailyNotes, getNoteByMoment, getPriorNotes, getDate, isSameDay } from "../get-daily-notes";
-import { usePlugin } from "../unused/hooks";
-import NotePreview from './note-preview';
+import { ViewType, printToConsole, logLevel } from '../constants';
+import { getPriorNotes, getDate, isSameDay, getDailyNoteSettings } from "../get-daily-notes";
+import { TimeSpan } from './time-span';
 
 
 interface ContainerProps {
@@ -45,7 +42,7 @@ export class OnThisDayView extends ItemView {
         this.root.render(
             <StrictMode>
                 <h1>On this day...</h1>
-                <Container view={this.view} plugin={this.plugin} app={this.app} />
+                <ReviewContainer view={this.view} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
@@ -57,9 +54,10 @@ export class OnThisDayView extends ItemView {
 }
 
 
-const Container = ({ view, plugin, app }: ContainerProps) => {
-    let filteredNotes = getPriorNotes(plugin.dailyNotes);
-    if (!filteredNotes) {
+const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
+    let filteredNotes = getPriorNotes(plugin.dailyNotes, plugin);
+    let format = getDailyNoteSettings().format;
+    if (!filteredNotes || filteredNotes.length == 0) {
         return (
             <p>No notes to show.</p>
         )
@@ -69,27 +67,32 @@ const Container = ({ view, plugin, app }: ContainerProps) => {
         const momentB = getDate(fileB);
         return momentA.diff(momentB);
     })
-
-    let notesToShow: Array<Array<any>> = [];
+    let array = [];
     let i = 0;
     let ii = 0;
     let previousMoment = getDate(filteredNotes[i]);
+
+    let subNotes: TFile[] = [];
+
     for (let note of filteredNotes) {
+        if (!note) continue;
         const thisMoment = getDate(note);
-        if (notesToShow[i].length > 0 && !isSameDay(thisMoment, previousMoment)) {
+        if (!array[i] && !isSameDay(thisMoment, previousMoment)) {
+            array[i] = {
+                notes: subNotes,
+                moment: previousMoment,
+                id: i
+            }
+            subNotes = [];
             i++;
             previousMoment = thisMoment;
             ii = 0;
         }
-        notesToShow[i][ii] = {
-            note: note,
-            id: (i * 10) + (ii + 1),
-            moment: thisMoment
-        };
+        subNotes[ii] = note;
         ii++;
     }
 
-    let subHeading: Array<any> = [];
+    /* let subHeading: Array<any> = [];
     for (let o in notesToShow) {
         subHeading[o] = {
             moment: notesToShow[o][0].moment,
@@ -100,11 +103,13 @@ const Container = ({ view, plugin, app }: ContainerProps) => {
                 </>
             )
         }
-    }
+    } */
+
+    printToConsole(logLevel.log, `got here`);
 
     let now = moment();
     let unit = plugin.settings.reviewDelayUnit;
-    return subHeading.map((sub: any) =>
+    /* return notesToShow.map((sub: any) =>
         <>
             <h2 key={sub.id}>{
                 getTimeSpanTitle(
@@ -114,5 +119,12 @@ const Container = ({ view, plugin, app }: ContainerProps) => {
             }</h2>
             {sub.node}
         </>
-    )
+    ) */
+    return (
+        <div>
+            {array.map(({ notes, moment, id }) => (
+                <TimeSpan key={id} notes={notes} thisMoment={moment} view={view} plugin={plugin} app={app} />
+            ))}
+        </div>
+    );
 }

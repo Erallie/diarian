@@ -233,55 +233,54 @@ export function isSameDay(date1: any, date2: any) {
         && date1.year() == date2.year());
 }
 
-export function getPriorNotes(allNotes: TFile[]) {
+export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
+
     const now = moment();
     const format = getDailyNoteSettings().format;
+    const reviewInterval = plugin.settings.reviewInterval;
+    const delayUnit = plugin.settings.reviewDelayUnit + 's';
+
     let filteredNotes: TFile[] = [];
     let i = 0;
+
     for (let note of allNotes) {
-        let intervalUnit = '';
-        switch (this.app.settings.reviewIntervalUnit) {
-            case Unit.day:
-                intervalUnit = 'days';
-                break;
-            case Unit.week:
-                intervalUnit = 'weeks';
-                break;
-            case Unit.month:
-                intervalUnit = 'months';
-                break;
-            case Unit.year:
-                intervalUnit = 'years';
-                break;
-            default:
-                printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
-                return null;
-        }
-        let delayUnit = '';
-        switch (this.app.settings.reviewDelayUnit) {
-            case Unit.day:
-                delayUnit = 'days';
-                break;
-            case Unit.week:
-                delayUnit = 'weeks';
-                break;
-            case Unit.month:
-                delayUnit = 'months';
-                break;
-            case Unit.year:
-                delayUnit = 'years';
-                break;
-            default:
-                printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
-                return null;
-        }
         const noteDate = getDate(note, format);
-        const intervalDiff = now.diff(noteDate, intervalUnit as moment.unitOfTime.Diff);
-        const delayDiff = now.diff(noteDate, delayUnit as moment.unitOfTime.Diff);
-        const shouldInclude = (intervalDiff % this.app.settings.reviewInterval == 0) && (delayDiff >= this.app.settings.reviewDelay);
-        if (shouldInclude) filteredNotes[i] = note;
-        printToConsole(logLevel.log, `Added ${note.name}`);
+        const delayDiff = now.diff(noteDate, delayUnit as moment.unitOfTime.Diff, true);
+        const isInRange = delayDiff >= plugin.settings.reviewDelay;
+
+        let isMatch: boolean = false;
+        let intervalDiff = 0;
+
+        switch (plugin.settings.reviewIntervalUnit) {
+            case Unit.day:
+                intervalDiff = now.diff(noteDate, 'days');
+                isMatch = (intervalDiff % reviewInterval == 0);
+                break;
+            case Unit.week:
+                // intervalUnit = 'weeks';
+                intervalDiff = now.diff(noteDate, 'weeks');
+                isMatch = (intervalDiff % reviewInterval == 0) && now.day() == noteDate.day();
+                break;
+            case Unit.month:
+                // intervalUnit = 'months';
+                intervalDiff = now.diff(noteDate, 'months');
+                isMatch = (intervalDiff % reviewInterval == 0) && now.date() == noteDate.date();
+                break;
+            case Unit.year:
+                // intervalUnit = 'years';
+                intervalDiff = now.diff(noteDate, 'years');
+                isMatch = (intervalDiff % reviewInterval == 0) && now.month() == noteDate.month() && now.date() == noteDate.date();
+                break;
+            default:
+                printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
+                return null;
+        }
+        if (isInRange && isMatch) filteredNotes[i] = note;
+        // printToConsole(logLevel.log, `got here`);
+        // printToConsole(logLevel.log, `Added ${note.name}`);
         i++;
     }
+
+
     return filteredNotes;
 }
