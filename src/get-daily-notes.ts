@@ -5,7 +5,7 @@ import { printToConsole, logLevel, Unit } from './constants';
 
 // const vault: Vault = app.vault;
 
-export function momentToRegex(format: string): RegExp {
+/* export function momentToRegex(format: string): RegExp {
     const cardinal = (maxTeens: number) => {
         const ignoreTeens = "(?<!1)";
         switch (maxTeens) {
@@ -108,7 +108,7 @@ export function momentToRegex(format: string): RegExp {
     }
     // console.log(`newString = ${newString}`);
     return new RegExp(newString, "g");
-}
+} */
 
 
 export function getDailyNoteSettings() {
@@ -144,6 +144,7 @@ export function getAllDailyNotes() {
         const folder = getDailyNoteSettings().folder;
         return isDailyNote(file, format, folder);
     });
+    // printToConsole(logLevel.log, filteredFiles.length.toString());
     return filteredFiles;
 };
 
@@ -163,8 +164,9 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         newFolder = '';
     }
 
-    let regexString = normalizePath(newFormat);
-    const regex = momentToRegex(regexString);
+    // let regexString = normalizePath(newFormat);
+    let normalizedPath = normalizePath(newFormat);
+    // const regex = momentToRegex(regexString);
 
     let path;
     if (file.path != '') {
@@ -174,7 +176,8 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         path = '';
     }
 
-    const index = (path + file.name).search(regex);
+    // const index = (path + file.name).search(regex);
+    let stringToCheck = path + file.name;
 
     let checkIndex;
     if (newFolder != '') {
@@ -184,7 +187,9 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
         checkIndex = 0;
     }
 
-    return index == checkIndex;
+    return moment(stringToCheck.slice(checkIndex, stringToCheck.length - 3), normalizedPath).isValid();
+
+    // return index == checkIndex;
 }
 
 export function getDates(notes: TFile[], format?: string) {
