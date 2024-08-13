@@ -278,7 +278,7 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
         if (isInRange && isMatch) {
             filteredNotes[i] = note;
 
-            printToConsole(logLevel.log, `Added ${note.name}`);
+            // printToConsole(logLevel.log, `Added ${note.name}`);
         }
         // printToConsole(logLevel.log, `got here`);
         // printToConsole(logLevel.log, `Added ${note.name}`);

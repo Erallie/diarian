@@ -54,7 +54,7 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        new Setting(containerEl).setName('General').setHeading();
+        new Setting(containerEl).setName('Calendar').setHeading();
 
         const headingFormatDescription = new DocumentFragment();
         headingFormatDescription.textContent =
@@ -85,19 +85,7 @@ export class DiariumSettingTab extends PluginSettingTab {
 
 
 
-        new Setting(containerEl).setName('Global note previews')/* .setDesc('Settings that will apply to note previews in the Calendar view and the \'On this day\' view.') */.setHeading();
-
-        new Setting(containerEl)
-            .setName("Open in a new pane")
-            .setDesc("When clicked, notes will open in a new pane/tab.")
-            .addToggle((toggle) => {
-                toggle
-                    .setValue(this.plugin.settings.openInNewPane)
-                    .onChange((value) => {
-                        this.plugin.settings.openInNewPane = value;
-                        void this.plugin.saveSettings();
-                    });
-            });
+        new Setting(containerEl).setName('Note previews')/* .setDesc('Settings that will apply to note previews in the Calendar view and the \'On this day\' view.') */.setHeading();
 
 
         new Setting(containerEl)
@@ -252,6 +240,18 @@ export class DiariumSettingTab extends PluginSettingTab {
                         this.display();
                     }),
             );
+
+        new Setting(containerEl)
+            .setName("Open notes in a new pane")
+            .setDesc("When clicked, notes will open in a new pane/tab by default.")
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(this.plugin.settings.openInNewPane)
+                    .onChange((value) => {
+                        this.plugin.settings.openInNewPane = value;
+                        void this.plugin.saveSettings();
+                    });
+            });
 
     }
 }

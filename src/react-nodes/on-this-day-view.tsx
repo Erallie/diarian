@@ -110,7 +110,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
         }
     } */
 
-    printToConsole(logLevel.log, `got here`);
+    // printToConsole(logLevel.log, `got here`);
 
     let now = moment();
     let unit = plugin.settings.reviewDelayUnit;
