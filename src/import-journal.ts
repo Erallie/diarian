@@ -455,13 +455,7 @@ function formatContent(array: any, moment: any) {
     }
     if (array.people.length != 0) {
         frontmatter += `\npeople:`;
-        for (let i in array.tags) {
-            frontmatter += `\n  - ${array.people[i]}`;
-        }
-    }
-    if (array.people.length != 0) {
-        frontmatter += `\npeople:`;
-        for (let i in array.tags) {
+        for (let i in array.people) {
             frontmatter += `\n  - ${array.people[i]}`;
         }
     }
