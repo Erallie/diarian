@@ -22,7 +22,7 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     useCallout: true,
     showNoteTitle: true,
     useQuote: true,
-    reviewInterval: 1,
+    reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
     reviewDelay: 6,
     reviewDelayUnit: Unit.month

@@ -275,12 +275,15 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
                 printToConsole(logLevel.error, 'Could not fetch prior notes:\nreviewIntervalUnit is not properly defined!');
                 return null;
         }
-        if (isInRange && isMatch) filteredNotes[i] = note;
+        if (isInRange && isMatch) {
+            filteredNotes[i] = note;
+
+            printToConsole(logLevel.log, `Added ${note.name}`);
+        }
         // printToConsole(logLevel.log, `got here`);
         // printToConsole(logLevel.log, `Added ${note.name}`);
         i++;
     }
-
 
     return filteredNotes;
 }

@@ -91,6 +91,11 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
         subNotes[ii] = note;
         ii++;
     }
+    array[i] = {
+        notes: subNotes,
+        moment: previousMoment,
+        id: i
+    }
 
     /* let subHeading: Array<any> = [];
     for (let o in notesToShow) {
