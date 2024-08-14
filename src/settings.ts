@@ -13,6 +13,8 @@ export interface DiariumSettings {
     reviewIntervalUnit: Unit;
     reviewDelay: number;
     reviewDelayUnit: Unit;
+    dateStampFormat: string;
+    timeStampFormat: string;
 }
 
 export const DEFAULT_SETTINGS: DiariumSettings = {
@@ -25,7 +27,9 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
     reviewDelay: 6,
-    reviewDelayUnit: Unit.month
+    reviewDelayUnit: Unit.month,
+    dateStampFormat: 'M/D/YYYY',
+    timeStampFormat: 'h:mm A'
 }
 
 const getMaxTimeSpan = (unit: Unit) => {

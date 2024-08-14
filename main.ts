@@ -14,6 +14,11 @@ export type EnhancedApp = App & {
 };
 
 
+const enum LeafType {
+    tab = 'tab',
+    right = 'right'
+}
+
 export default class Diarium extends Plugin {
     settings: DiariumSettings;
     view: View;
@@ -26,10 +31,9 @@ export default class Diarium extends Plugin {
         this.app.workspace.onLayoutReady(() => {
             this.dailyNotes = getAllDailyNotes();
 
-            const { folder, format }: any = getModifiedFolderAndFormat();
-
             this.registerEvent(
                 this.app.vault.on('rename', (file, oldPath) => {
+                    const { folder, format }: any = getModifiedFolderAndFormat();
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes[this.dailyNotes.length] = file;
                         this.refreshViews(true, true);
@@ -38,6 +42,7 @@ export default class Diarium extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('create', (file) => {
+                    const { folder, format }: any = getModifiedFolderAndFormat();
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                     // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
@@ -47,6 +52,7 @@ export default class Diarium extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('delete', (file) => {
+                    const { folder, format }: any = getModifiedFolderAndFormat();
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes = this.dailyNotes.filter(thisFile => {
                             return (thisFile != file);
@@ -81,15 +87,46 @@ export default class Diarium extends Plugin {
             icon: 'lucide-alarm-clock-plus',
             editorCallback: (editor: Editor, view: MarkdownView) => {
                 // this.insertTimestamp();
-                /* let dateString = '';
+                let dateString = '';
                 const now = moment();
-                const noteDate = getDate(view.file)
-                if () {
+
+                const { folder, format }: any = getModifiedFolderAndFormat();
+
+                let noteDate;
+                if (view.file) {
+                    noteDate = getDate(view.file, folder, format);
+
+                    if (!isSameDay(noteDate, now))
+                        dateString = now.format(this.settings.dateStampFormat) + ' ';
+
+                    let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
+
+                    const cursor = editor.getCursor();
+                    const cursorLine = editor.getLine(cursor.line);
+                    const textBeforeCursor = cursorLine.slice(0, cursor.ch);
+
+                    let newCursorLine = cursor.line;
+
+                    if (textBeforeCursor != '') {
+                        fullString = '\n\n' + fullString + '\n';
+                        newCursorLine += 3;
+                    }
+                    else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') { //text before cursor is empty but line before cursor is not
+                        fullString = '\n' + fullString + '\n';
+                        newCursorLine += 2;
+                    }
+                    else {
+                        fullString += '\n';
+                        newCursorLine += 1;
+                    }
+
+                    editor.replaceRange(
+                        fullString,
+                        editor.getCursor()
+                    );
+                    editor.setCursor(newCursorLine, 0);
                 }
-                editor.replaceRange(
-                    moment().format("— M/D/YYYY h:mm A —"),
-                    editor.getCursor()
-                ); */
+
             }
         })
         this.addCommand({
@@ -105,7 +142,10 @@ export default class Diarium extends Plugin {
             name: 'Refresh daily notes',
             icon: 'lucide-refresh-ccw',
             callback: () => {
-                this.refreshNotes();
+                this.dailyNotes = getAllDailyNotes();
+                // printToConsole(logLevel.log, this.dailyNotes.length.toString());
+                this.refreshViews(true, true);
+                printToConsole(logLevel.info, 'Daily notes refreshed!');
             }
         })
         this.addCommand({
@@ -122,8 +162,7 @@ export default class Diarium extends Plugin {
             name: 'Open calendar',
             icon: 'lucide-calendar-search',
             callback: () => {
-                this.openCalendar();
-                // new SampleModal(this.app).open();
+                this.openLeaf(ViewType.calendarView, LeafType.tab);
             }
         });
 
@@ -132,9 +171,10 @@ export default class Diarium extends Plugin {
             name: 'Open on this day',
             icon: 'lucide-history',
             callback: () => {
-                this.openOnThisDay();
+                // this.openOnThisDay();
                 // this.openCalendar();
                 // new SampleModal(this.app).open();
+                this.openLeaf(ViewType.onThisDayView, LeafType.right);
             }
         });
 
@@ -227,15 +267,7 @@ export default class Diarium extends Plugin {
         await this.saveData(this.settings);
     }
 
-    async openCalendar() {
-        /* const workspace = this.app.workspace;
-        workspace.detachLeavesOfType(ViewType.calendarView);
-        const leaf = workspace.getLeaf(
-            // (!Platform.isMobile && workspace.activeLeaf && workspace.activeLeaf.view instanceof FileView) || true,
-            !Platform.isMobile
-        );
-        await leaf.setViewState({ type: ViewType.calendarView });
-        workspace.revealLeaf(leaf); */
+    /* async openCalendar() {
 
         const { workspace } = this.app;
 
@@ -254,7 +286,7 @@ export default class Diarium extends Plugin {
 
         // "Reveal" the leaf in case it is in a collapsed sidebar
         workspace.revealLeaf(leaf!);
-    }
+    } */
 
     async openOnThisDay() {
         const { workspace } = this.app;
@@ -276,16 +308,50 @@ export default class Diarium extends Plugin {
         workspace.revealLeaf(leaf!);
     }
 
+    async openLeaf(viewType: ViewType, leafType: LeafType) {
+
+        const { workspace } = this.app;
+
+        let leaf: WorkspaceLeaf | null;
+        const leaves = workspace.getLeavesOfType(viewType);
+
+        if (leaves.length > 0) {
+            // A leaf with our view already exists, use that
+            leaf = leaves[0];
+        }
+        else {
+            // Our view could not be found in the workspace, create a new leaf
+            // in the right sidebar for it
+
+            switch (leafType) {
+                case LeafType.tab:
+                    leaf = workspace.getLeaf(false);
+                    break;
+                case LeafType.right:
+                    leaf = workspace.getRightLeaf(false);
+                    break;
+                default:
+                    printToConsole(logLevel.error, 'Cannot open leaf:\nleafType is not properly defined!');
+                    return;
+            }
+
+            await leaf?.setViewState({ type: viewType, active: true });
+        }
+
+        // "Reveal" the leaf in case it is in a collapsed sidebar
+        workspace.revealLeaf(leaf!);
+    }
+
     insertTimestamp() {
 
     }
 
-    refreshNotes() {
+    /* refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
         this.refreshViews(true, true);
         printToConsole(logLevel.info, 'Daily notes refreshed!');
-    }
+    } */
 
     refreshViews(refCalView: boolean, refRevView: boolean) {
         if (refCalView) {
