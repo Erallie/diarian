@@ -103,11 +103,11 @@ export class NewDailyNote extends Modal {
                 {/* <input id='date' className='new-note-input' aria-label="Date and Time" type="datetime-local" defaultValue={dateTimeString} onChange={setDateTime} /> */}
                 <div className="new-note-div">
                     <label htmlFor='date' className='new-note-label'>Date</label>
-                    <input id='date' className='new-note-input' aria-label="Date" type="date" onChange={setDate} defaultValue={dateString} />
+                    <input id='date' className='new-note-input' type="date" onChange={setDate} defaultValue={dateString} />
                 </div>
                 <div className="new-note-div">
                     <label htmlFor='time' className='new-note-label'>Time</label>
-                    <input id='time' className='new-note-input' aria-label="Time" type="time" onChange={setTime} defaultValue={timeString} />
+                    <input id='time' className='new-note-input' type="time" onChange={setTime} defaultValue={timeString} />
                 </div>
                 <button onClick={createNote} >Create note</button>
 

@@ -74,17 +74,6 @@ div.modal:has(.new-note-div) {
 }
 
 .new-note-input {
-    /* height: var(--input-height);
-    flex: 3;
-    border-radius: var(--input-radius);
-    font-weight: var(--input-font-weight);
-    color: var(--text-normal);
-    border-width: var(--input-border-width);
-    background-color: var(--background-modifier-form-field);
-    padding: var(--size-2-2);
-    caret-color: var(--caret-color);
-    border-color: var(--background-modifier-border);
-    border-style: solid; */
 
     -webkit-app-region: no-drag;
     background-color: var(--background-modifier-form-field);
@@ -134,6 +123,23 @@ svg.new-note-input {
 
 
 .instructions {}
+
+.cal-new-note-button {
+    /* display: inline; */
+    /* flex: 1; */
+    margin-left: auto;
+    aspect-ratio: 1/1;
+    padding: 0;
+}
+
+div.cal-date-heading-container {
+    display: flex;
+    align-items: center;
+}
+
+div.cal-date-heading-container h1 {
+    /* flex: 9; */
+}
 
 .calendar-container {
     width: 500px;
