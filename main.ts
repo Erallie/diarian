@@ -30,9 +30,7 @@ export default class Diarium extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('rename', (file, oldPath) => {
-
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                        // printToConsole(logLevel.log, file.name);
                         this.dailyNotes[this.dailyNotes.length] = file;
                         this.refreshViews(true, true);
                     }

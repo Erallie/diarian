@@ -36,13 +36,13 @@ export function getAllDailyNotes() {
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter((file: TFile) => {
         const { format, folder } = getModifiedFolderAndFormat();
-        return isDailyNote(file, format, folder);
+        return isDailyNote(file, folder, format);
     });
     // printToConsole(logLevel.log, filteredFiles.length.toString());
     return filteredFiles;
 };
 
-export function isDailyNote(file: TFile, format: string, folder: string) {
+export function isDailyNote(file: TFile, folder: string, format: string) {
     
     // const index = (path + file.name).search(regex);
 
@@ -60,6 +60,8 @@ export function isDailyNote(file: TFile, format: string, folder: string) {
         matchesBookends = path.endsWith('.md');
     else
         matchesBookends = path.startsWith(folder) && path.endsWith('.md');
+
+    // printToConsole(logLevel.log, folder);
 
     if (matchesBookends) {
         const newName = path.slice(checkIndex, path.length - '.md'.length);

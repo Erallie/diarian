@@ -374,27 +374,6 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 async function createEntry(data: any, format: string, folder: string) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
     await writeNote(noteMoment, formatContent(data, noteMoment), format, folder);
-    /* const noteFormat = noteMoment.format(format);
-
-    // create the correct folder first.
-    let newPath = normalizePath(folder + noteFormat + '.md');
-    const index = newPath.lastIndexOf('/');
-    if (index != -1) {
-        const folderPath = newPath.slice(0, index);
-        // printToConsole(logLevel.log, folderPath);
-        if (!this.app.vault.getFolderByPath(folderPath)) {
-            this.app.vault.createFolder(folderPath);
-        }
-    }
-
-    const fileExists = await this.app.vault.getFileByPath(newPath);
-    //create new file
-    if (fileExists) {
-        return;
-    }
-    else {
-        await this.app.vault.create(newPath, formatContent(data, noteMoment), { ctime: Number.parseInt(noteMoment.format('x')) });
-    } */
 }
 
 export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {

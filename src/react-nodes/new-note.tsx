@@ -64,7 +64,7 @@ export class NewDailyNote extends Modal {
         let timeString = this.timeString;
 
         function createNote(event: React.MouseEvent<HTMLButtonElement>) {
-            printToConsole(logLevel.log, dateString + timeString);
+            // printToConsole(logLevel.log, dateString + timeString);
             const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
 
             let { format, folder }: any = getDailyNoteSettings();
@@ -81,12 +81,12 @@ export class NewDailyNote extends Modal {
 
         function setDate(event: React.ChangeEvent<HTMLInputElement>) {
             dateString = event.target.value;
-            printToConsole(logLevel.log, dateString);
+            // printToConsole(logLevel.log, dateString);
         }
 
         function setTime(event: React.ChangeEvent<HTMLInputElement>) {
             timeString = event.target.value;
-            printToConsole(logLevel.log, timeString);
+            // printToConsole(logLevel.log, timeString);
         }
 
         /* async function formAction(data: FormData) {
