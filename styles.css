@@ -124,13 +124,21 @@ svg.new-note-input {
 
 .instructions {}
 
+/* button */
 .cal-new-note-button {
     /* display: inline; */
     /* flex: 1; */
     margin-left: auto;
     aspect-ratio: 1/1;
     padding: 0;
+    /* background-color: var(--interactive-accent);
+    color: var(--text-on-accent); */
 }
+
+/* button.cal-new-note-button:hover {
+    background-color: var(--interactive-accent-hover);
+
+} */
 
 div.cal-date-heading-container {
     display: flex;
