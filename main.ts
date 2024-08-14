@@ -1,4 +1,4 @@
-import { App, Vault, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf, FileView } from 'obsidian';
+import { App, Vault, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf, FileView, PluginManifest } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
@@ -9,6 +9,9 @@ import { NewDailyNote } from './src/react-nodes/new-note';
 
 
 // Remember to rename these classes and interfaces!
+export type EnhancedApp = App & {
+    commands: { executeCommandById: Function };
+};
 
 
 export default class Diarium extends Plugin {
@@ -159,6 +162,29 @@ export default class Diarium extends Plugin {
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new DiariumSettingTab(this.app, this));
 
+        this.registerEvent(
+            this.app.workspace.on("editor-menu", (menu, editor, info) => {
+                const enhancedApp = this.app as EnhancedApp;
+
+                /* this.addCommand({
+                    id: 'select-view',
+                    name: 'Select Diarium view',
+                    icon: 'lucide-book-heart',
+                    callback: () => {
+                        new SelectView(this.app, this).open();
+                    }
+                }) */
+                menu.addItem(item => {
+                    item
+                        .setTitle('Select Diarium view')
+                        .setIcon('lucide-book-heart')
+                        .onClick(() => {
+                            enhancedApp.commands.executeCommandById(`${this.manifest.id}:select-view`);
+                        })
+                })
+            })
+        );
+
         // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
         // Using this function will automatically remove the event listener when this plugin is disabled.
         /* this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
@@ -273,6 +299,8 @@ class SelectView extends Modal {
     onOpen() {
         const { contentEl } = this;
         new Setting(contentEl).setName('Select Diarium view').setHeading()
+
+        const enhancedApp = this.app as EnhancedApp;
         // contentEl.setText('Open view');
 
         // contentEl.createEl('br');
@@ -290,7 +318,7 @@ class SelectView extends Modal {
             // .setButtonText('Open calendar')
             .setTooltip('New daily note')
             .onClick(() => {
-                new NewDailyNote(this.app, this.plugin).open();
+                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:new-note`);
                 this.close();
             });
 
@@ -299,7 +327,7 @@ class SelectView extends Modal {
             // .setButtonText('Open calendar')
             .setTooltip('Open calendar')
             .onClick(() => {
-                this.plugin.openCalendar();
+                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-calendar`);
                 this.close();
             });
 
@@ -310,7 +338,7 @@ class SelectView extends Modal {
             .setTooltip('Open on this day')
             .onClick(() => {
                 // this.plugin.openCalendar();
-                this.plugin.openOnThisDay();
+                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-on-this-day`);
                 this.close();
             });
 
@@ -319,7 +347,7 @@ class SelectView extends Modal {
             // .setButtonText('Open importer')
             .setTooltip('Open importer')
             .onClick(() => {
-                new ImportView(this.app, this.plugin).open();
+                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-importer`);
                 this.close();
             });
 
@@ -330,7 +358,7 @@ class SelectView extends Modal {
             .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
             .setWarning()
             .onClick(() => {
-                this.plugin.refreshNotes();
+                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:refresh-notes`);
                 this.close();
             })
 
