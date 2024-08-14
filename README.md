@@ -11,10 +11,11 @@ This plugin is **UNOFFICIAL** to both [Obsidian](https://obsidian.md/) and [Diar
 	- How long ago to start including notes (eg. 6 months ago or earlier)
 - Supports multiple notes per day.
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
+- Import a pre-existing journal from [Diarium](https://diariumapp.com/).
+- Insert a timestamp into the current note from the context menu.
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
 	- Allows for nested daily notes sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
-- Import a pre-existing journal from [Diarium](https://diariumapp.com/).
 ## Planned features
 Being in early development, there are some important features I have yet to add:
 - The ability to import tracker data when importing from [Diarium](https://diariumapp.com/).
