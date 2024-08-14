@@ -1,4 +1,4 @@
-import { App, Modal, Setting, Platform, TFile, normalizePath } from 'obsidian';
+import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown } from 'obsidian';
 // import * as zip from "@zip.js/zip.js";
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarium from 'main';
@@ -531,7 +531,7 @@ function formatContent(array: any, moment: any) {
     return frontmatter + body;
 }
 
-function htmlToMarkdown(value: string) {
+/* function htmlToMarkdown(value: string) {
     let newValue = value.replaceAll('</p><p>', '\n').replaceAll('<p>', '').replaceAll('</p>', '');
     newValue = newValue.replaceAll('<em>', '*').replaceAll('</em>', '*');
     newValue = newValue.replaceAll('<strong>', '**').replaceAll('</strong>', '**');
@@ -540,7 +540,7 @@ function htmlToMarkdown(value: string) {
 
     const doc = new DOMParser().parseFromString(newValue, 'text/html');
     return doc.documentElement.textContent;
-}
+} */
 
 function parseSun(date: string, sun: string, noteMoment: any) {
     const start = noteMoment.format('YYYY-MM-DD[T]');
