@@ -1,7 +1,7 @@
 {
     "id": "diarium",
     "name": "Diarium",
-    "version": "1.0.11",
+    "version": "1.0.12",
 	"minAppVersion": "0.15.0",
     "description": "Adds functionality from the Diarium journal app.",
     "author": "Erika Gozar",
