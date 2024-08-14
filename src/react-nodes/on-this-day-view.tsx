@@ -4,7 +4,7 @@ import { Root, createRoot } from "react-dom/client";
 import moment from 'moment';
 import type Diarium from 'main';
 import { ViewType, printToConsole, logLevel } from '../constants';
-import { getPriorNotes, getDate, isSameDay, getDailyNoteSettings } from "../get-daily-notes";
+import { getPriorNotes, getDate, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import { TimeSpan } from './time-span';
 
 
@@ -38,7 +38,7 @@ export class OnThisDayView extends ItemView {
 
     async onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
-        this.icon = 'lucide-clock';
+        this.icon = 'lucide-history';
         this.root.render(
             <StrictMode>
                 <h1>On this day...</h1>
@@ -68,21 +68,22 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
             <p>No notes to show.</p>
         )
     }
+    const { folder, format }: any = getModifiedFolderAndFormat();
     filteredNotes.sort(function (fileA, fileB) {
-        const momentA = getDate(fileA);
-        const momentB = getDate(fileB);
+        const momentA = getDate(fileA, folder, format);
+        const momentB = getDate(fileB, folder, format);
         return momentB.diff(momentA);
     })
     let array = [];
     let i = 0;
     let ii = 0;
-    let previousMoment = getDate(filteredNotes[i]);
+    let previousMoment = getDate(filteredNotes[i], folder, format);
 
     let subNotes: TFile[] = [];
 
     for (let note of filteredNotes) {
         if (!note) continue;
-        const thisMoment = getDate(note);
+        const thisMoment = getDate(note, folder, format);
         if (!array[i] && !isSameDay(thisMoment, previousMoment)) {
             array[i] = {
                 notes: subNotes,
@@ -103,34 +104,13 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
         id: i
     }
 
-    /* let subHeading: Array<any> = [];
-    for (let o in notesToShow) {
-        subHeading[o] = {
-            moment: notesToShow[o][0].moment,
-            id: notesToShow[o][0].id - 1,
-            node: notesToShow[o].map((note: any) =>
-                <>
-                    <NotePreview key={note.id} note={note} view={view} plugin={plugin} app={app} />
-                </>
-            )
-        }
-    } */
+
 
     // printToConsole(logLevel.log, `got here`);
 
-    let now = moment();
-    let unit = plugin.settings.reviewDelayUnit;
-    /* return notesToShow.map((sub: any) =>
-        <>
-            <h2 key={sub.id}>{
-                getTimeSpanTitle(
-                    now.diff(sub.moment, (unit + 's') as moment.unitOfTime.Diff),
-                    unit
-                )
-            }</h2>
-            {sub.node}
-        </>
-    ) */
+    /* let now = moment();
+    let unit = plugin.settings.reviewDelayUnit; */
+
     return (
         <div>
             {array.map(({ notes, moment, id }) => (

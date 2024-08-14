@@ -4,26 +4,8 @@ import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarium from 'main';
 import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
 import moment from 'moment';
-import { getDailyNoteSettings } from './get-daily-notes';
+import { getDailyNoteSettings, getModifiedFolderAndFormat } from './get-daily-notes';
 
-/* enum attachDirs {
-    defaultDir = "The folder specified in Settings → Files and links",
-    dailyNotesDir = "The folder specified in Settings → Daily notes",
-    dailyNotesSubDir = "A subfolder under the folder in Settings → Daily notes",
-    noteDir = "The same folder as its note",
-    noteSubdir = "A subfolder under its note's folder",
-    customDir = 'The folder specified below'
-} */
-
-/* export interface ImportSettings {
-    attachDir: attachDirs;
-    subDir: string;
-}
-
-export const DEFAULT_SETTINGS: ImportSettings = {
-    attachDir: attachDirs.defaultDir,
-    subDir: 'Attachments'
-} */
 
 export class ImportView extends Modal {
     plugin: Diarium;
@@ -115,19 +97,6 @@ export class ImportView extends Modal {
                 accept: ".zip"
             }
         });
-
-        /* let folderPath = '';
-
-        jsonFile.addEventListener('change', (event) => {
-            const input = event.target as HTMLInputElement;
-            const files = input.files;
-            if (files !== null && files.length > 0) {
-                const firstFilePath = files[0].path; // Assuming consistent path format
-                // Extract the folder path from the first file path
-                folderPath = firstFilePath.substring(0, firstFilePath.lastIndexOf('/'));
-                // printToConsole(logLevel.log, `folderPath = ${folderPath}`);
-            }
-        }); */
 
         /* const locationSetting = new Setting(this.contentEl)
             .setName('Location for attachments')
@@ -229,23 +198,7 @@ export class ImportView extends Modal {
             setText(importTextEl, importText);
             printToConsole(logLevel.info, importText);
 
-
-            /* const input = jsonFile as HTMLInputElement;
-            const files = jsonFile.files;
-            let fileFolder = '';
-            if (files !== null && files.length > 0) {
-                const firstFilePath = files[0].path; // Assuming consistent path format
-                // Extract the folder path from the first file path
-                fileFolder = firstFilePath.substring(0, firstFilePath.lastIndexOf('/'));
-                printToConsole(logLevel.log, `folderPath = ${fileFolder}`);
-            } */
-
-
-            let { format, folder }: any = getDailyNoteSettings();
-            if (format == '') format = DEFAULT_FORMAT;
-            let newFolder = '';
-            if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
-            else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
+            let { format, folder }: any = getModifiedFolderAndFormat();
 
             for (let i = 0; i < datafiles.length; i++) {
                 // create a BlobReader to read with a ZipReader the zip from a Blob object
@@ -280,13 +233,13 @@ export class ImportView extends Modal {
                     const data = JSON.parse(text);
                     if (data.date) {
                         printToConsole(logLevel.log, 'Is separate entry');
-                        await createEntry(data, format, newFolder);
+                        await createEntry(data, format, folder);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
                         const dataArray: Array<any> = JSON.parse(text);
                         for (const data of dataArray) {
-                            await createEntry(data, format, newFolder);
+                            await createEntry(data, format, folder);
                         }
                         break;
                     }
@@ -319,7 +272,7 @@ export class ImportView extends Modal {
                             });
                         });
 
-                    const filePath = normalizePath(`${newFolder}${fileMoment.format(format)}.md`);
+                    const filePath = normalizePath(`${folder}${fileMoment.format(format)}.md`);
 
                     const note = this.app.vault.getFileByPath(filePath);
 
@@ -525,22 +478,9 @@ function formatContent(array: any, moment: any) {
         body += `\n${htmlToMarkdown(array.html)}`;
     }
 
-    /* const doc = new DOMParser().parseFromString(input, 'text/html');
-    return doc.documentElement.textContent; */
-
     return frontmatter + body;
 }
 
-/* function htmlToMarkdown(value: string) {
-    let newValue = value.replaceAll('</p><p>', '\n').replaceAll('<p>', '').replaceAll('</p>', '');
-    newValue = newValue.replaceAll('<em>', '*').replaceAll('</em>', '*');
-    newValue = newValue.replaceAll('<strong>', '**').replaceAll('</strong>', '**');
-    newValue = newValue.replaceAll(/<a href="(?<link>.+)">(?<title>.+)<\/a>/g, `[$<title>]($<link>)`);
-    newValue = newValue.replaceAll("<s>", "~~").replaceAll("</s>", "~~");
-
-    const doc = new DOMParser().parseFromString(newValue, 'text/html');
-    return doc.documentElement.textContent;
-} */
 
 function parseSun(date: string, sun: string, noteMoment: any) {
     const start = noteMoment.format('YYYY-MM-DD[T]');
@@ -561,20 +501,6 @@ function parseSun(date: string, sun: string, noteMoment: any) {
     const newRiseText = start + riseMoment.format('HH:mm:[00]');
     const newSetText = start + setMoment.format('HH:mm:[00]');
 
-    /* const parse = (time: string, meridiem: string) => {
-        let hour = time.slice(0, time.indexOf(":"));
-        const rest = time.slice(time.indexOf(":"));
-        if (meridiem == "PM") {
-            const hourNum = Number.parseInt(hour) + 12;
-            hour = hourNum.toString();
-        }
-        if (hour.length == 1) {
-            hour = "0" + hour;
-        }
-        return `${start}${hour}${rest}:00`;
-    }
-    
-    let array = sun.split(' '); */
 
     return "\nsunrise: " + newRiseText
         + "\nsunset: " + newSetText;

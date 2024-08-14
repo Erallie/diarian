@@ -2,21 +2,25 @@ import * as React from "react";
 import { TFile, View, App } from "obsidian";
 // import useContext from "../hooks/useContext";
 import NotePreview from "./note-preview";
-import { getTimeSpanTitle, Unit } from '../constants';
+import { getTimeSpanTitle, Unit, printToConsole, logLevel } from '../constants';
 import type Diarium from '../../main';
 import moment from 'moment';
 
 interface Props {
     notes: TFile[];
     thisMoment: any;
-    wrapper?: React.JSX.Element;
+    /* wrapper?: React.JSX.Element; */
     view: View;
     plugin: Diarium;
     app: App;
 }
 
-export const TimeSpan = ({ notes, thisMoment, wrapper, view, plugin, app }: Props) => {
+export const TimeSpan = ({ notes, thisMoment, /* wrapper, */ view, plugin, app }: Props) => {
     const unit = plugin.settings.reviewIntervalUnit;
+    // printToConsole(logLevel.log, thisMoment.toString());
+
+
+    const now = moment().hour(0).minute(0).second(0).millisecond(0);
 
     if (!notes.length) {
         return null;
@@ -26,7 +30,7 @@ export const TimeSpan = ({ notes, thisMoment, wrapper, view, plugin, app }: Prop
         <>
             <h2>{
                 getTimeSpanTitle(
-                    Math.round(moment().diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff, true)),
+                    now.diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff),
                     unit
                 )
             } ago</h2>
@@ -41,9 +45,9 @@ export const TimeSpan = ({ notes, thisMoment, wrapper, view, plugin, app }: Prop
         </>
     );
 
-    if (wrapper) {
+    /* if (wrapper) {
         return React.cloneElement(wrapper, {}, component);
-    }
+    } */
 
     return component;
 };

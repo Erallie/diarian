@@ -22,10 +22,12 @@ export const enum logLevel {
     warn = "warn",
     error = "error"
 }
-
+/* export const DEFAULTS = {
+    format: 'YYYY-MM-DD'
+} */
 export const DEFAULT_FORMAT = 'YYYY-MM-DD';
 
-export function printToConsole(level: logLevel, message: string) { // level = {log, info, warn, error}
+export function printToConsole(level: logLevel, message: any) { // level = {log, info, warn, error}
     try { throw new Error() }
     catch (e) {
         let levelText = "";

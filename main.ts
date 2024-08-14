@@ -1,10 +1,10 @@
-import { App, Vault, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf, FileView, PluginManifest } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
 import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
-import { getAllDailyNotes, isDailyNote } from './src/get-daily-notes';
+import { getAllDailyNotes, isDailyNote, getDate, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
 import { NewDailyNote } from './src/react-nodes/new-note';
 
 
@@ -26,9 +26,12 @@ export default class Diarium extends Plugin {
         this.app.workspace.onLayoutReady(() => {
             this.dailyNotes = getAllDailyNotes();
 
+            const { folder, format }: any = getModifiedFolderAndFormat();
+
             this.registerEvent(
                 this.app.vault.on('rename', (file, oldPath) => {
-                    if (file instanceof TFile && isDailyNote(file)) {
+
+                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         // printToConsole(logLevel.log, file.name);
                         this.dailyNotes[this.dailyNotes.length] = file;
                         this.refreshViews(true, true);
@@ -37,8 +40,8 @@ export default class Diarium extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('create', (file) => {
-                    if (file instanceof TFile && isDailyNote(file)) {
-                        // printToConsole(logLevel.log, isDailyNote(file).toString());
+                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
+                    // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
                         this.refreshViews(true, true);
                     }
@@ -46,7 +49,7 @@ export default class Diarium extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('delete', (file) => {
-                    if (file instanceof TFile && isDailyNote(file)) {
+                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes = this.dailyNotes.filter(thisFile => {
                             return (thisFile != file);
                         })
@@ -74,6 +77,23 @@ export default class Diarium extends Plugin {
         statusBarItemEl.setText('Status Bar Text'); */
 
         // This adds a simple command that can be triggered anywhere
+        this.addCommand({
+            id: 'insert-timestamp',
+            name: 'Insert timestamp',
+            icon: 'lucide-alarm-clock-plus',
+            editorCallback: (editor: Editor, view: MarkdownView) => {
+                // this.insertTimestamp();
+                /* let dateString = '';
+                const now = moment();
+                const noteDate = getDate(view.file)
+                if () {
+                }
+                editor.replaceRange(
+                    moment().format("— M/D/YYYY h:mm A —"),
+                    editor.getCursor()
+                ); */
+            }
+        })
         this.addCommand({
             id: 'new-note',
             name: 'New daily note',
@@ -112,7 +132,7 @@ export default class Diarium extends Plugin {
         this.addCommand({
             id: 'open-on-this-day',
             name: 'Open on this day',
-            icon: 'lucide-clock',
+            icon: 'lucide-history',
             callback: () => {
                 this.openOnThisDay();
                 // this.openCalendar();
@@ -176,10 +196,10 @@ export default class Diarium extends Plugin {
                 }) */
                 menu.addItem(item => {
                     item
-                        .setTitle('Select Diarium view')
-                        .setIcon('lucide-book-heart')
+                        .setTitle('Insert timestamp')
+                        .setIcon('lucide-alarm-clock-plus')
                         .onClick(() => {
-                            enhancedApp.commands.executeCommandById(`${this.manifest.id}:select-view`);
+                            enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
                 })
             })
@@ -256,6 +276,10 @@ export default class Diarium extends Plugin {
 
         // "Reveal" the leaf in case it is in a collapsed sidebar
         workspace.revealLeaf(leaf!);
+    }
+
+    insertTimestamp() {
+
     }
 
     refreshNotes() {
@@ -365,7 +389,7 @@ class SelectView extends Modal {
 
         new ButtonComponent(contentEl)
             .setClass('select-view-button')
-            .setIcon('lucide-clock')
+            .setIcon('lucide-history')
             .setButtonText('Open on this day')
             // .setTooltip('Open on this day')
             .onClick(() => {

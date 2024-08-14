@@ -5,7 +5,7 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getDates, getNoteByMoment, isSameDay } from "../get-daily-notes";
+import { getDates, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
 import { NewDailyNote } from "./new-note";
@@ -62,7 +62,8 @@ export class CalendarView extends ItemView {
 const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
-    const filledDates = getDates(dailyNotes);
+    const { folder, format }: any = getModifiedFolderAndFormat();
+    const filledDates = getDates(dailyNotes, folder, format);
 
     const today = moment(new Date());
     const [selectedDate, setDate] = useState(new Date());
@@ -120,10 +121,13 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     let filteredDates = [];
     let showNotesNode;
     if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(selectedDate), dDate))).length !== 0) {
+
+        const { folder, format }: any = getModifiedFolderAndFormat();
+
         let i = 0;
         let notesToShow: any = [];
         for (let date of filteredDates) {
-            let note: TFile = getNoteByMoment(date);
+            let note: TFile = getNoteByMoment(date, folder, format);
             notesToShow[i] = {
                 note: note,
                 id: i

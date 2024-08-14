@@ -5,111 +5,6 @@ import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
 
 // const vault: Vault = app.vault;
 
-/* export function momentToRegex(format: string): RegExp {
-    const cardinal = (maxTeens: number) => {
-        const ignoreTeens = "(?<!1)";
-        switch (maxTeens) {
-            case 0:
-                return `(((?<=${ignoreTeens}1)st)|((?<=${ignoreTeens}2)n\\d)|((?<=${ignoreTeens}3)r\\d)|((?<!1|2|3)t\\h))`;
-            case 1:
-                return `(((?<=${ignoreTeens}1)st)|((?<=${ignoreTeens}2)n\\d)|((?<=${ignoreTeens}3)r\\d)|((?<!${ignoreTeens}1|2|3)t\\h))`;
-            case 2:
-                return `(((?<=${ignoreTeens}1)st)|((?<=${ignoreTeens}2)n\\d)|((?<=${ignoreTeens}3)r\\d)|((?<!${ignoreTeens}1|${ignoreTeens}2|3)t\\h))`;
-            case 3:
-                return `(((?<=${ignoreTeens}1)st)|((?<=${ignoreTeens}2)n\\d)|((?<=${ignoreTeens}3)r\\d)|((?<!${ignoreTeens}1|${ignoreTeens}2|${ignoreTeens}3)t\\h))`;
-            default:
-                return "";
-        }
-    }
-
-    let regexString = format.replaceAll(/([\\\.\^\$\*\+\?\|\(\)\{\}])/g, "\\$1");
-    let bracketRegex = /\[.*\]/g;
-    let bracketArray = format.match(bracketRegex);
-    regexString = regexString.replaceAll(bracketRegex, "$"); // When searching for it, use regex /(?<!\\)\$/g
-    regexString = regexString
-        .replaceAll('ss', '[0-5][0-9]')
-        .replaceAll('s', '[1-5]?[0-9]')
-        .replaceAll('A', '(A|P)\\M')
-        .replaceAll('a', '(a|p)\\m')
-        .replaceAll('zz', '[A-Z]{3,6}')
-        .replaceAll('z', '[A-Z]{3,6}')
-        .replaceAll('ZZ', '[-+]((0[0-9])|(1[0-2]))[0-5][0-9]')
-        .replaceAll('Z', '[-+]((0[0-9])|(1[0-2])):[0-5][0-9]')
-        .replaceAll('MMMM', '[A-Z][a-z]{2,8}')
-        .replaceAll('MMM', '[A-Z][a-z]{2}')
-        .replaceAll('MM', '((1[0-2])|(0[1-9]))')
-        .replaceAll('Mo', `((1[0-2])|[1-9])${cardinal(2)}`)
-        .replaceAll(/(?<!\\)M/g, '((1[0-2])|[1-9])')
-        .replaceAll('Qo', '((1st)|(2n\\d)|(3r\\d)|(4t\\h))')
-        .replaceAll('Q', '[1-4]')
-        .replaceAll('DDDD', '(?!0{3})(([1-2][0-9]{2})|(3(([0-5][0-9])|(6[0-6])))|(0[0-9]{2}))')
-        .replaceAll('DDDo', `(([1-2][0-9]{2})|(3(([0-5][0-9])|(6[0-6])))|([1-9][0-9])|[1-9])${cardinal(3)}`)
-        .replaceAll('DDD', '(([1-2][0-9]{2})|(3(([0-5][0-9])|(6[0-6])))|([1-9][0-9])|[1-9])')
-        .replaceAll('DD', '(([1-2][0-9])|(3[0-1])|(0[1-9]))')
-        .replaceAll('Do', `(([1-2][0-9])|(3[0-1])|[1-9])${cardinal(3)}`)
-        .replaceAll('D', '(([1-2][0-9])|(3[0-1])|[1-9])')
-        .replaceAll('dddd', '[A-Z][a-z]{5,8}')
-        .replaceAll('ddd', '[A-Z][a-z]{2}')
-        .replaceAll('dd', '[A-Z][a-z]')
-        .replaceAll('do', `[0-6]${cardinal(0)}`)
-        .replaceAll(/(?<!\\)d/g, '[0-6]')
-        .replaceAll('e', '[0-6]') // THIS IS BASED ON LOCALE: THIS REGEX MAY NOT BE CORRECT
-        .replaceAll('E', '[1-7]')
-        .replaceAll('ww', '(([1-4][0-9])|(5[0-3])|(0[1-9]))')
-        .replaceAll('wo', `(([1-4][0-9])|(5[0-3])|[1-9])${cardinal(3)}`)
-        .replaceAll('w', '(([1-4][0-9])|(5[0-3])|[1-9])')
-        .replaceAll('WW', '(([1-4][0-9])|(5[0-3])|(0[1-9]))')
-        .replaceAll('Wo', `(([1-4][0-9])|(5[0-3])|[1-9])${cardinal(3)}`)
-        .replaceAll('W', '(([1-4][0-9])|(5[0-3])|[1-9])')
-        .replaceAll('YYYYYY', '[-+][0-9]{6}')
-        .replaceAll('YYYY', '[0-9]{4}')
-        .replaceAll('YY', '[0-9]{2}')
-        .replaceAll('Y', '(\\+[1-9][0-9]*)?([0-9]{4})')
-        .replaceAll('y', '(?!0+)[0-9]{4}') // THIS IS NOT REFINED, AND I DO NOT KNOW IF IT MATCHES 'ERA YEAR' COMPLETELY!
-        .replaceAll('NNNNN', '((BC)|(AD))')
-        .replaceAll('NNNN', '((Before C\\hrist)|(Anno Do\\mini))')
-        .replaceAll('NNN', '((BC)|(AD))')
-        .replaceAll('NN', '((BC)|(AD))')
-        .replaceAll('N', '((BC)|(AD))')
-        .replaceAll('gggg', '[0-9]{4}')
-        .replaceAll('gg', '[0-9]{2}')
-        .replaceAll('GGGG', '[0-9]{4}')
-        .replaceAll('GG', '[0-9]{2}')
-        .replaceAll('HH', '(([0-1][0-9])|(2[0-3]))')
-        .replaceAll('H', '((1[0-9])|(2[0-3])|[0-9])')
-        .replaceAll('hh', '((1[0-2])|(0[1-9]))')
-        .replaceAll(/(?<!\\)h/g, '((1[0-2])|[1-9])')
-        .replaceAll('kk', '(([0-1][0-9])|(2[0-4]))')
-        .replaceAll('k', '((1[0-9])|(2[0-4])|[1-9])')
-        .replaceAll('mm', '[0-5][0-9]')
-        .replaceAll(/(?<!\\)m/g, '[1-5]?[0-9]')
-        .replaceAll('S', '[0-9]')
-        .replaceAll('XX', '[0-9]{13}')
-        .replaceAll('X', '[0-9]{10}')
-        .replaceAll('\\d', 'd'); // to make sure the \d in the cardinals don't become digits
-
-    // console.log(`regexString =\n\t${regexString}`);
-    let newString = '';
-    if (bracketArray !== null) {
-        let match;
-        let lastIndex = 0;
-        const matchRegex = /(?<!\\)\$/g;
-        let i = 0;
-        while ((match = matchRegex.exec(regexString)) !== null) {
-            newString += regexString.slice(lastIndex, match.index);
-            newString += bracketArray[i].slice(1, -1);
-            lastIndex = match.index + match[0].length;
-            i++
-        }
-        newString += regexString.slice(lastIndex);
-    }
-    else {
-        newString = regexString;
-    }
-    // console.log(`newString = ${newString}`);
-    return new RegExp(newString, "g");
-} */
-
 
 export function getDailyNoteSettings() {
     /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
@@ -140,57 +35,37 @@ export function getAllDailyNotes() {
 
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter((file: TFile) => {
-        const { format, folder } = getDailyNoteSettings();
+        const { format, folder } = getModifiedFolderAndFormat();
         return isDailyNote(file, format, folder);
     });
     // printToConsole(logLevel.log, filteredFiles.length.toString());
     return filteredFiles;
 };
 
-export function isDailyNote(file: TFile, format?: string, folder?: string) {
-    let newFormat = '';
-    if (format) {
-        newFormat = format;
-    }
-    else {
-        newFormat = getDailyNoteSettings().format;
-    }
-    
-    let newFolder = '';
-    if (folder) {
-        newFolder = folder;
-    }
-    else {
-        newFolder = getDailyNoteSettings().folder;
-    }
-
-    // let regexString = normalizePath(newFormat);
-    let normalizedFormat = normalizePath(newFormat);
-    // const regex = momentToRegex(regexString);
-
-    /* let path = '';
-    if (file.path != '') {
-        path = file.path + '/';
-    }
- */
+export function isDailyNote(file: TFile, format: string, folder: string) {
     
     // const index = (path + file.name).search(regex);
 
     let checkIndex;
-    if (newFolder != '') {
-        checkIndex = newFolder.length + 1;
-    }
-    else {
+    if (folder != '')
+        checkIndex = folder.length;
+    else
         checkIndex = 0;
-    }
 
+    // printToConsole(logLevel.log, file.path);
     const path = file.path;
-    const matchesBookends = path.startsWith(newFolder) && path.endsWith('.md');
+
+    let matchesBookends;
+    if (checkIndex == 0)
+        matchesBookends = path.endsWith('.md');
+    else
+        matchesBookends = path.startsWith(folder) && path.endsWith('.md');
+
     if (matchesBookends) {
-        const newName = path.slice(checkIndex, path.length - 3);
-        const result = moment(newName, normalizedFormat).isValid();
+        const newName = path.slice(checkIndex, path.length - '.md'.length);
+        const result = moment(newName, format, true).isValid();
         // if (result) {
-        // printToConsole(logLevel.log, newName + " vs " + normalizedFormat);
+        // printToConsole(logLevel.log, newName + " vs " + format);
         return result;
         // }
     }
@@ -198,55 +73,38 @@ export function isDailyNote(file: TFile, format?: string, folder?: string) {
     // return index == checkIndex;
 }
 
-export function getDates(notes: TFile[], format?: string) {
-    if (!format) {
-        format = getDailyNoteSettings().format;
-    }
+export function getDates(notes: TFile[], folder: string, format: string) {
+
     let allDates = [];
     let i = 0;
     for (let note of notes) {
-        allDates[i] = getDate(note, format);
+        allDates[i] = getDate(note, folder, format);
         i++;
     }
     // console.log(allDates[allDates.length - 1].toString());
     return allDates;
 }
 
-export function getDate(note: TFile, format?: string) {
-    if (!format) {
-        format = getDailyNoteSettings().format;
-    }
-    let baseName = note.path + '/' + note.name;
-    baseName = baseName.slice(getDailyNoteSettings().folder.length + 1);
+export function getDate(note: TFile, folder: string, format: string) {
+    // printToConsole(logLevel.log, note.path);
+    // let baseName = note.path + '/' + note.name;
+    let index = 0;
+    if (folder != '')
+        index = folder.length;
+
+    let baseName = note.path.slice(index);
     const noteDate = moment(baseName, format);
     return noteDate;
 }
 
-export function getNoteByMoment(moment: any, folder?: string, format?: string) {
-    let newFormat = '';
-    if (!format) {
-        newFormat = getDailyNoteSettings().format;
-    }
-    else {
-        newFormat = format;
-    }
-
-    let newFolder = '';
-    if (!folder) {
-        newFolder = getDailyNoteSettings().folder;
-    }
-    else {
-        newFolder = newFolder;
-    }
-
-    const normalizedFormat = normalizePath(newFormat);
+export function getNoteByMoment(moment: any, folder: string, format: string) {
     // console.log(moment.format(getDailyNoteSettings().format));
-    let path = moment.format(normalizedFormat);
-    path = normalizePath(newFolder + '/' + path + '.md');
+    let path = moment.format(format);
+    path = normalizePath(folder + path + '.md');
     // console.log(path);
     const note = this.app.vault.getFileByPath(path);
     if (note === null) {
-        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(normalizedFormat)}.`);
+        printToConsole(logLevel.warn, `Could not get any notes with the date ${moment.format(format)}.`);
     }
     return note;
     //
@@ -261,18 +119,21 @@ export function isSameDay(date1: any, date2: any) {
 }
 
 export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
+    const now = moment().hour(0).minute(0).second(0).millisecond(0);
 
-    const now = moment();
-    const format = getDailyNoteSettings().format;
+    // printToConsole(logLevel.log, now.format('MMMM Do, YYYY [at] h:mm:ss.SSS A'));
     const reviewInterval = plugin.settings.reviewInterval;
-    const delayUnit = plugin.settings.reviewDelayUnit + 's';
+    const delayUnit = plugin.settings.reviewDelayUnit + 's' as moment.unitOfTime.Diff;
 
     let filteredNotes: TFile[] = [];
     let i = 0;
 
+    const { format, folder }: any = getModifiedFolderAndFormat();
+
     for (let note of allNotes) {
-        const noteDate = getDate(note, format);
-        const delayDiff = now.diff(noteDate, delayUnit as moment.unitOfTime.Diff, true);
+        const noteDate = getDate(note, folder, format);
+        const delayDiff = now.diff(noteDate, delayUnit, true);
+        //this might make it so that you need to be past the time of day for the note too. Consider making all .diff references rounded.
         const isInRange = delayDiff >= plugin.settings.reviewDelay;
 
         let isMatch: boolean = false;
@@ -312,5 +173,24 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
         i++;
     }
 
+
+    // printToConsole(logLevel.log, filteredNotes.length);
     return filteredNotes;
+}
+
+export function getModifiedFolderAndFormat() {
+    let { format, folder }: any = getDailyNoteSettings();
+
+    let newFormat = DEFAULT_FORMAT;
+    if (format && format != '') newFormat = normalizePath(format);
+
+    let newFolder = '';
+    if (folder && normalizePath(folder) == '/') newFolder = '';
+    else if (folder && normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
+
+    // printToConsole(logLevel.log, newFolder);
+    return {
+        folder: newFolder,
+        format: newFormat
+    }
 }
