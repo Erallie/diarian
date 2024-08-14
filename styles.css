@@ -7,6 +7,9 @@ If your plugin does not need CSS, delete this file.
 
 */
 
+
+
+
 .setting-error {
     color: var(--text-error);
 }
@@ -15,14 +18,122 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
+div.modal:has(.select-view-button) {
+    /* width: 50%; */
+    width: var(--modal-community-sidebar-width);
+    max-width: var(--modal-max-width-narrow);
+}
+
 .select-view-button {
     display: block;
     width: 100%;
-    margin: var(--size-2-2);
+    margin-bottom: var(--size-2-3);
 }
-.instructions {
-    
+
+.new-note-div {
+    width: 100%;
+    display: flex;
+    margin-bottom: var(--size-2-3);
 }
+
+body:not(.is-ios):not(.is-android) .new-note-input {
+    padding-inline-start: var(--size-4-6);
+}
+
+
+div.modal:has(.new-note-div) {
+    /* width: 50%; */
+    width: var(--modal-community-sidebar-width);
+    max-width: var(--modal-max-width-narrow);
+    /* max-width: var(--modal-max-width); */
+}
+
+.new-note-label,
+.new-note-input {
+    font: var(--font-interface-theme);
+    font-family: var(--font-interface);
+    /* font-size: var(--font-ui-small); */
+}
+
+.new-note-label {
+    flex: 1;
+    margin: auto var(--size-4-4) auto auto;
+    text-align: right;
+    /* padding-right: var(--size-4-3); */
+    /* color: var(--text-normal); */
+
+    color: var(--text-normal);
+    font-size: var(--font-ui-medium);
+    line-height: var(--line-height-tight);
+    unicode-bidi: plaintext;
+    /* font-family: var(--font-interface); */
+}
+
+.new-note-input {
+    flex: 2.5;
+}
+
+.new-note-input {
+    /* height: var(--input-height);
+    flex: 3;
+    border-radius: var(--input-radius);
+    font-weight: var(--input-font-weight);
+    color: var(--text-normal);
+    border-width: var(--input-border-width);
+    background-color: var(--background-modifier-form-field);
+    padding: var(--size-2-2);
+    caret-color: var(--caret-color);
+    border-color: var(--background-modifier-border);
+    border-style: solid; */
+
+    -webkit-app-region: no-drag;
+    background-color: var(--background-modifier-form-field);
+    border: var(--input-border-width) solid var(--background-modifier-border);
+    color: var(--text-normal);
+    font-family: inherit;
+    padding: var(--size-4-1) var(--size-4-2);
+    font-size: var(--font-ui-small);
+    border-radius: var(--input-radius);
+    outline: none;
+    /* cursor: default;
+    overflow: hidden; */
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    unicode-bidi: plaintext;
+    box-sizing: border-box;
+    /* box-sizing: border-box; */
+    /* user-select: var(--text-selection); */
+}
+
+/* .new-note-input::before {} */
+
+.new-note-input:hover {
+    /* border-color: var(--background-modifier-border-hover); */
+    border-color: var(--background-modifier-border-hover);
+    transition: box-shadow 0.15s ease-in-out, border 0.15s ease-in-out;
+}
+
+.new-note-input:focus,
+.new-note-input:focus-visible {
+    /* border-color: var(--background-modifier-border-focus); */
+    box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+}
+
+.new-note-input:focus,
+.new-note-input:active {
+    border-color: var(--background-modifier-border-focus);
+    transition: box-shadow 0.15s ease-in-out, border 0.15s ease-in-out;
+}
+
+.new-note-input svg,
+svg.new-note-input {
+    width: var(--icon-size);
+    stroke-width: var(--icon-stroke);
+    color: var(--icon-color);
+}
+
+
+.instructions {}
 
 .calendar-container {
     width: 500px;
@@ -34,6 +145,7 @@ If your plugin does not need CSS, delete this file.
     padding-right: min(50px, 5%); */
     /* background-color: var(--background-secondary); */
 }
+
 span.calendar-dot {
     padding: 0;
     letter-spacing: 0.2em;
@@ -52,17 +164,18 @@ div.dot-container {
     display: block;
     overflow-y: clip;
 }
+
 /* Calendar classes */
 .react-calendar {
     width: 350px;
     max-width: 100%;
     background: none;
-        /* background-color: var(--background-primary); */
-        /* border: 1px solid #a0a096; */
+    /* background-color: var(--background-primary); */
+    /* border: 1px solid #a0a096; */
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
     margin-left: auto;
-        margin-right: auto;
+    margin-right: auto;
 }
 
 .react-calendar--doubleView {
@@ -91,15 +204,15 @@ div.dot-container {
 
 .react-calendar button {
     /* margin: 0.1rem 0.2rem; */
-        /* border: none; */
-        border: 0.1em solid var(--background-primary);
-        border-radius: 0;
-        box-shadow: none;
-        /* width: calc(100% - 0.1rem); */
-            /* width: 14.2857142857%; */
-            /* width: 100%; */
-            /* display: flex; */
-            height: 2.5rem;
+    /* border: none; */
+    border: 0.1em solid var(--background-primary);
+    border-radius: 0;
+    box-shadow: none;
+    /* width: calc(100% - 0.1rem); */
+    /* width: 14.2857142857%; */
+    /* width: 100%; */
+    /* display: flex; */
+    height: 2.5rem;
 }
 
 .react-calendar button:enabled:hover {
@@ -114,13 +227,13 @@ div.dot-container {
 
 .react-calendar__navigation button {
     min-width: 44px;
-        background-color: var(--interactive-normal);
-        /* margin: 0.05rem 0.1rem; */
+    background-color: var(--interactive-normal);
+    /* margin: 0.05rem 0.1rem; */
 }
 
 .react-calendar__navigation button:disabled {
     background-color: var(--background-primary-alt);
-        /* Test to make sure this is good */
+    /* Test to make sure this is good */
 }
 
 .react-calendar__navigation button:enabled:hover,
@@ -141,15 +254,15 @@ div.dot-container {
 .react-calendar__month-view__weekdays__weekday {
     padding: 0.5em;
     display: flex;
-        justify-content: center;
-        /* text-decoration: none; */
+    justify-content: center;
+    /* text-decoration: none; */
 }
 
 /* not sure whether this is working */
 .react-calendar__month-view__weekNumbers .react-calendar__tile {
     /* .react-calendar__month-view--weekNumbers button.react-calendar__tile { */
     display: flex;
-        /* width: 100%; */
+    /* width: 100%; */
     align-items: center;
     justify-content: center;
     font: inherit;
@@ -190,7 +303,7 @@ button.react-calendar__tile,
 
 button.react-calendar__tile:disabled {
     background-color: var(--background-primary-alt);
-        color: var(--text-faint);
+    color: var(--text-faint);
 }
 
 .react-calendar__month-view__days__day--neighboringMonth:disabled,
@@ -260,7 +373,7 @@ button.react-calendar__tile--active:enabled:hover,
 button.react-calendar__tile--active:enabled:focus {
     /* background-color: var(--interactive-accent); */
     background-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), max(var(--accent-l) - 5%, 10%));
-        color: var(--text-on-accent);
+    color: var(--text-on-accent);
 }
 
 /* button.react-calendar__tile--active:enabled:hover,

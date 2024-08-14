@@ -44,7 +44,7 @@ export default class Diarium extends Plugin {
                 this.app.vault.on('create', (file) => {
                     const { folder, format }: any = getModifiedFolderAndFormat();
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                    // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
+                        // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
                         this.refreshViews(true, true);
                     }
@@ -84,7 +84,7 @@ export default class Diarium extends Plugin {
         this.addCommand({
             id: 'insert-timestamp',
             name: 'Insert timestamp',
-            icon: 'lucide-alarm-clock',
+            icon: 'lucide-alarm-plus',
             editorCallback: (editor: Editor, view: MarkdownView) => {
                 // this.insertTimestamp();
                 let dateString = '';
@@ -227,7 +227,7 @@ export default class Diarium extends Plugin {
                 menu.addItem(item => {
                     item
                         .setTitle('Insert timestamp')
-                        .setIcon('lucide-alarm-clock')
+                        .setIcon('lucide-alarm-plus')
                         .onClick(() => {
                             enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
@@ -378,7 +378,7 @@ class SelectView extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        new Setting(contentEl).setName('Select Diarium view').setHeading()
+        new Setting(contentEl).setName('Select Diarium view').setHeading();
 
         const enhancedApp = this.app as EnhancedApp;
         // contentEl.setText('Open view');

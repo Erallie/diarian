@@ -62,6 +62,7 @@ export class NewDailyNote extends Modal {
 
         let dateString = this.dateString;
         let timeString = this.timeString;
+        // let dateTimeString = dateString + 'T' + timeString;
 
         function createNote(event: React.MouseEvent<HTMLButtonElement>) {
             // printToConsole(logLevel.log, dateString + timeString);
@@ -88,6 +89,10 @@ export class NewDailyNote extends Modal {
             timeString = event.target.value;
             // printToConsole(logLevel.log, timeString);
         }
+        /* function setDateTime(event: React.ChangeEvent<HTMLInputElement>) {
+            dateTimeString = event.target.value;
+            // printToConsole(logLevel.log, timeString);
+        } */
 
         /* async function formAction(data: FormData) {
             let noteMoment = moment(data.get('date')?.toString(), 'YYYY-MM-DD');
@@ -95,13 +100,15 @@ export class NewDailyNote extends Modal {
         this.root.render(
             <React.StrictMode>
 
-                {/* <input id='date' className='newNoteInput' aria-label="Date and Time" type="datetime-local" defaultValue={this.date.format('YYYY-MM-DD[T]kk:mm:ss')} /> */}
-                <label htmlFor='date' className='newNoteLabel'>Date</label>
-                <input id='date' className='newNoteInput' aria-label="Date" type="date" /* value={dateString} */ onChange={setDate} defaultValue={this.dateString} />
-                <br />
-                <label htmlFor='time' className='newNoteLabel'>Time</label>
-                <input id='time' className='newNoteInput' aria-label="Time" type="time" /* value={timeString} */ onChange={setTime} defaultValue={this.timeString} />
-                <br />
+                {/* <input id='date' className='new-note-input' aria-label="Date and Time" type="datetime-local" defaultValue={dateTimeString} onChange={setDateTime} /> */}
+                <div className="new-note-div">
+                    <label htmlFor='date' className='new-note-label'>Date</label>
+                    <input id='date' className='new-note-input' aria-label="Date" type="date" onChange={setDate} defaultValue={dateString} />
+                </div>
+                <div className="new-note-div">
+                    <label htmlFor='time' className='new-note-label'>Time</label>
+                    <input id='time' className='new-note-input' aria-label="Time" type="time" onChange={setTime} defaultValue={timeString} />
+                </div>
                 <button onClick={createNote} >Create note</button>
 
             </React.StrictMode>
