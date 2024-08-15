@@ -108,16 +108,16 @@ export default class Diarium extends Plugin {
                     let newCursorLine = cursor.line;
 
                     if (textBeforeCursor != '') {
-                        fullString = '\n\n' + fullString + '\n';
-                        newCursorLine += 3;
+                        fullString = '\n\n' + fullString + '\n\n';
+                        newCursorLine += 4;
                     }
                     else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') { //text before cursor is empty but line before cursor is not
-                        fullString = '\n' + fullString + '\n';
-                        newCursorLine += 2;
+                        fullString = '\n' + fullString + '\n\n';
+                        newCursorLine += 3;
                     }
                     else {
-                        fullString += '\n';
-                        newCursorLine += 1;
+                        fullString += '\n\n';
+                        newCursorLine += 2;
                     }
 
                     editor.replaceRange(
