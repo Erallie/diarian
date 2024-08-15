@@ -2,6 +2,7 @@ import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarium from 'main';
 import { Unit, getTimeSpanTitle } from './constants';
 
+
 export interface DiariumSettings {
     headingFormat: string;
     previewLength: number;
@@ -17,6 +18,9 @@ export interface DiariumSettings {
 
     dateStampFormat: string;
     timeStampFormat: string;
+
+    calStartup: boolean;
+    onThisDayStartup: boolean;
 }
 
 export const DEFAULT_SETTINGS: DiariumSettings = {
@@ -33,7 +37,10 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     reviewDelayUnit: Unit.month,
 
     dateStampFormat: 'M/D/YYYY',
-    timeStampFormat: 'h:mm A'
+    timeStampFormat: 'h:mm A',
+
+    calStartup: false,
+    onThisDayStartup: false
 }
 
 const getMaxTimeSpan = (unit: Unit) => {
@@ -62,6 +69,47 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
+        new Setting(containerEl).setName('On startup').setHeading();
+
+        const openCalName = new DocumentFragment;
+        openCalName.textContent = 'Open ';
+        openCalName.createEl('strong', { text: "Calendar" });
+
+        const openCalDesc = new DocumentFragment;
+        openCalDesc.textContent = 'Open the ';
+        openCalDesc.createEl('strong', { text: "Calendar" });
+        openCalDesc.createEl('span', { text: " view on startup." });
+
+        new Setting(containerEl)
+            .setName(openCalName)
+            .setDesc(openCalDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.calStartup).onChange((value) => {
+                    this.plugin.settings.calStartup = value;
+                    void this.plugin.saveSettings();
+                }));
+
+
+
+        const openOnThisDayName = new DocumentFragment;
+        openOnThisDayName.textContent = 'Open ';
+        openOnThisDayName.createEl('strong', { text: "On this day" });
+
+        const openOnThisDayDesc = new DocumentFragment;
+        openOnThisDayDesc.textContent = 'Open the ';
+        openOnThisDayDesc.createEl('strong', { text: "On this day" });
+        openOnThisDayDesc.createEl('span', { text: " view on startup." });
+
+
+        new Setting(containerEl)
+            .setName(openOnThisDayName)
+            .setDesc(openOnThisDayDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.onThisDayStartup).onChange((value) => {
+                    this.plugin.settings.onThisDayStartup = value;
+                    void this.plugin.saveSettings();
+                }));
+
         new Setting(containerEl).setName('Calendar').setHeading();
 
         const headingFormatDesc = new DocumentFragment();
@@ -73,9 +121,10 @@ export class DiariumSettingTab extends PluginSettingTab {
                 href: "https://momentjs.com/docs/#/displaying/format/",
             },
         });
-        headingFormatDesc.createEl("span", {
-            text: " format for headings in the Calendar view."
-        }).createEl("br");
+        headingFormatDesc.createEl("span", { text: " format for headings in the " })
+            .createEl('strong', { text: "Calendar" });
+        headingFormatDesc.createEl('span', { text: " view." })
+            .createEl("br");
         const headingFormatContainer = headingFormatDesc.createEl('span', { text: 'Headings will appear as: ' });
         const headingFormat = headingFormatContainer.createSpan({ cls: 'text-accent' });
 
@@ -202,19 +251,19 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         new Setting(containerEl).setName('On this day').setHeading();
 
-        const IntervalDescription = new DocumentFragment();
-        IntervalDescription.textContent =
+        const intervalDescription = new DocumentFragment();
+        intervalDescription.textContent =
             "Notes will be displayed in intervals of this amount of time before the current day.";
-        IntervalDescription.createEl("br");
-        /* IntervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
-        IntervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+        intervalDescription.createEl("br");
+        /* intervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
+        intervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
             text: "every " + getTimeSpanTitle(this.plugin.settings.reviewInterval, this.plugin.settings.reviewIntervalUnit), cls: 'text-accent'
 
         });
 
         new Setting(containerEl)
             .setName('Review interval')
-            .setDesc(IntervalDescription)
+            .setDesc(intervalDescription)
             .addSlider((slider) =>
                 slider
                     .setValue(this.plugin.settings.reviewInterval)
@@ -250,18 +299,20 @@ export class DiariumSettingTab extends PluginSettingTab {
                     }),
             );
 
-        const DelayDescription = new DocumentFragment();
-        DelayDescription.textContent =
-            "Only notes from this long ago or earlier will be included in the 'On this day' view.";
-        DelayDescription.createEl("br");
-        DelayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+        const delayDescription = new DocumentFragment();
+        delayDescription.textContent =
+            "Only notes from this long ago or earlier will be included in the ";
+        delayDescription.createEl('strong', { text: "On this day" });
+        delayDescription.createEl('span', { text: " view." });
+        delayDescription.createEl("br");
+        delayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
             text: getTimeSpanTitle(this.plugin.settings.reviewDelay, this.plugin.settings.reviewDelayUnit) + " ago or earlier", cls: 'text-accent'
 
         });
 
         new Setting(containerEl)
             .setName('Review delay')
-            .setDesc(DelayDescription)
+            .setDesc(delayDescription)
             .addSlider((slider) =>
                 slider
                     .setValue(this.plugin.settings.reviewDelay)

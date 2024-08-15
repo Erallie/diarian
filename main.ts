@@ -3,7 +3,7 @@ import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
-import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
+import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS, StartupView } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getDate, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
 import { NewDailyNote } from './src/react-nodes/new-note';
 
@@ -64,6 +64,14 @@ export default class Diarium extends Plugin {
 
             this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.view, this.app));
             this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.view, this.app));
+
+            const enhancedApp = this.app as EnhancedApp;
+
+            if (this.settings.calStartup)
+                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+
+            if (this.settings.onThisDayStartup)
+                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
         })
 
         // This creates an icon in the left ribbon.
