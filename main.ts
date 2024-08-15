@@ -134,7 +134,48 @@ export default class Diarium extends Plugin {
                 }
 
             }
-        })
+        });
+
+        this.addCommand({
+            id: 'show-in-calendar',
+            name: 'Show daily note in calendar',
+            icon: 'lucide-calendar-search',
+            checkCallback: (checking: boolean) => {
+                // Conditions to check
+                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                if (markdownView) {
+                    // If checking is true, we're simply "checking" if the command can be run.
+                    // If checking is false, then we want to actually perform the operation.
+
+                    const { folder, format }: any = getModifiedFolderAndFormat();
+
+                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
+                        // printToConsole(logLevel.log, 'can open view');
+                        if (checking) return true;
+                        const { folder, format }: any = getModifiedFolderAndFormat();
+                        const noteMoment = getMoment(markdownView.file, folder, format);
+                        this.refreshViews(true, false, noteMoment);
+                        this.openLeaf(ViewType.calendarView, LeafType.tab);
+                    }
+                    else if (checking) return false;
+                    // This command will only show up in Command Palette when the check function returns true
+                }
+            }
+        });
+        /* this.addCommand({
+            id: 'show-in-calendar',
+            name: 'Show daily note in calendar',
+            icon: 'lucide-calendar-search',
+            editorCallback: (editor: Editor, view: MarkdownView) => {
+                if (view.file) {
+                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const noteMoment = getMoment(view.file, folder, format);
+                    this.refreshViews(true, false, noteMoment);
+                    this.openLeaf(ViewType.calendarView, LeafType.tab);
+                }
+            }
+        }); */
+
         this.addCommand({
             id: 'new-note',
             name: 'New daily note',
@@ -324,13 +365,23 @@ export default class Diarium extends Plugin {
         printToConsole(logLevel.info, 'Daily notes refreshed!');
     } */
 
-    refreshViews(refCalView: boolean, refRevView: boolean) {
+    /* setCalDate(date: Date) {
+        const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
+        for (let leaf of calView) {
+            let view = leaf.view;
+            if (view instanceof CalendarView) {
+                view.startDate = date;
+            }
+        }
+    } */
+
+    refreshViews(refCalView: boolean, refRevView: boolean, startMoment?: moment.Moment) {
         if (refCalView) {
             const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
             for (let leaf of calView) {
                 let view = leaf.view;
                 if (view instanceof CalendarView) {
-                    view.refresh(this);
+                    view.refresh(this, startMoment?.toDate());
                 }
             }
         }

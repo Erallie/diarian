@@ -54,8 +54,9 @@ export class CalendarView extends ItemView {
         this.root?.unmount();
     }
 
-    async refresh(plugin: Diarium) {
+    async refresh(plugin: Diarium, newDate?: Date) {
         this.plugin = plugin;
+        if (newDate && newDate !== undefined) this.startDate = newDate;
         this.onClose();
         this.onOpen();
     }
