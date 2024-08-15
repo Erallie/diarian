@@ -9,10 +9,12 @@ export interface DiariumSettings {
     useCallout: boolean;
     showNoteTitle: boolean;
     useQuote: boolean;
+
     reviewInterval: number;
     reviewIntervalUnit: Unit;
     reviewDelay: number;
     reviewDelayUnit: Unit;
+
     dateStampFormat: string;
     timeStampFormat: string;
 }
@@ -20,14 +22,16 @@ export interface DiariumSettings {
 export const DEFAULT_SETTINGS: DiariumSettings = {
     headingFormat: 'dddd, MMMM Do, YYYY',
     previewLength: 250,
-    openInNewPane: true,
+    openInNewPane: false,
     useCallout: true,
     showNoteTitle: true,
     useQuote: true,
+
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
     reviewDelay: 6,
     reviewDelayUnit: Unit.month,
+
     dateStampFormat: 'M/D/YYYY',
     timeStampFormat: 'h:mm A'
 }
@@ -60,28 +64,28 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         new Setting(containerEl).setName('Calendar').setHeading();
 
-        const headingFormatDescription = new DocumentFragment();
-        headingFormatDescription.textContent =
+        const headingFormatDesc = new DocumentFragment();
+        headingFormatDesc.textContent =
             "The ";
-        headingFormatDescription.createEl("a", {
+        headingFormatDesc.createEl("a", {
             text: "moment.js",
             attr: {
                 href: "https://momentjs.com/docs/#/displaying/format/",
             },
         });
-        headingFormatDescription.createEl("span", {
+        headingFormatDesc.createEl("span", {
             text: " format for headings in the Calendar view."
         }).createEl("br");
-        const sampleFormatContainer = headingFormatDescription.createEl('span', { text: 'Headings will appear as: ' });
-        const sampleFormat = sampleFormatContainer.createSpan({ cls: 'text-accent' });
+        const headingFormatContainer = headingFormatDesc.createEl('span', { text: 'Headings will appear as: ' });
+        const headingFormat = headingFormatContainer.createSpan({ cls: 'text-accent' });
 
         new Setting(containerEl)
             .setName('Heading format')
-            .setDesc(headingFormatDescription)
+            .setDesc(headingFormatDesc)
             .addMomentFormat(text => text
-                .setDefaultFormat('dddd, MMMM Do, YYYY')
+                .setDefaultFormat(DEFAULT_SETTINGS.headingFormat)
                 .setValue(this.plugin.settings.headingFormat)
-                .setSampleEl(sampleFormat)
+                .setSampleEl(headingFormat)
                 .onChange(async (value) => {
                     this.plugin.settings.headingFormat = value;
                     await this.plugin.saveSettings();
@@ -93,15 +97,31 @@ export class DiariumSettingTab extends PluginSettingTab {
 
 
         new Setting(containerEl)
+            .setName("Display note title")
+            .setDesc(
+                "Render the note title above the preview text when showing note previews.",
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.showNoteTitle)
+                    .onChange((value) => {
+                        this.plugin.settings.showNoteTitle = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
+                    }),
+            );
+
+        new Setting(containerEl)
             .setName('Preview length')
             .setDesc('The maximum number of characters of content a note preview should display.')
             .addSlider(slider => slider
-                .setLimits(0, 500, 10)
+                .setLimits(0, 1000, 10)
                 .setValue(this.plugin.settings.previewLength)
                 .setDynamicTooltip()
                 .onChange(async (value) => {
                     this.plugin.settings.previewLength = value;
                     await this.plugin.saveSettings();
+                    this.plugin.refreshViews(true, true);
                 })
             )
 
@@ -135,6 +155,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                 toggle.setValue(this.plugin.settings.useCallout).onChange((value) => {
                     this.plugin.settings.useCallout = value;
                     void this.plugin.saveSettings();
+                    this.plugin.refreshViews(true, true);
                     this.display();
                 }),
             );
@@ -147,9 +168,36 @@ export class DiariumSettingTab extends PluginSettingTab {
                     toggle.setValue(this.plugin.settings.useQuote).onChange((value) => {
                         this.plugin.settings.useQuote = value;
                         void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
                     }),
                 );
         }
+
+        let notePaneTitle = 'Open in a new tab';
+
+        const notePaneDesc = new DocumentFragment();
+        notePaneDesc.textContent =
+            "When clicked, notes will open in a new tab when possible";
+        if (Platform.isDesktop) {
+            notePaneDesc.createEl('span', { text: ' by default.' })
+            notePaneDesc.createEl("br");
+            notePaneDesc.createEl('span', { text: 'Middle-clicking a note will ' }).createEl('em', { text: 'always' });
+            notePaneDesc.createEl('span', { text: ' open it in a new tab regardless of this setting.' });
+        }
+        else {
+            notePaneDesc.createEl('span', { text: '.' })
+        }
+        new Setting(containerEl)
+            .setName(notePaneTitle)
+            .setDesc(notePaneDesc)
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(this.plugin.settings.openInNewPane)
+                    .onChange((value) => {
+                        this.plugin.settings.openInNewPane = value;
+                        void this.plugin.saveSettings();
+                    });
+            });
 
 
         new Setting(containerEl).setName('On this day').setHeading();
@@ -249,32 +297,79 @@ export class DiariumSettingTab extends PluginSettingTab {
                     }),
             );
 
-        let notePaneTitle = 'Open notes in a new ';
+        new Setting(containerEl).setName('Timestamps').setHeading();
 
-        const notePaneDesc = new DocumentFragment();
-        notePaneDesc.textContent =
-            "When clicked, notes will open in a new ";
-        if (Platform.isDesktop) {
-            notePaneTitle += 'tab';
-            notePaneDesc.createEl('span', { text: 'tab by default.' })
-            notePaneDesc.createEl("br");
-            notePaneDesc.createEl('span', { text: 'Middle-clicking a note will always open it in a new pane regardless of this setting.' });
-        }
-        else {
-            notePaneTitle += 'pane';
-            notePaneDesc.createEl('span', { text: 'pane.' })
-        }
+        const dateStampDesc = new DocumentFragment();
+        dateStampDesc.textContent =
+            "The ";
+        dateStampDesc.createEl("a", {
+            text: "moment.js",
+            attr: {
+                href: "https://momentjs.com/docs/#/displaying/format/",
+            },
+        });
+        dateStampDesc.createEl("span", { text: " format for the date part of timestamps." });
+
+        const timeStampDesc = new DocumentFragment();
+        timeStampDesc.textContent =
+            "The ";
+        timeStampDesc.createEl("a", {
+            text: "moment.js",
+            attr: {
+                href: "https://momentjs.com/docs/#/displaying/format/",
+            },
+        });
+        timeStampDesc.createEl("span", { text: " format for the time part of timestamps." });
+
+
+        const dateStampSetting = new Setting(containerEl)
+            .setName('Date format')
+            .setDesc(dateStampDesc);
+
+        const timeStampSetting = new Setting(containerEl)
+            .setName('Time format')
+            .setDesc(timeStampDesc);
+
+
+        containerEl.createEl('span', { text: 'Timestamps will appear as:'/* , cls: 'setting-item-description' */ }).createEl('br');
+        const timeStampFormatContainer = containerEl.createEl('span', { text: '— ', cls: 'text-accent' });
+        const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
+        timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent' });
+        const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
+        timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' });
+
+        /*
+        const timeStampPreview = new DocumentFragment();
+
+        timeStampPreview.textContent = 'Timestamps will appear as:';
+        timeStampPreview.createEl('br');
+        const timeStampFormatContainer = timeStampPreview.createEl('span', { text: '— ', cls: 'text-accent setting-item-description' });
+        const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent setting-item-description' });
+        timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent setting-item-description' });
+        const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent setting-item-description' });
+        timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent setting-item-description' });
+
         new Setting(containerEl)
-            .setName(notePaneTitle)
-            .setDesc(notePaneDesc)
-            .addToggle((toggle) => {
-                toggle
-                    .setValue(this.plugin.settings.openInNewPane)
-                    .onChange((value) => {
-                        this.plugin.settings.openInNewPane = value;
-                        void this.plugin.saveSettings();
-                    });
-            });
+            .setName('Preview')
+            .setDesc(timeStampPreview); */
+
+        dateStampSetting.addMomentFormat(text => text
+            .setDefaultFormat(DEFAULT_SETTINGS.dateStampFormat)
+            .setValue(this.plugin.settings.dateStampFormat)
+            .setSampleEl(dateStampFormat)
+            .onChange(async (value) => {
+                this.plugin.settings.dateStampFormat = value;
+                await this.plugin.saveSettings();
+            }));
+
+        timeStampSetting.addMomentFormat(text => text
+            .setDefaultFormat(DEFAULT_SETTINGS.timeStampFormat)
+            .setValue(this.plugin.settings.timeStampFormat)
+            .setSampleEl(timeStampFormat)
+            .onChange(async (value) => {
+                this.plugin.settings.timeStampFormat = value;
+                await this.plugin.saveSettings();
+            }));
 
     }
 }
