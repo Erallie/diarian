@@ -84,7 +84,7 @@ export default class Diarium extends Plugin {
         this.addCommand({
             id: 'insert-timestamp',
             name: 'Insert timestamp',
-            icon: 'lucide-alarm-plus',
+            icon: 'lucide-alarm-clock',
             editorCallback: (editor: Editor, view: MarkdownView) => {
                 // this.insertTimestamp();
                 let dateString = '';
@@ -227,7 +227,7 @@ export default class Diarium extends Plugin {
                 menu.addItem(item => {
                     item
                         .setTitle('Insert timestamp')
-                        .setIcon('lucide-alarm-plus')
+                        .setIcon('lucide-alarm-clock')
                         .onClick(() => {
                             enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
