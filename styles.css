@@ -52,12 +52,11 @@ div.modal:has(.new-note-div) {
     max-width: var(--modal-max-width-narrow);
     /* max-width: var(--modal-max-width); */
 }
-
-/* div.modal:has(.new-note-div).is-ios,
-div.modal:has(.new-note-div).is-android, */
-div.modal:has(.new-note-div) {
+/* div.modal:has(.new-note-div), */
+div.modal:has(.new-note-div).is-ios,
+div.modal:has(.new-note-div).is-android {
     /* width: 50%; */
-    padding: var(--size-4-4);
+    padding: var(--size-4-5) var(--size-4-3);
     /* max-width: var(--modal-max-width); */
 }
 .new-note-label,
