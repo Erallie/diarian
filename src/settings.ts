@@ -2,9 +2,17 @@ import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarium from 'main';
 import { Unit, getTimeSpanTitle } from './constants';
 
+export enum CalendarType {
+    gregory = 'gregory',
+    hebrew = 'hebrew',
+    islamic = 'islamic',
+    iso8601 = 'iso8601'
+}
 
 export interface DiariumSettings {
+    calendarType: CalendarType;
     headingFormat: string;
+
     previewLength: number;
     openInNewPane: boolean;
     useCallout: boolean;
@@ -24,6 +32,7 @@ export interface DiariumSettings {
 }
 
 export const DEFAULT_SETTINGS: DiariumSettings = {
+    calendarType: CalendarType.gregory,
     headingFormat: 'dddd, MMMM Do, YYYY',
     previewLength: 250,
     openInNewPane: false,
@@ -111,6 +120,20 @@ export class DiariumSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl).setName('Calendar').setHeading();
+
+        new Setting(containerEl)
+            .setName('Calendar type')
+            .setDesc('The type of calendar that will be displayed')
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(CalendarType)
+                    .setValue(this.plugin.settings.calendarType)
+                    .onChange((value) => {
+                        this.plugin.settings.calendarType = value as CalendarType;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, false);
+                        this.display();
+                    }));
 
         const headingFormatDesc = new DocumentFragment();
         headingFormatDesc.textContent =

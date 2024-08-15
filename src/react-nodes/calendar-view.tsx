@@ -151,7 +151,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
 
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={setDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={setDate} calendarType={plugin.settings.calendarType} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >
