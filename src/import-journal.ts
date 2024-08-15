@@ -198,6 +198,8 @@ export class ImportView extends Modal {
             setText(importTextEl, importText);
             printToConsole(logLevel.info, importText);
 
+            const mapViewProperty = getMapViewProperty();
+
             let { format, folder }: any = getModifiedFolderAndFormat();
 
             for (let i = 0; i < datafiles.length; i++) {
@@ -233,13 +235,13 @@ export class ImportView extends Modal {
                     const data = JSON.parse(text);
                     if (data.date) {
                         printToConsole(logLevel.log, 'Is separate entry');
-                        await createEntry(data, format, folder);
+                        await createEntry(data, format, folder, mapViewProperty);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
                         const dataArray: Array<any> = JSON.parse(text);
                         for (const data of dataArray) {
-                            await createEntry(data, format, folder);
+                            await createEntry(data, format, folder, mapViewProperty);
                         }
                         break;
                     }
@@ -371,9 +373,9 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 
 
-async function createEntry(data: any, format: string, folder: string) {
+async function createEntry(data: any, format: string, folder: string, mapViewProperty: string,) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    await writeNote(noteMoment, formatContent(data, noteMoment), format, folder);
+    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty), format, folder);
 }
 
 export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {
@@ -419,10 +421,10 @@ export async function writeNote(date: any, content: string, format: string, alte
 
 
 // Transformation functions
-function formatContent(array: any, moment: any) {
+function formatContent(array: any, moment: any, mapViewProperty: string,) {
     let frontmatter = '---';
     if (array.location) {
-        frontmatter += `\nlocation: ${array.location}`;
+        frontmatter += `\n${mapViewProperty}: ${array.location}`;
     }
     if (array.rating) {
         frontmatter += `\nrating: ${array.rating}/5`;
@@ -443,7 +445,7 @@ function formatContent(array: any, moment: any) {
         frontmatter += `\nweather: ${array.weather}`
     }
     if (array.sun && array.sun != '') {
-        frontmatter += parseSun(array.date, array.sun, moment);
+        frontmatter += parseSun(moment, array.sun);
     }
     if (array.lunar && array.lunar != '') {
         frontmatter += `\nlunar phase: ${array.lunar}`
@@ -461,7 +463,7 @@ function formatContent(array: any, moment: any) {
 }
 
 
-function parseSun(date: string, sun: string, noteMoment: any) {
+function parseSun(noteMoment: any, sun: string) {
     const start = noteMoment.format('YYYY-MM-DD[T]');
     //2000-12-31T15:14:00
 
@@ -484,4 +486,30 @@ function parseSun(date: string, sun: string, noteMoment: any) {
     return "\nsunrise: " + newRiseText
         + "\nsunset: " + newSetText;
 
+}
+
+
+export function getMapViewProperty() {
+    /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // const { internalPlugins } = <any>window.app;
+        // const mapView = (<any>window.app).plugins.getPlugin("map-view");
+
+        const pluginManager = (this.app).plugins;
+
+        const settings =
+            pluginManager.getPlugin("obsidian-map-view")?.settings || {};
+        // console.log("Daily note settings found.\n\tformat = " + format);
+        if (!settings.frontMatterKey || settings.frontMatterKey === undefined || settings.frontMatterKey == '') {
+            printToConsole(logLevel.warn, 'No frontmatter key found in any custom Map view settings!');
+            return 'location';
+        }
+        // printToConsole(logLevel.log, 'frontMatterKey: ' + settings.frontMatterKey);
+        return settings.frontMatterKey as string;
+    } catch (err) {
+        const errorText = "No custom map view settings found!"
+        printToConsole(logLevel.info, `${errorText}\n${err}`);
+        return 'location';
+    }
 }
