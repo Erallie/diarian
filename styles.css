@@ -38,7 +38,7 @@ div.modal:has(.select-view-button) {
 .new-note-div {
     width: 100%;
     display: flex;
-    margin-bottom: var(--size-2-3);
+    margin-bottom: var(--size-4-2);
 }
 
 body:not(.is-ios):not(.is-android) .new-note-input {
@@ -52,9 +52,9 @@ div.modal:has(.new-note-div) {
     max-width: var(--modal-max-width-narrow);
     /* max-width: var(--modal-max-width); */
 }
-/* div.modal:has(.new-note-div), */
-div.modal:has(.new-note-div).is-ios,
-div.modal:has(.new-note-div).is-android {
+/* div.modal:has(.new-note-div).is-ios,
+div.modal:has(.new-note-div).is-android */
+div.modal:has(.new-note-div) {
     /* width: 50%; */
     padding: var(--size-4-5) var(--size-4-3);
     /* max-width: var(--modal-max-width); */
