@@ -27,11 +27,11 @@ Since this plugin started as a project for my own personal use, there are featur
 - The following views from [Diarium](https://diariumapp.com/):
 	- The **Timeline** view
 	- The **Map** view
-		- I recommend using [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) for this feature. This Diarium plugin will automatically use your settings for it.
+		- I recommend using the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin for this feature. This Diarium plugin will automatically use your settings for it.
 - Any embedded feeds & events not mentioned in [Key features](#key-features) or [Planned features](#planned-features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.
-	- [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) can also be used as an alternative for this.
+	- The [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
 	- For those features, I suggest plugins from the [Obsidian Marketplace](obsidian://show-plugin?id=password) like [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)) or [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection))
 ## Credits
