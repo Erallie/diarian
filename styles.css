@@ -18,6 +18,11 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
+/* .bottom-modal-text.is-ios,
+.bottom-modal-text.is-android,
+.bottom-modal-text {
+    margin-bottom: var(--size-4-4);
+} */
 div.modal:has(.select-view-button) {
     /* width: 50%; */
     width: var(--modal-community-sidebar-width);
@@ -48,6 +53,13 @@ div.modal:has(.new-note-div) {
     /* max-width: var(--modal-max-width); */
 }
 
+/* div.modal:has(.new-note-div).is-ios,
+div.modal:has(.new-note-div).is-android, */
+div.modal:has(.new-note-div) {
+    /* width: 50%; */
+    padding: var(--size-4-4);
+    /* max-width: var(--modal-max-width); */
+}
 .new-note-label,
 .new-note-input {
     font: var(--font-interface-theme);
@@ -122,7 +134,7 @@ svg.new-note-input {
 }
 
 
-.instructions {}
+/* .instructions {} */
 
 /* button */
 .cal-new-note-button {

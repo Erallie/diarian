@@ -26,10 +26,10 @@ export class ImportView extends Modal {
 
         // contentEl.createEl('br');
 
-        const instrDiv = contentEl.createDiv({ cls: 'instructions' });
+        const instrDiv = contentEl.createDiv(/* { cls: 'instructions' } */);
 
         const instrDesc = new DocumentFragment();
-        const instrList = instrDesc.createEl('ol', { cls: 'instructions' });
+        const instrList = instrDesc.createEl('ol'/* , { cls: 'instructions' } */);
         const list1 = instrList.createEl('li', { text: 'Open ' });
         list1.createEl('strong', { text: 'Diarium' });
         list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
@@ -171,10 +171,10 @@ export class ImportView extends Modal {
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
-        const errorTextEl = contentEl.createEl('div', { cls: 'setting-error' });
+        const errorTextEl = contentEl.createEl('div', { cls: 'setting-error'/*  bottom-modal-text' */ });
         errorTextEl.empty();
 
-        const importTextEl = contentEl.createEl('div');
+        const importTextEl = contentEl.createEl('div'/* , { cls: 'bottom-modal-text' } */);
         importTextEl.empty();
 
         // use https://docs.obsidian.md/Reference/TypeScript+API/ProgressBarComponent instead of importTextEl

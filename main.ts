@@ -3,7 +3,7 @@ import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
-import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS, StartupView } from 'src/settings';
+import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getDate, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
 import { NewDailyNote } from './src/react-nodes/new-note';
 
