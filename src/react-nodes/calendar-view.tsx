@@ -14,19 +14,22 @@ interface ContainerProps {
     view: View;
     plugin: Diarium;
     app: App;
+    thisComp: CalendarView;
 }
 
 export class CalendarView extends ItemView {
     root: Root | null = null;
     plugin: Diarium;
-    view: View;
+    // view: View;
     app: App;
+    startDate: Date;
 
     constructor(leaf: WorkspaceLeaf, plugin: Diarium, view: View, app: App) {
         super(leaf);
         this.plugin = plugin;
-        this.view = view;
+        // this.view = view;
         this.app = app;
+        this.startDate = new Date();
     }
 
     getViewType() {
@@ -42,7 +45,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar-search';
         this.root.render(
             <StrictMode>
-                <CalendarContainer view={this.view} plugin={this.plugin} app={this.app} />
+                <CalendarContainer view={this/* .view */} plugin={this.plugin} app={this.app} thisComp={this} />
             </StrictMode>
         );
     }
@@ -59,7 +62,7 @@ export class CalendarView extends ItemView {
 
 }
 
-const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
+const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
     const { folder, format }: any = getModifiedFolderAndFormat();
@@ -69,7 +72,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     const today = moment(maxDate);
     if (plugin.settings.disableFuture == false) maxDate = undefined;
 
-    const [selectedDate, setDate] = useState(new Date());
+    const [selectedDate, innerSetDate] = useState(thisComp.startDate);
 
     function tileClassName({ date, view }: any) {
         // Add class to tiles in month view only
@@ -89,9 +92,10 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
             return 'react-calendar__tile';
         }
     }
-    /* function showNotes(nextDate) {
-        setDate(nextDate)
-    } */
+    function outerSetDate(nextDate: Date) {
+        innerSetDate(nextDate);
+        thisComp.startDate = nextDate;
+    }
     function tileContent({ date, view }: any) {
         if (view === 'month') {
             let filteredDates = [];
@@ -154,7 +158,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
 
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={setDate} calendarType={plugin.settings.calendarType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={outerSetDate} calendarType={plugin.settings.calendarType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >

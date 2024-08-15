@@ -42,7 +42,7 @@ export class OnThisDayView extends ItemView {
         this.root.render(
             <StrictMode>
                 <h1>On this day...</h1>
-                <ReviewContainer view={this.view} plugin={this.plugin} app={this.app} />
+                <ReviewContainer view={this/* .view */} plugin={this.plugin} app={this.app} />
             </StrictMode>
         );
     }
