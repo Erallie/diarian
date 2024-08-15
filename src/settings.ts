@@ -11,6 +11,7 @@ export enum CalendarType {
 
 export interface DiariumSettings {
     calendarType: CalendarType;
+    disableFuture: boolean;
     headingFormat: string;
 
     previewLength: number;
@@ -32,7 +33,8 @@ export interface DiariumSettings {
 }
 
 export const DEFAULT_SETTINGS: DiariumSettings = {
-    calendarType: CalendarType.gregory,
+    calendarType: CalendarType.iso8601,
+    disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     previewLength: 250,
     openInNewPane: false,
@@ -121,9 +123,39 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         new Setting(containerEl).setName('Calendar').setHeading();
 
+
+
+        const calTypeDesc = new DocumentFragment;
+        calTypeDesc.textContent = 'The type of calendar that will be displayed.';
+        calTypeDesc.createEl('br');
+        calTypeDesc.createEl('span', { text: 'This will affect the starting weekday. Currently, the week starts on ' })/* .createEl('br');
+        calTypeDesc.createEl('span', { text: "Currently, the week starts on " }) */;
+        const startWeekday = calTypeDesc.createSpan({ cls: 'text-accent' });
+        calTypeDesc.createEl('span', { text: '.' });
+
+
+        function setWeekdayText(value: string) {
+            switch (value) {
+                case CalendarType.gregory:
+                    startWeekday.textContent = 'Sunday'
+                    break;
+                case CalendarType.hebrew:
+                    startWeekday.textContent = 'Sunday'
+                    break;
+                case CalendarType.islamic:
+                    startWeekday.textContent = 'Saturday'
+                    break;
+                case CalendarType.iso8601:
+                    startWeekday.textContent = 'Monday'
+                    break;
+            }
+        }
+
+        setWeekdayText(this.plugin.settings.calendarType);
+
         new Setting(containerEl)
             .setName('Calendar type')
-            .setDesc('The type of calendar that will be displayed')
+            .setDesc(calTypeDesc)
             .addDropdown((dropdown) =>
                 dropdown
                     .addOptions(CalendarType)
@@ -132,8 +164,24 @@ export class DiariumSettingTab extends PluginSettingTab {
                         this.plugin.settings.calendarType = value as CalendarType;
                         void this.plugin.saveSettings();
                         this.plugin.refreshViews(true, false);
-                        this.display();
+                        setWeekdayText(value);
+                        // this.display();
                     }));
+
+        const disableFutureDesc = new DocumentFragment;
+        disableFutureDesc.textContent = 'Disable accessing future dates in the ';
+        disableFutureDesc.createEl('strong', { text: "Calendar" });
+        disableFutureDesc.createEl('span', { text: " view." });
+
+        new Setting(containerEl)
+            .setName('Disable future dates')
+            .setDesc(disableFutureDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.disableFuture).onChange((value) => {
+                    this.plugin.settings.disableFuture = value;
+                    void this.plugin.saveSettings();
+                    this.plugin.refreshViews(true, false);
+                }));
 
         const headingFormatDesc = new DocumentFragment();
         headingFormatDesc.textContent =

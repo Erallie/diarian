@@ -65,7 +65,10 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
     const { folder, format }: any = getModifiedFolderAndFormat();
     const filledDates = getDates(dailyNotes, folder, format);
 
-    const today = moment(new Date());
+    let maxDate: Date | undefined = new Date();
+    const today = moment(maxDate);
+    if (plugin.settings.disableFuture == false) maxDate = undefined;
+
     const [selectedDate, setDate] = useState(new Date());
 
     function tileClassName({ date, view }: any) {
@@ -151,7 +154,7 @@ const CalendarContainer = ({ view, plugin, app }: ContainerProps) => {
 
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={setDate} calendarType={plugin.settings.calendarType} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={setDate} calendarType={plugin.settings.calendarType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >
