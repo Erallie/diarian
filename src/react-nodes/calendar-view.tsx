@@ -5,7 +5,7 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
+import { getMoment, getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
 import { NewDailyNote } from "./new-note";
@@ -42,7 +42,7 @@ export class CalendarView extends ItemView {
 
     async onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
-        this.icon = 'lucide-calendar-search';
+        this.icon = 'lucide-calendar';
         this.root.render(
             <StrictMode>
                 <CalendarContainer view={this/* .view */} plugin={this.plugin} app={this.app} thisComp={this} />
@@ -68,6 +68,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     const dailyNotes = plugin.dailyNotes;
     const { folder, format }: any = getModifiedFolderAndFormat();
     const filledDates = getMoments(dailyNotes, folder, format);
+
 
     let maxDate: Date | undefined = new Date();
     const today = moment(maxDate);

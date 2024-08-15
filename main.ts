@@ -31,11 +31,16 @@ export default class Diarium extends Plugin {
         this.app.workspace.onLayoutReady(() => {
             this.dailyNotes = getAllDailyNotes();
 
+            const { folder, format }: any = getModifiedFolderAndFormat();
+            this.sortDailyNotes(folder, format);
+
+
             this.registerEvent(
                 this.app.vault.on('rename', (file, oldPath) => {
                     const { folder, format }: any = getModifiedFolderAndFormat();
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes[this.dailyNotes.length] = file;
+                        this.sortDailyNotes(folder, format);
                         this.refreshViews(true, true);
                     }
                 }));
@@ -46,6 +51,7 @@ export default class Diarium extends Plugin {
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
+                        this.sortDailyNotes(folder, format);
                         this.refreshViews(true, true);
                     }
                 }));
@@ -56,7 +62,7 @@ export default class Diarium extends Plugin {
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes = this.dailyNotes.filter(thisFile => {
                             return (thisFile != file);
-                        })
+                        });
                         this.refreshViews(true, true);
                     }
                 }));
@@ -354,10 +360,6 @@ export default class Diarium extends Plugin {
         workspace.revealLeaf(leaf!);
     }
 
-    insertTimestamp() {
-
-    }
-
     /* refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
@@ -395,6 +397,14 @@ export default class Diarium extends Plugin {
                 }
             }
         }
+    }
+
+    sortDailyNotes(folder: string, format: string) {
+        this.dailyNotes.sort(function (fileA, fileB) {
+            const momentA = getMoment(fileA, folder, format);
+            const momentB = getMoment(fileB, folder, format);
+            return momentA.diff(momentB);
+        });
     }
 }
 

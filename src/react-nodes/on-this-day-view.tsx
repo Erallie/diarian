@@ -73,7 +73,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
         const momentA = getMoment(fileA, folder, format);
         const momentB = getMoment(fileB, folder, format);
         return momentB.diff(momentA);
-    })
+    });
     let array = [];
     let i = 0;
     let ii = 0;
