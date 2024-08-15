@@ -8,7 +8,7 @@ import moment from 'moment';
 
 interface Props {
     notes: TFile[];
-    thisMoment: any;
+    thisMoment: moment.Moment;
     /* wrapper?: React.JSX.Element; */
     view: View;
     plugin: Diarium;

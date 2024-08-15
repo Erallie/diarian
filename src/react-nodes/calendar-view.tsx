@@ -5,7 +5,7 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarium from 'main';
-import { getDates, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
+import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
 import { NewDailyNote } from "./new-note";
@@ -66,7 +66,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
     const { folder, format }: any = getModifiedFolderAndFormat();
-    const filledDates = getDates(dailyNotes, folder, format);
+    const filledDates = getMoments(dailyNotes, folder, format);
 
     let maxDate: Date | undefined = new Date();
     const today = moment(maxDate);

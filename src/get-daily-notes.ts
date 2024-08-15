@@ -43,7 +43,7 @@ export function getAllDailyNotes() {
 };
 
 export function isDailyNote(file: TFile, folder: string, format: string) {
-    
+
     // const index = (path + file.name).search(regex);
 
     let checkIndex;
@@ -75,19 +75,19 @@ export function isDailyNote(file: TFile, folder: string, format: string) {
     // return index == checkIndex;
 }
 
-export function getDates(notes: TFile[], folder: string, format: string) {
+export function getMoments(notes: TFile[], folder: string, format: string) {
 
     let allDates = [];
     let i = 0;
     for (let note of notes) {
-        allDates[i] = getDate(note, folder, format);
+        allDates[i] = getMoment(note, folder, format);
         i++;
     }
     // console.log(allDates[allDates.length - 1].toString());
     return allDates;
 }
 
-export function getDate(note: TFile, folder: string, format: string) {
+export function getMoment(note: TFile, folder: string, format: string) {
     // printToConsole(logLevel.log, note.path);
     // let baseName = note.path + '/' + note.name;
     let index = 0;
@@ -99,7 +99,7 @@ export function getDate(note: TFile, folder: string, format: string) {
     return noteDate;
 }
 
-export function getNoteByMoment(moment: any, folder: string, format: string) {
+export function getNoteByMoment(moment: moment.Moment, folder: string, format: string) {
     // console.log(moment.format(getDailyNoteSettings().format));
     let path = moment.format(format);
     path = normalizePath(folder + path + '.md');
@@ -113,7 +113,7 @@ export function getNoteByMoment(moment: any, folder: string, format: string) {
 }
 
 
-export function isSameDay(date1: any, date2: any) {
+export function isSameDay(date1: moment.Moment, date2: moment.Moment) {
     return (
         date1.date() == date2.date()
         && date1.month() == date2.month()
@@ -133,7 +133,7 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
     const { format, folder }: any = getModifiedFolderAndFormat();
 
     for (let note of allNotes) {
-        const noteDate = getDate(note, folder, format);
+        const noteDate = getMoment(note, folder, format);
         const delayDiff = now.diff(noteDate, delayUnit, true);
         //this might make it so that you need to be past the time of day for the note too. Consider making all .diff references rounded.
         const isInRange = delayDiff >= plugin.settings.reviewDelay;

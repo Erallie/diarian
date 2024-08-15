@@ -345,7 +345,7 @@ export class ImportView extends Modal {
     }
 }
 
-async function createAttachment(note: TFile, filePath: string, content: ArrayBuffer, fileMoment: any) {
+async function createAttachment(note: TFile, filePath: string, content: ArrayBuffer, fileMoment: moment.Moment) {
 
     const index = filePath.lastIndexOf('/');
     if (index != -1) {
@@ -381,7 +381,7 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
 export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {
 
     /* if (!format || !folder) {
-        let { format, folder }: any = getDailyNoteSettings();
+        let { format, folder }: moment.Moment = getDailyNoteSettings();
         if (format == '') format = DEFAULT_FORMAT;
         let newFolder = '';
         if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
@@ -421,7 +421,7 @@ export async function writeNote(date: any, content: string, format: string, alte
 
 
 // Transformation functions
-function formatContent(array: any, moment: any, mapViewProperty: string,) {
+function formatContent(array: any, moment: moment.Moment, mapViewProperty: string,) {
     let frontmatter = '---';
     if (array.location) {
         frontmatter += `\n${mapViewProperty}: ${array.location}`;
@@ -463,7 +463,7 @@ function formatContent(array: any, moment: any, mapViewProperty: string,) {
 }
 
 
-function parseSun(noteMoment: any, sun: string) {
+function parseSun(noteMoment: moment.Moment, sun: string) {
     const start = noteMoment.format('YYYY-MM-DD[T]');
     //2000-12-31T15:14:00
 

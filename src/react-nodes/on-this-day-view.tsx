@@ -4,7 +4,7 @@ import { Root, createRoot } from "react-dom/client";
 import moment from 'moment';
 import type Diarium from 'main';
 import { ViewType, printToConsole, logLevel } from '../constants';
-import { getPriorNotes, getDate, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
+import { getPriorNotes, getMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import { TimeSpan } from './time-span';
 
 
@@ -70,20 +70,20 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
     }
     const { folder, format }: any = getModifiedFolderAndFormat();
     filteredNotes.sort(function (fileA, fileB) {
-        const momentA = getDate(fileA, folder, format);
-        const momentB = getDate(fileB, folder, format);
+        const momentA = getMoment(fileA, folder, format);
+        const momentB = getMoment(fileB, folder, format);
         return momentB.diff(momentA);
     })
     let array = [];
     let i = 0;
     let ii = 0;
-    let previousMoment = getDate(filteredNotes[i], folder, format);
+    let previousMoment = getMoment(filteredNotes[i], folder, format);
 
     let subNotes: TFile[] = [];
 
     for (let note of filteredNotes) {
         if (!note) continue;
-        const thisMoment = getDate(note, folder, format);
+        const thisMoment = getMoment(note, folder, format);
         if (!array[i] && !isSameDay(thisMoment, previousMoment)) {
             array[i] = {
                 notes: subNotes,

@@ -17,7 +17,7 @@ export class NewDailyNote extends Modal {
     dateString: string;
     timeString: string;
 
-    constructor(app: App, plugin: Diarium, date?: any) {
+    constructor(app: App, plugin: Diarium, date?: moment.Moment) {
         super(app);
         this.plugin = plugin;
 
