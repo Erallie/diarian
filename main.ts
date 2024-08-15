@@ -95,15 +95,12 @@ export default class Diarium extends Plugin {
             name: 'Insert timestamp',
             icon: 'lucide-alarm-clock',
             editorCallback: (editor: Editor, view: MarkdownView) => {
-                // this.insertTimestamp();
-                let dateString = '';
-                const now = moment();
-
-                const { folder, format }: any = getModifiedFolderAndFormat();
-
-                let noteDate;
                 if (view.file) {
-                    noteDate = getDate(view.file, folder, format);
+                    let dateString = '';
+                    const now = moment();
+
+                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const noteDate = getMoment(view.file, folder, format);
 
                     if (!isSameDay(noteDate, now))
                         dateString = now.format(this.settings.dateStampFormat) + ' ';
