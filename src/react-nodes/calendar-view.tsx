@@ -99,7 +99,9 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     function tileContent({ date, view }: any) {
         if (view === 'month') {
             let filteredDates = [];
-            if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(date), dDate))).length !== 0) {
+            if ((filteredDates = filledDates.filter(
+                dDate => isSameDay(moment(date), dDate)))
+                .length !== 0) {
                 let content: any = [];
                 let i = 0;
                 for (let date of filteredDates) {
@@ -127,7 +129,9 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
 
     let filteredDates = [];
     let showNotesNode;
-    if ((filteredDates = filledDates.filter(dDate => isSameDay(moment(selectedDate), dDate))).length !== 0) {
+    if ((filteredDates = filledDates.filter(
+        dDate => isSameDay(moment(selectedDate), dDate)))
+        .length !== 0) {
 
         const { folder, format }: any = getModifiedFolderAndFormat();
 
@@ -153,7 +157,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     }
 
     function newDailyNote() {
-        new NewDailyNote(this.app, this.plugin, moment(selectedDate)).open();
+        new NewDailyNote(app, plugin, moment(selectedDate)).open();
     }
 
     return (

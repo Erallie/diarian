@@ -72,7 +72,7 @@ export default class Diarium extends Plugin {
 
             if (this.settings.onThisDayStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
-        })
+        });
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
@@ -145,7 +145,8 @@ export default class Diarium extends Plugin {
             callback: () => {
                 new NewDailyNote(this.app, this).open();
             }
-        })
+        });
+
         this.addCommand({
             id: 'refresh-notes',
             name: 'Refresh daily notes',
@@ -156,7 +157,8 @@ export default class Diarium extends Plugin {
                 this.refreshViews(true, true);
                 printToConsole(logLevel.info, 'Daily notes refreshed!');
             }
-        })
+        });
+
         this.addCommand({
             id: 'select-view',
             name: 'Select Diarium view',
@@ -164,12 +166,12 @@ export default class Diarium extends Plugin {
             callback: () => {
                 new SelectView(this.app, this).open();
             }
-        })
+        });
 
         this.addCommand({
             id: 'open-calendar',
             name: 'Open calendar',
-            icon: 'lucide-calendar-search',
+            icon: 'lucide-calendar',
             callback: () => {
                 this.openLeaf(ViewType.calendarView, LeafType.tab);
             }
@@ -197,15 +199,6 @@ export default class Diarium extends Plugin {
             }
         });
 
-        // This adds an editor command that can perform some operation on the current editor instance
-        /* this.addCommand({
-            id: 'sample-editor-command',
-            name: 'Sample editor command',
-            editorCallback: (editor: Editor, view: MarkdownView) => {
-                console.log(editor.getSelection());
-                editor.replaceSelection('Sample Editor Command');
-            }
-        }); */
         // This adds a complex command that can check whether the current state of the app allows execution of the command
         /* this.addCommand({
             id: 'open-sample-modal-complex',
@@ -288,26 +281,6 @@ export default class Diarium extends Plugin {
         // "Reveal" the leaf in case it is in a collapsed sidebar
         workspace.revealLeaf(leaf!);
     } */
-
-    async openOnThisDay() {
-        const { workspace } = this.app;
-
-        let leaf: WorkspaceLeaf | null;
-        const leaves = workspace.getLeavesOfType(ViewType.onThisDayView);
-
-        if (leaves.length > 0) {
-            // A leaf with our view already exists, use that
-            leaf = leaves[0];
-        } else {
-            // Our view could not be found in the workspace, create a new leaf
-            // in the right sidebar for it
-            leaf = workspace.getRightLeaf(false);
-            await leaf?.setViewState({ type: ViewType.onThisDayView, active: true });
-        }
-
-        // "Reveal" the leaf in case it is in a collapsed sidebar
-        workspace.revealLeaf(leaf!);
-    }
 
     async openLeaf(viewType: ViewType, leafType: LeafType) {
 
@@ -444,7 +417,7 @@ class SelectView extends Modal {
 
         new ButtonComponent(contentEl)
             .setClass('select-view-button')
-            .setIcon('lucide-calendar-search')
+            .setIcon('lucide-calendar')
             .setButtonText('Open calendar')
             // .setTooltip('Open calendar')
             .onClick(() => {
