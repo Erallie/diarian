@@ -2,7 +2,6 @@
 This is a plugin for [Obsidian](https://obsidian.md) that adds functionality from the [Diarium](https://diariumapp.com/) journal app.
 
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
-# List of features
 ## Key features
 - A **Calendar** view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
@@ -36,15 +35,7 @@ Since this plugin started as a project for my own personal use, there are featur
 	- The [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
 	- For those features, I suggest plugins from the [Obsidian Marketplace](obsidian://show-plugin?id=password) like [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)) or [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection))
-# Installation
-## Using BRAT
-Install this plugin using [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) by doing the following:
-- Make sure the [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) plugin is installed in your vault.
-- Go to **Settings → BRAT → Beta Plugin List → Add Beta Plugin**
-- Enter `https://github.com/Erallie/diarium` into the input field and select **Add Plugin**.
-## Manual Installation
-To install this plugin manually, 
-# Credits
+## Credits
 - I made use of this [React calendar](https://github.com/wojtekmaj/react-calendar#readme) for my own Calendar view.
 - I modified [this code](https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22-L47) from the [obsidian-daily-notes-interface](https://github.com/liamcain/obsidian-daily-notes-interface) to retrieve settings from the Daily notes core plugin and the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin.
 - I referenced [this source](https://github.com/Quorafind/Obsidian-Big-Calendar/blob/43a986eed3159ed60e4d54efa6c1840dd6af102c/src/index.ts#L65-L76) from the [Big Calendar](obsidian://show-plugin?id=big-calendar) ([github](https://github.com/Quorafind/Obsidian-Big-Calendar)) plugin to learn how to open a custom view pane.
