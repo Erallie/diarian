@@ -21,6 +21,7 @@ If your plugin does not need CSS, delete this file.
 .note-preview:hover {
     cursor: pointer;
 }
+
 /* .bottom-modal-text.is-ios,
 .bottom-modal-text.is-android,
 .bottom-modal-text {
@@ -55,6 +56,7 @@ div.modal:has(.new-note-div) {
     max-width: var(--modal-max-width-narrow);
     /* max-width: var(--modal-max-width); */
 }
+
 /* div.modal:has(.new-note-div).is-ios,
 div.modal:has(.new-note-div).is-android */
 div.modal:has(.new-note-div) {
@@ -62,6 +64,7 @@ div.modal:has(.new-note-div) {
     padding: var(--size-4-5) var(--size-4-3);
     /* max-width: var(--modal-max-width); */
 }
+
 .new-note-label,
 .new-note-input {
     font: var(--font-interface-theme);
@@ -159,7 +162,8 @@ div.cal-date-heading-container {
     align-items: center;
 }
 
-.calendar-container {
+.calendar-container,
+.on-this-day-container {
     width: 500px;
     max-width: 100%;
     height: 100%;
