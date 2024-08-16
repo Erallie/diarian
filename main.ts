@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, Workspace } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
@@ -22,48 +22,13 @@ export default class Diarian extends Plugin {
     async onload() {
         await this.loadSettings();
 
+        this.dailyNotes = [];
+
         this.app.workspace.onLayoutReady(() => {
-            this.dailyNotes = getAllDailyNotes();
-
-            const { folder, format }: any = getModifiedFolderAndFormat();
-            this.sortDailyNotes(folder, format);
-
-
-            this.registerEvent(
-                this.app.vault.on('rename', (file, oldPath) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
-                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                        this.dailyNotes[this.dailyNotes.length] = file;
-                        this.sortDailyNotes(folder, format);
-                        this.refreshViews(true, true);
-                    }
-                }));
-
-            this.registerEvent(
-                this.app.vault.on('create', (file) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
-                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                        // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
-                        this.dailyNotes[this.dailyNotes.length] = file;
-                        this.sortDailyNotes(folder, format);
-                        this.refreshViews(true, true);
-                    }
-                }));
-
-            this.registerEvent(
-                this.app.vault.on('delete', (file) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
-                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                        this.dailyNotes = this.dailyNotes.filter(thisFile => {
-                            return (thisFile != file);
-                        });
-                        this.refreshViews(true, true);
-                    }
-                }));
-
 
             this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.app));
             this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.app));
+            // this.refreshViews(true, true);
 
             const enhancedApp = this.app as EnhancedApp;
 
@@ -73,6 +38,47 @@ export default class Diarian extends Plugin {
             if (this.settings.onThisDayStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
         });
+
+
+
+        this.registerEvent(
+            this.app.vault.on('rename', (file, oldPath) => {
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (file instanceof TFile && isDailyNote(file, folder, format)) {
+                    this.dailyNotes[this.dailyNotes.length] = file;
+                    this.sortDailyNotes(folder, format);
+                    if (this.app.workspace.layoutReady)
+                        this.refreshViews(true, true);
+                }
+            }));
+
+
+
+        this.registerEvent(
+            this.app.vault.on('create', (file) => {
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (file instanceof TFile && isDailyNote(file, folder, format)) {
+                    // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
+                    this.dailyNotes[this.dailyNotes.length] = file;
+                    this.sortDailyNotes(folder, format);
+                    if (this.app.workspace.layoutReady)
+                        this.refreshViews(true, true);
+                }
+            }));
+
+
+
+        this.registerEvent(
+            this.app.vault.on('delete', (file) => {
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (file instanceof TFile && isDailyNote(file, folder, format)) {
+                    this.dailyNotes = this.dailyNotes.filter(thisFile => {
+                        return (thisFile != file);
+                    });
+                    if (this.app.workspace.layoutReady)
+                        this.refreshViews(true, true);
+                }
+            }));
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
