@@ -215,6 +215,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 .onChange(async (value) => {
                     this.plugin.settings.headingFormat = value;
                     await this.plugin.saveSettings();
+                    this.plugin.refreshViews(true, false);
                 }));
 
         //#endregion
