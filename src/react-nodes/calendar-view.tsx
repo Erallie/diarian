@@ -9,6 +9,7 @@ import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } fr
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
 import { NewDailyNote } from "./new-note";
+import { CalendarType, convertCalType } from '../settings';
 
 interface ContainerProps {
     view: View;
@@ -160,9 +161,10 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         new NewDailyNote(app, plugin, moment(selectedDate)).open();
     }
 
+    const calType = convertCalType[plugin.settings.calendarType];
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={outerSetDate} calendarType={plugin.settings.calendarType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={outerSetDate} calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >

@@ -6,7 +6,7 @@ import { getAllDailyNotes } from './get-daily-notes';
 
 //#region constants
 //#region enums & values
-export enum CalendarType {
+export enum CalType {
     /* gregory = 'gregory',
     hebrew = 'hebrew',
     islamic = 'islamic',
@@ -17,7 +17,26 @@ export enum CalendarType {
     iso8601 = 'ISO 8601'
 }
 
-export const calendarTypeMap: { [key: string]: CalendarType } = {
+export enum CalendarType {
+    /* gregory = 'gregory',
+    hebrew = 'hebrew',
+    islamic = 'islamic',
+    iso8601 = 'iso8601' */
+    gregory = 'gregory',
+    hebrew = 'hebrew',
+    islamic = 'islamic',
+    iso8601 = 'iso8601'
+}
+
+
+export const calendarTypeMap: { [key: string]: CalType } = {
+    gregory: CalType.gregory,
+    hebrew: CalType.hebrew,
+    islamic: CalType.islamic,
+    iso8601: CalType.iso8601
+};
+
+export const convertCalType: { [key: string]: CalendarType } = {
     gregory: CalendarType.gregory,
     hebrew: CalendarType.hebrew,
     islamic: CalendarType.islamic,
@@ -53,7 +72,7 @@ const getMaxTimeSpan = (unit: Unit) => {
 
 //#region Setting defaults
 export interface DiarianSettings {
-    calendarType: CalendarType;
+    calendarType: CalType;
     disableFuture: boolean;
     headingFormat: string;
     calLocation: LeafType;
@@ -78,7 +97,7 @@ export interface DiarianSettings {
 }
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
-    calendarType: 'ISO 8601' as CalendarType,
+    calendarType: 'ISO 8601' as CalType,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     calLocation: LeafType.tab,
@@ -134,18 +153,18 @@ export class DiarianSettingTab extends PluginSettingTab {
 
 
         function setWeekdayText(value: string) {
-            const mappedCalType = calendarTypeMap[value as CalendarType];
+            const mappedCalType = calendarTypeMap[value as CalType];
             switch (mappedCalType) {
-                case CalendarType.gregory:
+                case CalType.gregory:
                     startWeekday.textContent = 'Sunday'
                     break;
-                case CalendarType.hebrew:
+                case CalType.hebrew:
                     startWeekday.textContent = 'Sunday'
                     break;
-                case CalendarType.islamic:
+                case CalType.islamic:
                     startWeekday.textContent = 'Saturday'
                     break;
-                case CalendarType.iso8601:
+                case CalType.iso8601:
                     startWeekday.textContent = 'Monday'
                     break;
             }
@@ -158,10 +177,10 @@ export class DiarianSettingTab extends PluginSettingTab {
             .setDesc(calTypeDesc)
             .addDropdown((dropdown) =>
                 dropdown
-                    .addOptions(CalendarType)
+                    .addOptions(CalType)
                     .setValue(this.plugin.settings.calendarType)
                     .onChange((value) => {
-                        this.plugin.settings.calendarType = value as CalendarType;
+                        this.plugin.settings.calendarType = value as CalType;
                         void this.plugin.saveSettings();
                         this.plugin.refreshViews(true, false);
                         setWeekdayText(value);
