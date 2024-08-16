@@ -10,9 +10,9 @@ export enum CalendarType {
     hebrew = 'hebrew',
     islamic = 'islamic',
     iso8601 = 'iso8601' */
-    gregory = 'Gregorian',
-    hebrew = 'Hebrew',
-    islamic = 'Islamic',
+    gregory = 'gregorian',
+    hebrew = 'hebrew',
+    islamic = 'islamic',
     iso8601 = 'ISO 8601'
 }
 
