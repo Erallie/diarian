@@ -612,6 +612,7 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         //#endregion
 
+        //#region Danger zone
 
         new Setting(containerEl).setName('Danger zone').setHeading();
 

@@ -39,9 +39,8 @@ export default class Diarian extends Plugin {
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
         });
 
-
-
-        this.registerEvent(
+        //#region Events for updating notes
+        this.registerEvent( //on rename
             this.app.vault.on('rename', (file, oldPath) => {
                 const { folder, format }: any = getModifiedFolderAndFormat();
                 if (file instanceof TFile && isDailyNote(file, folder, format)) {
@@ -52,9 +51,7 @@ export default class Diarian extends Plugin {
                 }
             }));
 
-
-
-        this.registerEvent(
+        this.registerEvent( //on create
             this.app.vault.on('create', (file) => {
                 const { folder, format }: any = getModifiedFolderAndFormat();
                 if (file instanceof TFile && isDailyNote(file, folder, format)) {
@@ -66,9 +63,7 @@ export default class Diarian extends Plugin {
                 }
             }));
 
-
-
-        this.registerEvent(
+        this.registerEvent( //on delete
             this.app.vault.on('delete', (file) => {
                 const { folder, format }: any = getModifiedFolderAndFormat();
                 if (file instanceof TFile && isDailyNote(file, folder, format)) {
@@ -79,6 +74,8 @@ export default class Diarian extends Plugin {
                         this.refreshViews(true, true);
                 }
             }));
+
+        //#endregion
 
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
@@ -120,9 +117,6 @@ export default class Diarian extends Plugin {
 
 
             menu.showAtMouseEvent(evt);
-
-            // enhancedApp.commands.executeCommandById(`${this.manifest.id}:select-view`);
-            // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
         // ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -354,7 +348,7 @@ export default class Diarian extends Plugin {
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new DiarianSettingTab(this.app, this));
 
-        this.registerEvent(
+        this.registerEvent( //on editor menu
             this.app.workspace.on("editor-menu", (menu, editor, info) => {
                 const enhancedApp = this.app as EnhancedApp;
 
@@ -379,7 +373,7 @@ export default class Diarian extends Plugin {
 
         );
 
-        this.registerEvent(
+        this.registerEvent( //on file menu
             this.app.workspace.on('file-menu', (menu, file, source) => {
                 const enhancedApp = this.app as EnhancedApp;
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
-import { TFile, View, App, Modal, normalizePath } from "obsidian";
+import { App, Modal, normalizePath } from "obsidian";
 // import useContext from "../hooks/useContext";
 import type Diarian from '../../main';
 import { printToConsole, logLevel, DEFAULT_FORMAT } from '../constants';

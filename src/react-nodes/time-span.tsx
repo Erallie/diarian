@@ -1,4 +1,3 @@
-import * as React from "react";
 import { TFile, View, App } from "obsidian";
 // import useContext from "../hooks/useContext";
 import NotePreview from "./note-preview";

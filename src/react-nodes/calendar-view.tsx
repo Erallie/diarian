@@ -5,7 +5,7 @@ import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import type Diarian from 'main';
-import { getMoment, getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
+import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
 import { NewDailyNote } from "./new-note";
