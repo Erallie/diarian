@@ -135,7 +135,8 @@ export default class Diarium extends Plugin {
 
         //#region Commands
         // This adds a simple command that can be triggered anywhere
-        this.addCommand({
+        //#region editor commands
+        this.addCommand({ // Insert timestamp
             id: 'insert-timestamp',
             name: 'Insert timestamp',
             icon: 'lucide-alarm-clock',
@@ -204,7 +205,8 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        //#region file commands
+        this.addCommand({ // Show in calendar
             id: 'show-in-calendar',
             name: 'Show daily note in calendar',
             icon: 'lucide-calendar-search',
@@ -224,7 +226,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Next note
             id: 'next-note',
             name: 'Go to next daily note',
             icon: 'lucide-chevrons-right',
@@ -245,8 +247,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-
-        this.addCommand({
+        this.addCommand({ // Previous note
             id: 'previous-note',
             name: 'Go to previous daily note',
             icon: 'lucide-chevrons-left',
@@ -266,7 +267,11 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        //#endregion
+
+        //#endregion
+
+        this.addCommand({ // New note
             id: 'new-note',
             name: 'New daily note',
             icon: 'lucide-file-plus',
@@ -275,7 +280,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Refresh notes
             id: 'refresh-notes',
             name: 'Refresh daily notes',
             icon: 'lucide-refresh-ccw',
@@ -287,7 +292,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Select view
             id: 'select-view',
             name: 'Select Diarium view',
             icon: 'lucide-book-heart',
@@ -296,7 +301,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Open Calendar
             id: 'open-calendar',
             name: 'Open calendar',
             icon: 'lucide-calendar',
@@ -305,7 +310,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Open on this day
             id: 'open-on-this-day',
             name: 'Open on this day',
             icon: 'lucide-history',
@@ -317,7 +322,7 @@ export default class Diarium extends Plugin {
             }
         });
 
-        this.addCommand({
+        this.addCommand({ // Open importer
             id: 'open-importer',
             name: 'Open importer',
             icon: 'lucide-import',
