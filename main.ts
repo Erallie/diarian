@@ -114,23 +114,46 @@ export default class Diarium extends Plugin {
                     let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
 
                     const cursor = editor.getCursor();
+                    // if (editor.getLine(cursor.line) == '' && editor.getLine(cursor.line + 1) == '' && editor.getLine(cursor.line + 2) == '')
                     const cursorLine = editor.getLine(cursor.line);
                     const textBeforeCursor = cursorLine.slice(0, cursor.ch);
 
                     let newCursorLine = cursor.line;
 
                     if (textBeforeCursor != '') {
-                        fullString = '\n\n' + fullString + '\n\n';
-                        newCursorLine += 4;
+                        fullString = '\n\n' + fullString/*  + '\n\n' */;
+                        // newCursorLine += 4;
+                        newCursorLine += 2;
                     }
-                    else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') { //text before cursor is empty but line before cursor is not
-                        fullString = '\n' + fullString + '\n\n';
-                        newCursorLine += 3;
+                    //if text before cursor is empty but line before cursor is not
+                    else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') {
+                        fullString = '\n' + fullString /* + '\n\n' */;
+                        // newCursorLine += 3;
+                        newCursorLine += 1;
                     }
-                    else {
+                    /* else {
+                        fullString += '\n\n';
+                        newCursorLine += 2;
+                    } */
+
+
+                    //if text after cursor is empty
+                    const textAfterCursor = cursorLine.slice(cursor.ch);
+                    if (textAfterCursor != '' || cursor.line == editor.lastLine() /* || cursor.line + 1 == editor.lastLine() */) {
                         fullString += '\n\n';
                         newCursorLine += 2;
                     }
+                    //if the next line is not empty
+                    else if (cursor.line + 1 <= editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
+                        fullString += '\n';
+                        newCursorLine += 2;
+                    }
+                    // if the next line is empty but the following line is not
+                    else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
+                        newCursorLine += 2;
+                    }
+
+
 
                     editor.replaceRange(
                         fullString,
