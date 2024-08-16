@@ -120,6 +120,7 @@ export class DiariumSettingTab extends PluginSettingTab {
         //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
 
+        //#region Calendar type
         const calTypeDesc = new DocumentFragment;
         calTypeDesc.textContent = 'The type of calendar that will be displayed.';
         calTypeDesc.createEl('br');
@@ -164,6 +165,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                         // this.display();
                     }));
 
+        //#endregion
+
+        //#region Disable future dates
         const disableFutureDesc = new DocumentFragment;
         disableFutureDesc.textContent = 'Disable accessing future dates in the ';
         disableFutureDesc.createEl('strong', { text: "Calendar" });
@@ -179,6 +183,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                     this.plugin.refreshViews(true, false);
                 }));
 
+        //#endregion
+
+        //#region Heading format
         const headingFormatDesc = new DocumentFragment();
         headingFormatDesc.textContent =
             "The ";
@@ -207,7 +214,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
+        //#endregion
 
+        //#region Calendar location
         const calLocDesc = new DocumentFragment;
         calLocDesc.textContent = 'The location the  ';
         calLocDesc.createEl('strong', { text: "Calendar" });
@@ -227,7 +236,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                         // this.display();
                     }));
 
+        //#endregion
 
+        //#region Open on startup
         /* const openCalName = new DocumentFragment;
         openCalName.textContent = 'Open ';
         openCalName.createEl('strong', { text: "Calendar" });
@@ -247,10 +258,13 @@ export class DiariumSettingTab extends PluginSettingTab {
                     void this.plugin.saveSettings();
                 }));
         //#endregion
+        
+        //#endregion
 
         //#region On this day
         new Setting(containerEl).setName('On this day').setHeading();
 
+        //#region Review interval
         const intervalDescription = new DocumentFragment();
         intervalDescription.textContent =
             "Notes will be displayed in intervals of this amount of time before the current day.";
@@ -298,7 +312,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                         this.display();
                     }),
             );
+        //#endregion
 
+        //#region Review delay
         const delayDescription = new DocumentFragment();
         delayDescription.textContent =
             "Only notes from this long ago or earlier will be included in the ";
@@ -348,8 +364,9 @@ export class DiariumSettingTab extends PluginSettingTab {
                     }),
             );
 
+        //#endregion
 
-
+        //#region Open on startup
         /* const openOnThisDayName = new DocumentFragment;
         openOnThisDayName.textContent = 'Open ';
         openOnThisDayName.createEl('strong', { text: "On this day" });
@@ -370,12 +387,12 @@ export class DiariumSettingTab extends PluginSettingTab {
                     void this.plugin.saveSettings();
                 }));
 
+        //#endregion
 
         //#endregion
 
         //#region Note previews
         new Setting(containerEl).setName('Note previews')/* .setDesc('Settings that will apply to note previews in the Calendar view and the \'On this day\' view.') */.setHeading();
-
 
         new Setting(containerEl)
             .setName("Display note title")
@@ -406,6 +423,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                 })
             )
 
+        //#region Callouts
         const calloutsDescription = new DocumentFragment();
         /* calloutsDescription.textContent =
             "Use callouts to render note previews, using their styles based on the current theme. ";
@@ -441,6 +459,8 @@ export class DiariumSettingTab extends PluginSettingTab {
                 }),
             );
 
+        //#endregion
+        
         if (!this.plugin.settings.useCallout) {
             new Setting(containerEl)
                 .setName("Use quote elements to display content")
@@ -454,6 +474,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                 );
         }
 
+        //#region New Tab
         let notePaneTitle = 'Open in a new tab';
 
         const notePaneDesc = new DocumentFragment();
@@ -480,12 +501,14 @@ export class DiariumSettingTab extends PluginSettingTab {
                     });
             });
 
+        //#endregion
 
         //#endregion
 
         //#region Timestamps
         new Setting(containerEl).setName('Timestamps').setHeading();
 
+        //#region setup
         const dateStampDesc = new DocumentFragment();
         dateStampDesc.textContent =
             "The ";
@@ -525,6 +548,7 @@ export class DiariumSettingTab extends PluginSettingTab {
         const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
         timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' });
 
+
         /*
         const timeStampPreview = new DocumentFragment();
 
@@ -539,6 +563,8 @@ export class DiariumSettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName('Preview')
             .setDesc(timeStampPreview); */
+            
+        //#endregion
 
         dateStampSetting.addMomentFormat(text => text
             .setDefaultFormat(DEFAULT_SETTINGS.dateStampFormat)
