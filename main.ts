@@ -8,7 +8,6 @@ import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderA
 import { NewDailyNote } from './src/react-nodes/new-note';
 
 
-// Remember to rename these classes and interfaces!
 export type EnhancedApp = App & {
     commands: { executeCommandById: Function };
 };
@@ -16,7 +15,8 @@ export type EnhancedApp = App & {
 
 const enum LeafType {
     tab = 'tab',
-    right = 'right'
+    right = 'right'/* ,
+    left = 'left' */
 }
 
 export default class Diarium extends Plugin {
@@ -168,19 +168,64 @@ export default class Diarium extends Plugin {
                 }
             }
         });
-        /* this.addCommand({
-            id: 'show-in-calendar',
-            name: 'Show daily note in calendar',
-            icon: 'lucide-calendar-search',
-            editorCallback: (editor: Editor, view: MarkdownView) => {
-                if (view.file) {
+
+        this.addCommand({
+            id: 'next-note',
+            name: 'Go to next daily note',
+            icon: 'lucide-chevrons-right',
+            checkCallback: (checking: boolean) => {
+                // Conditions to check
+                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                if (markdownView) {
+        // If checking is true, we're simply "checking" if the command can be run.
+        // If checking is false, then we want to actually perform the operation.
+
                     const { folder, format }: any = getModifiedFolderAndFormat();
-                    const noteMoment = getMoment(view.file, folder, format);
-                    this.refreshViews(true, false, noteMoment);
-                    this.openLeaf(ViewType.calendarView, LeafType.tab);
+
+                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
+                        // printToConsole(logLevel.log, 'can open view');
+                        const index = this.dailyNotes.findIndex((note) => {
+                            return (note == markdownView.file as TFile);
+                        });
+                        if (checking && index != this.dailyNotes.length - 1) return true;
+                        else if (checking) return false;
+                        void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index + 1]);
+                    }
+                    else if (checking) return false;
+                    // This command will only show up in Command Palette when the check function returns true
                 }
             }
-        }); */
+        });
+
+
+        this.addCommand({
+            id: 'previous-note',
+            name: 'Go to previous daily note',
+            icon: 'lucide-chevrons-left',
+            checkCallback: (checking: boolean) => {
+                // Conditions to check
+                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                if (markdownView) {
+                    // If checking is true, we're simply "checking" if the command can be run.
+                    // If checking is false, then we want to actually perform the operation.
+
+                    const { folder, format }: any = getModifiedFolderAndFormat();
+
+                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
+                        // printToConsole(logLevel.log, 'can open view');
+                        const index = this.dailyNotes.findIndex((note) => {
+                            return (note == markdownView.file as TFile);
+                        });
+
+                        if (checking && index != 0) return true;
+                        else if (checking) return false;
+                        void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index - 1]);
+                    }
+                    else if (checking) return false;
+        // This command will only show up in Command Palette when the check function returns true
+                }
+            }
+        });
 
         this.addCommand({
             id: 'new-note',
@@ -270,6 +315,8 @@ export default class Diarium extends Plugin {
             this.app.workspace.on("editor-menu", (menu, editor, info) => {
                 const enhancedApp = this.app as EnhancedApp;
 
+                menu.addSeparator();
+
                 menu.addItem(item => {
                     item
                         .setTitle('Insert timestamp')
@@ -277,7 +324,38 @@ export default class Diarium extends Plugin {
                         .onClick(() => {
                             enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
-                })
+                });
+
+                if (this.checkCallback('show-in-calendar'))
+                    menu.addItem(item => {
+                        item
+                            .setTitle('Show daily note in calendar')
+                            .setIcon('lucide-calendar-search')
+                            .onClick(() => {
+                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:show-in-calendar`);
+                            })
+                    });
+
+                if (this.checkCallback('next-note'))
+                    menu.addItem(item => {
+                        item
+                            .setTitle('Go to next daily note')
+                            .setIcon('lucide-chevrons-right')
+                            .onClick(() => {
+                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:next-note`);
+                            })
+                    });
+
+
+                if (this.checkCallback('previous-note'))
+                    menu.addItem(item => {
+                        item
+                            .setTitle('Go to previous daily note')
+                            .setIcon('lucide-chevrons-left')
+                            .onClick(() => {
+                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:previous-note`);
+                            })
+                    });
             })
         );
 
@@ -358,6 +436,30 @@ export default class Diarium extends Plugin {
 
         // "Reveal" the leaf in case it is in a collapsed sidebar
         workspace.revealLeaf(leaf!);
+    }
+
+    checkCallback(commandID: string) {
+        const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (markdownView) {
+            // If checking is true, we're simply "checking" if the command can be run.
+            // If checking is false, then we want to actually perform the operation.
+
+            const { folder, format }: any = getModifiedFolderAndFormat();
+
+            if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
+                // printToConsole(logLevel.log, 'can open view');
+                if (commandID == 'show-in-calendar') return true;
+
+                const index = this.dailyNotes.findIndex((note) => {
+                    return (note == markdownView.file as TFile);
+                });
+                if (commandID == 'next-note' && index != this.dailyNotes.length - 1) return true;
+                if (commandID == 'previous-note' && index != 0) return true;
+                return false;
+            }
+            else return false;
+            // This command will only show up in Command Palette when the check function returns true
+        }
     }
 
     /* refreshNotes() {
