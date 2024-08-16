@@ -23,6 +23,19 @@ export const calendarTypeMap: { [key: string]: CalendarType } = {
     iso8601: CalendarType.iso8601
 };
 
+export enum LeafType {
+    tab = 'tab',
+    right = 'right sidebar',
+    left = 'left sidebar'
+};
+
+
+export const leafTypeMap: { [key: string]: LeafType } = {
+    tab: LeafType.tab,
+    right: LeafType.right,
+    left: LeafType.left
+};
+
 const getMaxTimeSpan = (unit: Unit) => {
     switch (unit) {
         case Unit.day:
@@ -42,6 +55,7 @@ export interface DiariumSettings {
     calendarType: CalendarType;
     disableFuture: boolean;
     headingFormat: string;
+    calLocation: LeafType;
 
     previewLength: number;
     openInNewPane: boolean;
@@ -65,6 +79,8 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     calendarType: CalendarType.iso8601,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
+    calLocation: LeafType.tab,
+
     previewLength: 250,
     openInNewPane: false,
     useCallout: true,
@@ -99,50 +115,10 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        new Setting(containerEl).setName('On startup').setHeading();
+        // new Setting(containerEl).setName('On startup').setHeading();
 
-        const openCalName = new DocumentFragment;
-        openCalName.textContent = 'Open ';
-        openCalName.createEl('strong', { text: "Calendar" });
-
-        const openCalDesc = new DocumentFragment;
-        openCalDesc.textContent = 'Open the ';
-        openCalDesc.createEl('strong', { text: "Calendar" });
-        openCalDesc.createEl('span', { text: " view on startup." });
-
-        new Setting(containerEl)
-            .setName(openCalName)
-            .setDesc(openCalDesc)
-            .addToggle((toggle) =>
-                toggle.setValue(this.plugin.settings.calStartup).onChange((value) => {
-                    this.plugin.settings.calStartup = value;
-                    void this.plugin.saveSettings();
-                }));
-
-
-
-        const openOnThisDayName = new DocumentFragment;
-        openOnThisDayName.textContent = 'Open ';
-        openOnThisDayName.createEl('strong', { text: "On this day" });
-
-        const openOnThisDayDesc = new DocumentFragment;
-        openOnThisDayDesc.textContent = 'Open the ';
-        openOnThisDayDesc.createEl('strong', { text: "On this day" });
-        openOnThisDayDesc.createEl('span', { text: " view on startup." });
-
-
-        new Setting(containerEl)
-            .setName(openOnThisDayName)
-            .setDesc(openOnThisDayDesc)
-            .addToggle((toggle) =>
-                toggle.setValue(this.plugin.settings.onThisDayStartup).onChange((value) => {
-                    this.plugin.settings.onThisDayStartup = value;
-                    void this.plugin.saveSettings();
-                }));
-
+        //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
-
-
 
         const calTypeDesc = new DocumentFragment;
         calTypeDesc.textContent = 'The type of calendar that will be displayed.';
@@ -232,7 +208,172 @@ export class DiariumSettingTab extends PluginSettingTab {
                 }));
 
 
+        const calLocDesc = new DocumentFragment;
+        calLocDesc.textContent = 'The location the  ';
+        calLocDesc.createEl('strong', { text: "Calendar" });
+        calLocDesc.createEl('span', { text: " view will open in." });
 
+        new Setting(containerEl)
+            .setName('Leaf location')
+            .setDesc(calLocDesc)
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(LeafType)
+                    .setValue(this.plugin.settings.calLocation)
+                    .onChange((value) => {
+                        this.plugin.settings.calLocation = value as LeafType;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, false);
+                        // this.display();
+                    }));
+
+
+        /* const openCalName = new DocumentFragment;
+        openCalName.textContent = 'Open ';
+        openCalName.createEl('strong', { text: "Calendar" });
+        openCalName.createEl('span', { text: ' on startup' }); */
+
+        const openCalDesc = new DocumentFragment;
+        openCalDesc.textContent = 'Open the ';
+        openCalDesc.createEl('strong', { text: "Calendar" });
+        openCalDesc.createEl('span', { text: " view on startup." });
+
+        new Setting(containerEl)
+            .setName('Open on startup')
+            .setDesc(openCalDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.calStartup).onChange((value) => {
+                    this.plugin.settings.calStartup = value;
+                    void this.plugin.saveSettings();
+                }));
+        //#endregion
+
+        //#region On this day
+        new Setting(containerEl).setName('On this day').setHeading();
+
+        const intervalDescription = new DocumentFragment();
+        intervalDescription.textContent =
+            "Notes will be displayed in intervals of this amount of time before the current day.";
+        intervalDescription.createEl("br");
+        /* intervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
+        intervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+            text: "every " + getTimeSpanTitle(this.plugin.settings.reviewInterval, this.plugin.settings.reviewIntervalUnit), cls: 'text-accent'
+
+        });
+
+        new Setting(containerEl)
+            .setName('Review interval')
+            .setDesc(intervalDescription)
+            .addSlider((slider) =>
+                slider
+                    .setValue(this.plugin.settings.reviewInterval)
+                    .setLimits(1, (getMaxTimeSpan(this.plugin.settings.reviewIntervalUnit)), 1)
+                    .setDynamicTooltip()
+                    .onChange(
+                        /* debounce(
+                            (value) => {
+                                this.plugin.settings.timeSpans[index].number = value;
+                                void this.plugin.saveSettings();
+                                this.display();
+                            },
+                            DEBOUNCE_DELAY,
+                            true,
+                        ), */
+                        async (value) => {
+                            this.plugin.settings.reviewInterval = value;
+                            await this.plugin.saveSettings();
+                            this.plugin.refreshViews(false, true);
+                            this.display();
+                        }
+                    ),
+            )
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(Unit)
+                    .setValue(this.plugin.settings.reviewIntervalUnit)
+                    .onChange((value) => {
+                        this.plugin.settings.reviewIntervalUnit = value as Unit;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(false, true);
+                        this.display();
+                    }),
+            );
+
+        const delayDescription = new DocumentFragment();
+        delayDescription.textContent =
+            "Only notes from this long ago or earlier will be included in the ";
+        delayDescription.createEl('strong', { text: "On this day" });
+        delayDescription.createEl('span', { text: " view." });
+        delayDescription.createEl("br");
+        delayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+            text: getTimeSpanTitle(this.plugin.settings.reviewDelay, this.plugin.settings.reviewDelayUnit) + " ago or earlier", cls: 'text-accent'
+
+        });
+
+        new Setting(containerEl)
+            .setName('Review delay')
+            .setDesc(delayDescription)
+            .addSlider((slider) =>
+                slider
+                    .setValue(this.plugin.settings.reviewDelay)
+                    .setLimits(1, (getMaxTimeSpan(this.plugin.settings.reviewDelayUnit)), 1)
+                    .setDynamicTooltip()
+                    .onChange(
+                        /* debounce(
+                            (value) => {
+                                this.plugin.settings.timeSpans[index].number = value;
+                                void this.plugin.saveSettings();
+                                this.display();
+                            },
+                            DEBOUNCE_DELAY,
+                            true,
+                        ), */
+                        async (value) => {
+                            this.plugin.settings.reviewDelay = value;
+                            await this.plugin.saveSettings();
+                            this.plugin.refreshViews(false, true);
+                            this.display();
+                        }
+                    ),
+            )
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(Unit)
+                    .setValue(this.plugin.settings.reviewDelayUnit)
+                    .onChange((value) => {
+                        this.plugin.settings.reviewDelayUnit = value as Unit;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(false, true);
+                        this.display();
+                    }),
+            );
+
+
+
+        /* const openOnThisDayName = new DocumentFragment;
+        openOnThisDayName.textContent = 'Open ';
+        openOnThisDayName.createEl('strong', { text: "On this day" });
+        openOnThisDayName.createEl('span', { text: ' on startup' }); */
+
+        const openOnThisDayDesc = new DocumentFragment;
+        openOnThisDayDesc.textContent = 'Open the ';
+        openOnThisDayDesc.createEl('strong', { text: "On this day" });
+        openOnThisDayDesc.createEl('span', { text: " view on startup." });
+
+
+        new Setting(containerEl)
+            .setName('Open on startup')
+            .setDesc(openOnThisDayDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.onThisDayStartup).onChange((value) => {
+                    this.plugin.settings.onThisDayStartup = value;
+                    void this.plugin.saveSettings();
+                }));
+
+
+        //#endregion
+
+        //#region Note previews
         new Setting(containerEl).setName('Note previews')/* .setDesc('Settings that will apply to note previews in the Calendar view and the \'On this day\' view.') */.setHeading();
 
 
@@ -340,105 +481,9 @@ export class DiariumSettingTab extends PluginSettingTab {
             });
 
 
-        new Setting(containerEl).setName('On this day').setHeading();
+        //#endregion
 
-        const intervalDescription = new DocumentFragment();
-        intervalDescription.textContent =
-            "Notes will be displayed in intervals of this amount of time before the current day.";
-        intervalDescription.createEl("br");
-        /* intervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
-        intervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
-            text: "every " + getTimeSpanTitle(this.plugin.settings.reviewInterval, this.plugin.settings.reviewIntervalUnit), cls: 'text-accent'
-
-        });
-
-        new Setting(containerEl)
-            .setName('Review interval')
-            .setDesc(intervalDescription)
-            .addSlider((slider) =>
-                slider
-                    .setValue(this.plugin.settings.reviewInterval)
-                    .setLimits(1, (getMaxTimeSpan(this.plugin.settings.reviewIntervalUnit)), 1)
-                    .setDynamicTooltip()
-                    .onChange(
-                        /* debounce(
-                            (value) => {
-                                this.plugin.settings.timeSpans[index].number = value;
-                                void this.plugin.saveSettings();
-                                this.display();
-                            },
-                            DEBOUNCE_DELAY,
-                            true,
-                        ), */
-                        async (value) => {
-                            this.plugin.settings.reviewInterval = value;
-                            await this.plugin.saveSettings();
-                            this.plugin.refreshViews(false, true);
-                            this.display();
-                        }
-                    ),
-            )
-            .addDropdown((dropdown) =>
-                dropdown
-                    .addOptions(Unit)
-                    .setValue(this.plugin.settings.reviewIntervalUnit)
-                    .onChange((value) => {
-                        this.plugin.settings.reviewIntervalUnit = value as Unit;
-                        void this.plugin.saveSettings();
-                        this.plugin.refreshViews(false, true);
-                        this.display();
-                    }),
-            );
-
-        const delayDescription = new DocumentFragment();
-        delayDescription.textContent =
-            "Only notes from this long ago or earlier will be included in the ";
-        delayDescription.createEl('strong', { text: "On this day" });
-        delayDescription.createEl('span', { text: " view." });
-        delayDescription.createEl("br");
-        delayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
-            text: getTimeSpanTitle(this.plugin.settings.reviewDelay, this.plugin.settings.reviewDelayUnit) + " ago or earlier", cls: 'text-accent'
-
-        });
-
-        new Setting(containerEl)
-            .setName('Review delay')
-            .setDesc(delayDescription)
-            .addSlider((slider) =>
-                slider
-                    .setValue(this.plugin.settings.reviewDelay)
-                    .setLimits(1, (getMaxTimeSpan(this.plugin.settings.reviewDelayUnit)), 1)
-                    .setDynamicTooltip()
-                    .onChange(
-                        /* debounce(
-                            (value) => {
-                                this.plugin.settings.timeSpans[index].number = value;
-                                void this.plugin.saveSettings();
-                                this.display();
-                            },
-                            DEBOUNCE_DELAY,
-                            true,
-                        ), */
-                        async (value) => {
-                            this.plugin.settings.reviewDelay = value;
-                            await this.plugin.saveSettings();
-                            this.plugin.refreshViews(false, true);
-                            this.display();
-                        }
-                    ),
-            )
-            .addDropdown((dropdown) =>
-                dropdown
-                    .addOptions(Unit)
-                    .setValue(this.plugin.settings.reviewDelayUnit)
-                    .onChange((value) => {
-                        this.plugin.settings.reviewDelayUnit = value as Unit;
-                        void this.plugin.saveSettings();
-                        this.plugin.refreshViews(false, true);
-                        this.display();
-                    }),
-            );
-
+        //#region Timestamps
         new Setting(containerEl).setName('Timestamps').setHeading();
 
         const dateStampDesc = new DocumentFragment();
@@ -512,6 +557,8 @@ export class DiariumSettingTab extends PluginSettingTab {
                 this.plugin.settings.timeStampFormat = value;
                 await this.plugin.saveSettings();
             }));
+
+        //#endregion
 
     }
 }

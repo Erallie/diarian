@@ -3,7 +3,7 @@ import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
-import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS } from 'src/settings';
+import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
 import { NewDailyNote } from './src/react-nodes/new-note';
 
@@ -12,12 +12,6 @@ export type EnhancedApp = App & {
     commands: { executeCommandById: Function };
 };
 
-
-const enum LeafType {
-    tab = 'tab',
-    right = 'right'/* ,
-    left = 'left' */
-}
 
 export default class Diarium extends Plugin {
     settings: DiariumSettings;
@@ -95,6 +89,7 @@ export default class Diarium extends Plugin {
         /* const statusBarItemEl = this.addStatusBarItem();
         statusBarItemEl.setText('Status Bar Text'); */
 
+        //#region Commands
         // This adds a simple command that can be triggered anywhere
         this.addCommand({
             id: 'insert-timestamp',
@@ -285,7 +280,7 @@ export default class Diarium extends Plugin {
             name: 'Open calendar',
             icon: 'lucide-calendar',
             callback: () => {
-                this.openLeaf(ViewType.calendarView, LeafType.tab);
+                this.openLeaf(ViewType.calendarView, this.settings.calLocation);
             }
         });
 
@@ -330,6 +325,7 @@ export default class Diarium extends Plugin {
                 }
             }
         }); */
+        //#endregion
 
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new DiariumSettingTab(this.app, this));
@@ -442,15 +438,19 @@ export default class Diarium extends Plugin {
             // Our view could not be found in the workspace, create a new leaf
             // in the right sidebar for it
 
-            switch (leafType) {
+            const mappedLeafType = leafTypeMap[leafType as LeafType];
+            switch (mappedLeafType) {
                 case LeafType.tab:
                     leaf = workspace.getLeaf(false);
                     break;
                 case LeafType.right:
                     leaf = workspace.getRightLeaf(false);
                     break;
+                case LeafType.left:
+                    leaf = workspace.getLeftLeaf(false);
+                    break;
                 default:
-                    printToConsole(logLevel.error, 'Cannot open leaf:\nleafType is not properly defined!');
+                    printToConsole(logLevel.error, `Cannot open leaf:\nleafType '${mappedLeafType}' is not a valid LeafType!`);
                     return;
             }
 
