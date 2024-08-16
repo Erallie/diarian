@@ -1,9 +1,9 @@
 {
-    "id": "diarium",
-    "name": "Diarium",
+    "id": "diarian",
+    "name": "Diarian",
     "version": "1.0.17",
-	"minAppVersion": "0.15.0",
-    "description": "Adds functionality from the Diarium journal app.",
+    "minAppVersion": "0.15.0",
+    "description": "All-in-one journaling plugin.",
     "author": "Erika Gozar",
-	"isDesktopOnly": false
+    "isDesktopOnly": false
 }

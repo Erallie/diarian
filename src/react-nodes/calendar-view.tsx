@@ -4,7 +4,7 @@ import { Root, createRoot } from "react-dom/client";
 import { Calendar } from 'react-calendar';
 import { useState } from 'react';
 import moment from 'moment';
-import type Diarium from 'main';
+import type Diarian from 'main';
 import { getMoment, getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType } from '../constants';
@@ -12,19 +12,19 @@ import { NewDailyNote } from "./new-note";
 
 interface ContainerProps {
     view: View;
-    plugin: Diarium;
+    plugin: Diarian;
     app: App;
     thisComp: CalendarView;
 }
 
 export class CalendarView extends ItemView {
     root: Root | null = null;
-    plugin: Diarium;
+    plugin: Diarian;
     // view: View;
     app: App;
     startDate: Date;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Diarium, view: View, app: App) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarian, view: View, app: App) {
         super(leaf);
         this.plugin = plugin;
         // this.view = view;
@@ -54,7 +54,7 @@ export class CalendarView extends ItemView {
         this.root?.unmount();
     }
 
-    async refresh(plugin: Diarium, newDate?: Date) {
+    async refresh(plugin: Diarian, newDate?: Date) {
         this.plugin = plugin;
         if (newDate && newDate !== undefined) this.startDate = newDate;
         this.onClose();

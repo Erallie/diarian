@@ -1,18 +1,18 @@
 import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown } from 'obsidian';
 // import * as zip from "@zip.js/zip.js";
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
-import Diarium from 'main';
+import Diarian from 'main';
 import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
 import moment from 'moment';
 import { getDailyNoteSettings, getModifiedFolderAndFormat } from './get-daily-notes';
 
 
 export class ImportView extends Modal {
-    plugin: Diarium;
+    plugin: Diarian;
     /* attachDir: string;
     subDir: string; */
 
-    constructor(app: App, plugin: Diarium) {
+    constructor(app: App, plugin: Diarian) {
         super(app);
         this.plugin = plugin;
         /* this.attachDir = attachDirs.defaultDir;
@@ -31,7 +31,7 @@ export class ImportView extends Modal {
         const instrDesc = new DocumentFragment();
         const instrList = instrDesc.createEl('ol'/* , { cls: 'instructions' } */);
         const list1 = instrList.createEl('li', { text: 'Open ' });
-        list1.createEl('strong', { text: 'Diarium' });
+        list1.createEl('strong', { text: 'Diarian' });
         list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
         if (Platform.isMacOS && Platform.isDesktop) {
             list1.createEl('span', { text: ' tab.' });
@@ -78,7 +78,7 @@ export class ImportView extends Modal {
         });
         openCalendarButton.createEl('span', { text: ' Open calendar' }); */
 
-        /* const jsonFileSetting = new Setting(this.contentEl).setName("Choose json file").setDesc("Select the exported .json file containing your Diarium journal");
+        /* const jsonFileSetting = new Setting(this.contentEl).setName("Choose json file").setDesc("Select the exported .json file containing your Diarian journal");
         const jsonFile = jsonFileSetting.controlEl.createEl("input", {
             attr: {
                 type: "file",
@@ -89,7 +89,7 @@ export class ImportView extends Modal {
 
         const zipFileSetting = new Setting(this.contentEl)
             .setName("Choose zip file")
-            .setDesc("Select the zip file exported from Diarium.");
+            .setDesc("Select the zip file exported from Diarian.");
         const zipFile = zipFileSetting.controlEl.createEl("input", {
             attr: {
                 type: "file",

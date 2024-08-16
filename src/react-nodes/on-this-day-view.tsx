@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import moment from 'moment';
-import type Diarium from 'main';
+import type Diarian from 'main';
 import { ViewType, printToConsole, logLevel } from '../constants';
 import { getPriorNotes, getMoment, isSameDay, getModifiedFolderAndFormat } from "../get-daily-notes";
 import { TimeSpan } from './time-span';
@@ -10,17 +10,17 @@ import { TimeSpan } from './time-span';
 
 interface ContainerProps {
     view: View;
-    plugin: Diarium;
+    plugin: Diarian;
     app: App;
 }
 
 export class OnThisDayView extends ItemView {
     root: Root | null = null;
-    plugin: Diarium;
+    plugin: Diarian;
     view: View;
     app: App;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Diarium, view: View, app: App) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarian, view: View, app: App) {
         super(leaf);
         this.plugin = plugin;
         this.view = view;
@@ -52,7 +52,7 @@ export class OnThisDayView extends ItemView {
     }
 
 
-    async refresh(plugin: Diarium) {
+    async refresh(plugin: Diarian) {
         this.plugin = plugin;
         this.onClose();
         this.onOpen();

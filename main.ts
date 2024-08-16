@@ -3,7 +3,7 @@ import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
 import { ViewType, printToConsole, logLevel } from './src/constants';
-import { DiariumSettings, DiariumSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap } from 'src/settings';
+import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
 import { NewDailyNote } from './src/react-nodes/new-note';
 
@@ -13,8 +13,8 @@ export type EnhancedApp = App & {
 };
 
 
-export default class Diarium extends Plugin {
-    settings: DiariumSettings;
+export default class Diarian extends Plugin {
+    settings: DiarianSettings;
     view: View;
     app: App;
     dailyNotes: TFile[];
@@ -75,7 +75,7 @@ export default class Diarium extends Plugin {
         });
 
         // This creates an icon in the left ribbon.
-        const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarium view', (evt: MouseEvent) => {
+        const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             // this.openCalendar();
             const enhancedApp = this.app as EnhancedApp;
@@ -294,7 +294,7 @@ export default class Diarium extends Plugin {
 
         this.addCommand({ // Select view
             id: 'select-view',
-            name: 'Select Diarium view',
+            name: 'Select Diarian view',
             icon: 'lucide-book-heart',
             callback: () => {
                 new SelectView(this.app, this).open();
@@ -354,7 +354,7 @@ export default class Diarium extends Plugin {
         //#endregion
 
         // This adds a settings tab so the user can configure various aspects of the plugin
-        this.addSettingTab(new DiariumSettingTab(this.app, this));
+        this.addSettingTab(new DiarianSettingTab(this.app, this));
 
         this.registerEvent(
             this.app.workspace.on("editor-menu", (menu, editor, info) => {
@@ -573,16 +573,16 @@ export default class Diarium extends Plugin {
 }
 
 class SelectView extends Modal {
-    plugin: Diarium;
+    plugin: Diarian;
 
-    constructor(app: App, plugin: Diarium) {
+    constructor(app: App, plugin: Diarian) {
         super(app);
         this.plugin = plugin;
     }
 
     onOpen() {
         const { contentEl } = this;
-        new Setting(contentEl).setName('Select Diarium view').setHeading();
+        new Setting(contentEl).setName('Select Diarian view').setHeading();
 
         const enhancedApp = this.app as EnhancedApp;
         // contentEl.setText('Open view');

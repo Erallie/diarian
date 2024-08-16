@@ -1,11 +1,11 @@
 import { App, Keymap, MarkdownRenderer, TFile, View } from "obsidian";
 import { Ref, useRef } from "react";
-import type Diarium from 'main';
+import type Diarian from 'main';
 
 interface Props {
     note: TFile;
     view: View;
-    plugin: Diarium;
+    plugin: Diarian;
     app: App;
 }
 

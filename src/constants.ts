@@ -33,7 +33,7 @@ export function printToConsole(level: logLevel, message: any) { // level = {log,
         let levelText = "";
         let print = (toPrint: string) => { };
         let partialMsg: string | DocumentFragment = '';
-        const pluginName = "Diarium"; //REPLACE THIS IN EACH STEP
+        const pluginName = "Diarian"; //REPLACE THIS IN EACH STEP
         // let newMsg = message.replaceAll("\n", "\n\t");
         let skipPrint = false;
         const stack = e.stack.slice('Error'.length);

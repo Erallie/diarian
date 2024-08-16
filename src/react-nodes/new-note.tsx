@@ -2,7 +2,7 @@ import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import { TFile, View, App, Modal, normalizePath } from "obsidian";
 // import useContext from "../hooks/useContext";
-import type Diarium from '../../main';
+import type Diarian from '../../main';
 import { printToConsole, logLevel, DEFAULT_FORMAT } from '../constants';
 import moment from 'moment';
 import { writeNote } from '../import-journal';
@@ -13,11 +13,11 @@ const TIME_FORMAT = 'kk:mm:ss';
 
 export class NewDailyNote extends Modal {
     root: Root | null = null;
-    plugin: Diarium;
+    plugin: Diarian;
     dateString: string;
     timeString: string;
 
-    constructor(app: App, plugin: Diarium, date?: moment.Moment) {
+    constructor(app: App, plugin: Diarian, date?: moment.Moment) {
         super(app);
         this.plugin = plugin;
 

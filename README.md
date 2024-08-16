@@ -1,5 +1,7 @@
-# Diarium
-This is a plugin for [Obsidian](https://obsidian.md) that adds functionality from the [Diarium](https://diariumapp.com/) journal app.
+# Diarian
+Your all-in-one journaling plugin for [Obsidian](https://obsidian.md).
+
+This plugin adds functionality from the [Diarium](https://diariumapp.com/) journal app to the note-taking app we all know and love.
 
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Key features
@@ -28,7 +30,7 @@ Since this plugin started as a project for my own personal use, there are featur
 - The following views from [Diarium](https://diariumapp.com/):
 	- The **Timeline** view
 	- The **Map** view
-		- I recommend using the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin for this feature. This Diarium plugin will automatically use your settings for it.
+		- I recommend using the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin for this feature. This Diarian plugin will automatically use your settings for it.
 - Any embedded feeds & events not mentioned in [Key features](#key-features) or [Planned features](#planned-features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.

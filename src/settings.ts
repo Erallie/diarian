@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
-import type Diarium from 'main';
+import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 
 
@@ -51,7 +51,7 @@ const getMaxTimeSpan = (unit: Unit) => {
 //#endregion
 
 //#region Setting defaults
-export interface DiariumSettings {
+export interface DiarianSettings {
     calendarType: CalendarType;
     disableFuture: boolean;
     headingFormat: string;
@@ -76,7 +76,7 @@ export interface DiariumSettings {
     onThisDayStartup: boolean;
 }
 
-export const DEFAULT_SETTINGS: DiariumSettings = {
+export const DEFAULT_SETTINGS: DiarianSettings = {
     calendarType: CalendarType.iso8601,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
@@ -104,10 +104,10 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
 
 //#endregion
 
-export class DiariumSettingTab extends PluginSettingTab {
-    plugin: Diarium;
+export class DiarianSettingTab extends PluginSettingTab {
+    plugin: Diarian;
 
-    constructor(app: App, plugin: Diarium) {
+    constructor(app: App, plugin: Diarian) {
         super(app, plugin);
         this.plugin = plugin;
     }

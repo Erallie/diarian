@@ -3,7 +3,7 @@ import { TFile, View, App } from "obsidian";
 // import useContext from "../hooks/useContext";
 import NotePreview from "./note-preview";
 import { getTimeSpanTitle, Unit, printToConsole, logLevel } from '../constants';
-import type Diarium from '../../main';
+import type Diarian from '../../main';
 import moment from 'moment';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
     thisMoment: moment.Moment;
     /* wrapper?: React.JSX.Element; */
     view: View;
-    plugin: Diarium;
+    plugin: Diarian;
     app: App;
 }
 

@@ -1,5 +1,5 @@
 import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
-import Diarium from 'main';
+import Diarian from 'main';
 import moment from 'moment';
 import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
 
@@ -120,7 +120,7 @@ export function isSameDay(date1: moment.Moment, date2: moment.Moment) {
         && date1.year() == date2.year());
 }
 
-export function getPriorNotes(allNotes: TFile[], plugin: Diarium) {
+export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
     const now = moment().hour(0).minute(0).second(0).millisecond(0);
 
     // printToConsole(logLevel.log, now.format('MMMM Do, YYYY [at] h:mm:ss.SSS A'));
