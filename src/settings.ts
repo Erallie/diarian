@@ -2,6 +2,9 @@ import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarium from 'main';
 import { Unit, getTimeSpanTitle } from './constants';
 
+
+//#region constants
+//#region enums & values
 export enum CalendarType {
     /* gregory = 'gregory',
     hebrew = 'hebrew',
@@ -20,6 +23,21 @@ export const calendarTypeMap: { [key: string]: CalendarType } = {
     iso8601: CalendarType.iso8601
 };
 
+const getMaxTimeSpan = (unit: Unit) => {
+    switch (unit) {
+        case Unit.day:
+            return 31;
+        case Unit.week:
+            return 52;
+        case Unit.month:
+            return 24;
+        case Unit.year:
+            return 100;
+    }
+};
+//#endregion
+
+//#region Setting defaults
 export interface DiariumSettings {
     calendarType: CalendarType;
     disableFuture: boolean;
@@ -64,19 +82,9 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     calStartup: false,
     onThisDayStartup: false
 }
+//#endregion
 
-const getMaxTimeSpan = (unit: Unit) => {
-    switch (unit) {
-        case Unit.day:
-            return 31;
-        case Unit.week:
-            return 52;
-        case Unit.month:
-            return 24;
-        case Unit.year:
-            return 100;
-    }
-};
+//#endregion
 
 export class DiariumSettingTab extends PluginSettingTab {
     plugin: Diarium;
