@@ -313,7 +313,7 @@ export default class Diarium extends Plugin {
                 // this.openOnThisDay();
                 // this.openCalendar();
                 // new SampleModal(this.app).open();
-                this.openLeaf(ViewType.onThisDayView, LeafType.right);
+                this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
             }
         });
 

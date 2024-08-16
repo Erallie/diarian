@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarium from 'main';
-import { Unit, getTimeSpanTitle } from './constants';
+import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 
 
 //#region constants
@@ -62,6 +62,7 @@ export interface DiariumSettings {
     useCallout: boolean;
     showNoteTitle: boolean;
     useQuote: boolean;
+    onThisDayLoc: LeafType;
 
     reviewInterval: number;
     reviewIntervalUnit: Unit;
@@ -86,6 +87,7 @@ export const DEFAULT_SETTINGS: DiariumSettings = {
     useCallout: true,
     showNoteTitle: true,
     useQuote: true,
+    onThisDayLoc: 'right' as LeafType,
 
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
@@ -232,7 +234,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                     .onChange((value) => {
                         this.plugin.settings.calLocation = value as LeafType;
                         void this.plugin.saveSettings();
-                        this.plugin.refreshViews(true, false);
+                        // this.plugin.refreshViews(true, false);
                         // this.display();
                     }));
 
@@ -258,7 +260,7 @@ export class DiariumSettingTab extends PluginSettingTab {
                     void this.plugin.saveSettings();
                 }));
         //#endregion
-        
+
         //#endregion
 
         //#region On this day
@@ -366,6 +368,28 @@ export class DiariumSettingTab extends PluginSettingTab {
 
         //#endregion
 
+        //#region On this day location
+        const onThisDayLocDesc = new DocumentFragment;
+        onThisDayLocDesc.textContent = 'The location the  ';
+        onThisDayLocDesc.createEl('strong', { text: "On this day" });
+        onThisDayLocDesc.createEl('span', { text: " view will open in." });
+
+        new Setting(containerEl)
+            .setName('Leaf location')
+            .setDesc(onThisDayLocDesc)
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(LeafType)
+                    .setValue(this.plugin.settings.onThisDayLoc)
+                    .onChange((value) => {
+                        this.plugin.settings.onThisDayLoc = value as LeafType;
+                        void this.plugin.saveSettings();
+                        // this.plugin.refreshViews(false, true);
+                        // this.display();
+                    }));
+
+        //#endregion
+
         //#region Open on startup
         /* const openOnThisDayName = new DocumentFragment;
         openOnThisDayName.textContent = 'Open ';
@@ -460,7 +484,7 @@ export class DiariumSettingTab extends PluginSettingTab {
             );
 
         //#endregion
-        
+
         if (!this.plugin.settings.useCallout) {
             new Setting(containerEl)
                 .setName("Use quote elements to display content")
@@ -563,7 +587,7 @@ export class DiariumSettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName('Preview')
             .setDesc(timeStampPreview); */
-            
+
         //#endregion
 
         dateStampSetting.addMomentFormat(text => text
