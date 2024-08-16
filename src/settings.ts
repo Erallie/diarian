@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
+import { getAllDailyNotes } from './get-daily-notes';
 
 
 //#region constants
@@ -610,5 +611,54 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         //#endregion
 
+
+        new Setting(containerEl).setName('Danger zone').setHeading();
+
+        const refreshDesc = new DocumentFragment();
+
+        refreshDesc.textContent = 'Diarian usually only checks files you ';
+        refreshDesc.createEl('strong', { text: 'create' });
+        refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'delete' });
+        refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'rename' });
+        refreshDesc.createEl('span', { text: ', or ' }).createEl('strong', { text: 'move' });
+        refreshDesc.createEl('span', { text: ' to update the list of Daily notes.' }).createEl('br');
+        refreshDesc.createEl('span', { text: 'This feature retrieves ' })
+            .createEl('strong', { text: 'all notes' });
+        refreshDesc.createEl('span', { text: ' from your vault and filters it for Daily notes.' })
+            .createEl('br');
+        refreshDesc.createEl('span', { text: 'Only use this feature if there are daily notes missing in the ', cls: 'setting-error' })
+            .createEl('strong', { text: 'Calendar' });
+        refreshDesc.createEl('span', { text: ' view or the ', cls: 'setting-error' })
+            .createEl('strong', { text: 'On this day' });
+        refreshDesc.createEl('span', { text: ' view.', cls: 'setting-error' })
+
+        new Setting(containerEl)
+            .setName('Refresh daily notes')
+            .setDesc(refreshDesc)
+            .addButton((button) =>
+                button
+                    .setIcon('lucide-refresh-ccw')
+                    .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
+                    .setWarning()
+                    .onClick(() => {
+                        this.plugin.dailyNotes = getAllDailyNotes();
+                        // printToConsole(logLevel.log, this.dailyNotes.length.toString());
+                        this.plugin.refreshViews(true, true);
+                        printToConsole(logLevel.info, 'Daily notes refreshed!');
+                    })
+            )
+
+        /* new ButtonComponent(containerEl)
+            .setIcon('lucide-refresh-ccw')
+            .setButtonText('Refresh daily notes')
+            .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
+            .setWarning()
+            .onClick(() => {
+                this.plugin.dailyNotes = getAllDailyNotes();
+                // printToConsole(logLevel.log, this.dailyNotes.length.toString());
+                this.plugin.refreshViews(true, true);
+                printToConsole(logLevel.info, 'Daily notes refreshed!');
+            }) */
+        //#endregion
     }
 }
