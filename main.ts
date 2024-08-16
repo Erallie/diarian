@@ -79,7 +79,51 @@ export default class Diarium extends Plugin {
             // Called when the user clicks the icon.
             // this.openCalendar();
             const enhancedApp = this.app as EnhancedApp;
-            enhancedApp.commands.executeCommandById(`${this.manifest.id}:select-view`);
+            const menu = new Menu();
+            menu.addItem((item) =>
+                item
+                    .setTitle('New daily note')
+                    .setIcon('lucide-file-plus')
+                    .onClick(() => {
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:new-note`);
+                    }));
+
+            menu.addItem((item) =>
+                item
+                    .setTitle('Open calendar')
+                    .setIcon('lucide-calendar')
+                    .onClick(() => {
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+                    }));
+
+            menu.addItem((item) =>
+                item
+                    .setTitle('Open on this day')
+                    .setIcon('lucide-history')
+                    .onClick(() => {
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                    }));
+
+            menu.addItem((item) =>
+                item
+                    .setTitle('Open importer')
+                    .setIcon('lucide-import')
+                    .onClick(() => {
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-importer`);
+                    }));
+
+            menu.addItem((item) =>
+                item
+                    .setTitle('Refresh daily notes')
+                    .setIcon('lucide-refresh-ccw')
+                    .onClick(() => {
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:refresh-notes`);
+                    }));
+
+
+            menu.showAtMouseEvent(evt);
+
+            // enhancedApp.commands.executeCommandById(`${this.manifest.id}:select-view`);
             // console.log(momentToRegex('dddd, MMMM Do, YYYY NNNN [at] h:mm A'));
         });
         // Perform additional things with the ribbon
