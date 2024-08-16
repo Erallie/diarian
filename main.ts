@@ -118,14 +118,6 @@ export default class Diarian extends Plugin {
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-importer`);
                     }));
 
-            menu.addItem((item) =>
-                item
-                    .setTitle('Refresh daily notes')
-                    .setIcon('lucide-refresh-ccw')
-                    .onClick(() => {
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:refresh-notes`);
-                    }));
-
 
             menu.showAtMouseEvent(evt);
 
@@ -673,7 +665,7 @@ class SelectView extends Modal {
                 this.close();
             });
 
-        new ButtonComponent(contentEl)
+        /* new ButtonComponent(contentEl)
             .setClass('select-view-button')
             .setIcon('lucide-refresh-ccw')
             .setButtonText('Refresh daily notes')
@@ -682,7 +674,7 @@ class SelectView extends Modal {
             .onClick(() => {
                 enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:refresh-notes`);
                 this.close();
-            })
+            }) */
 
     }
 
