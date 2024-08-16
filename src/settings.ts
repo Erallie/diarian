@@ -3,11 +3,22 @@ import type Diarium from 'main';
 import { Unit, getTimeSpanTitle } from './constants';
 
 export enum CalendarType {
-    gregory = 'gregory',
+    /* gregory = 'gregory',
     hebrew = 'hebrew',
     islamic = 'islamic',
-    iso8601 = 'iso8601'
+    iso8601 = 'iso8601' */
+    gregory = 'Gregorian',
+    hebrew = 'Hebrew',
+    islamic = 'Islamic',
+    iso8601 = 'ISO 8601'
 }
+
+export const calendarTypeMap: { [key: string]: CalendarType } = {
+    gregory: CalendarType.gregory,
+    hebrew: CalendarType.hebrew,
+    islamic: CalendarType.islamic,
+    iso8601: CalendarType.iso8601
+};
 
 export interface DiariumSettings {
     calendarType: CalendarType;
@@ -135,7 +146,8 @@ export class DiariumSettingTab extends PluginSettingTab {
 
 
         function setWeekdayText(value: string) {
-            switch (value) {
+            const mappedCalType = calendarTypeMap[value as CalendarType];
+            switch (mappedCalType) {
                 case CalendarType.gregory:
                     startWeekday.textContent = 'Sunday'
                     break;
