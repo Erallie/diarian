@@ -77,7 +77,7 @@ export interface DiarianSettings {
 }
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
-    calendarType: CalendarType.iso8601,
+    calendarType: 'ISO 8601' as CalendarType,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     calLocation: LeafType.tab,
