@@ -62,8 +62,8 @@ export default class Diarian extends Plugin {
                 }));
 
 
-            this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.view, this.app));
-            this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.view, this.app));
+            this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.app));
+            this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.app));
 
             const enhancedApp = this.app as EnhancedApp;
 

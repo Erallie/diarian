@@ -20,14 +20,12 @@ interface ContainerProps {
 export class CalendarView extends ItemView {
     root: Root | null = null;
     plugin: Diarian;
-    // view: View;
     app: App;
     startDate: Date;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Diarian, view: View, app: App) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarian, app: App) {
         super(leaf);
         this.plugin = plugin;
-        // this.view = view;
         this.app = app;
         this.startDate = new Date();
     }
@@ -45,7 +43,7 @@ export class CalendarView extends ItemView {
         this.icon = 'lucide-calendar';
         this.root.render(
             <StrictMode>
-                <CalendarContainer view={this/* .view */} plugin={this.plugin} app={this.app} thisComp={this} />
+                <CalendarContainer view={this} plugin={this.plugin} app={this.app} thisComp={this} />
             </StrictMode>
         );
     }

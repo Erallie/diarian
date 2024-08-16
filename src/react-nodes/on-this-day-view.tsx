@@ -17,15 +17,12 @@ interface ContainerProps {
 export class OnThisDayView extends ItemView {
     root: Root | null = null;
     plugin: Diarian;
-    view: View;
     app: App;
 
-    constructor(leaf: WorkspaceLeaf, plugin: Diarian, view: View, app: App) {
+    constructor(leaf: WorkspaceLeaf, plugin: Diarian, app: App) {
         super(leaf);
         this.plugin = plugin;
-        this.view = view;
         this.app = app;
-        // this.dailyNotes = this.plugin.dailyNotes;
     }
 
     getViewType() {
@@ -41,8 +38,10 @@ export class OnThisDayView extends ItemView {
         this.icon = 'lucide-history';
         this.root.render(
             <StrictMode>
-                <h1>On this day...</h1>
-                <ReviewContainer view={this/* .view */} plugin={this.plugin} app={this.app} />
+                <div className='on-this-day-container'>
+                    <h1>On this day...</h1>
+                    <ReviewContainer view={this} plugin={this.plugin} app={this.app} />
+                </div>
             </StrictMode>
         );
     }
