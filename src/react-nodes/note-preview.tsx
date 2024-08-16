@@ -65,7 +65,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
     if (plugin.settings.useCallout) {
         return (
-            <div className="callout note-preview" onMouseUp={onClick} >
+            <div className="callout note-preview" onMouseUp={onClick} aria-label="Open note" >
                 {plugin.settings.showNoteTitle && (
                     <div className="callout-title">
                         <div className="callout-title-inner">{note.basename}</div>
@@ -78,7 +78,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
     }
 
     return (
-        <div onMouseUp={onClick} className="note-preview">
+        <div onMouseUp={onClick} className="note-preview" aria-label="Open note">
             {plugin.settings.showNoteTitle && <h4>{note.basename}</h4>}
 
             <small className="markdown-rendered">
