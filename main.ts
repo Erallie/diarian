@@ -402,27 +402,6 @@ export default class Diarium extends Plugin {
         await this.saveData(this.settings);
     }
 
-    /* async openCalendar() {
-
-        const { workspace } = this.app;
-
-        let leaf: WorkspaceLeaf | null;
-        const leaves = workspace.getLeavesOfType(ViewType.calendarView);
-
-        if (leaves.length > 0) {
-            // A leaf with our view already exists, use that
-            leaf = leaves[0];
-        } else {
-            // Our view could not be found in the workspace, create a new leaf
-            // in the right sidebar for it
-            leaf = workspace.getLeaf(!Platform.isMobile);
-            await leaf?.setViewState({ type: ViewType.calendarView, active: true });
-        }
-
-        // "Reveal" the leaf in case it is in a collapsed sidebar
-        workspace.revealLeaf(leaf!);
-    } */
-
     async openLeaf(viewType: ViewType, leafType: LeafType) {
 
         const { workspace } = this.app;
