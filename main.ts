@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, Platform, ButtonComponent, TFile, WorkspaceLeaf } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
@@ -167,23 +167,16 @@ export default class Diarium extends Plugin {
             checkCallback: (checking: boolean) => {
                 // Conditions to check
                 const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-                if (markdownView) {
+                if (markdownView && markdownView.file instanceof TFile) {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
                     const { folder, format }: any = getModifiedFolderAndFormat();
-
-                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
-                        // printToConsole(logLevel.log, 'can open view');
-                        if (checking) return true;
-                        const { folder, format }: any = getModifiedFolderAndFormat();
-                        const noteMoment = getMoment(markdownView.file, folder, format);
-                        this.refreshViews(true, false, noteMoment);
-                        this.openLeaf(ViewType.calendarView, LeafType.tab);
-                    }
-                    else if (checking) return false;
+                    // printToConsole(logLevel.log, 'can open view');
+                    return this.checkCallback(checking, 'show-in-calendar', markdownView.file, folder, format);
                     // This command will only show up in Command Palette when the check function returns true
                 }
+                else if (checking) return false;
             }
         });
 
@@ -194,24 +187,17 @@ export default class Diarium extends Plugin {
             checkCallback: (checking: boolean) => {
                 // Conditions to check
                 const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-                if (markdownView) {
-        // If checking is true, we're simply "checking" if the command can be run.
-        // If checking is false, then we want to actually perform the operation.
+                if (markdownView && markdownView.file instanceof TFile) {
+                    // If checking is true, we're simply "checking" if the command can be run.
+                    // If checking is false, then we want to actually perform the operation.
 
                     const { folder, format }: any = getModifiedFolderAndFormat();
 
-                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
-                        // printToConsole(logLevel.log, 'can open view');
-                        const index = this.dailyNotes.findIndex((note) => {
-                            return (note == markdownView.file as TFile);
-                        });
-                        if (checking && index != this.dailyNotes.length - 1) return true;
-                        else if (checking) return false;
-                        void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index + 1]);
-                    }
-                    else if (checking) return false;
+                    // printToConsole(logLevel.log, 'can open view');
+                    return this.checkCallback(checking, 'next-note', markdownView.file, folder, format);
                     // This command will only show up in Command Palette when the check function returns true
                 }
+                else if (checking) return false;
             }
         });
 
@@ -223,25 +209,16 @@ export default class Diarium extends Plugin {
             checkCallback: (checking: boolean) => {
                 // Conditions to check
                 const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-                if (markdownView) {
+                if (markdownView && markdownView.file instanceof TFile) {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
                     const { folder, format }: any = getModifiedFolderAndFormat();
-
-                    if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
-                        // printToConsole(logLevel.log, 'can open view');
-                        const index = this.dailyNotes.findIndex((note) => {
-                            return (note == markdownView.file as TFile);
-                        });
-
-                        if (checking && index != 0) return true;
-                        else if (checking) return false;
-                        void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index - 1]);
-                    }
-                    else if (checking) return false;
-        // This command will only show up in Command Palette when the check function returns true
+                    // printToConsole(logLevel.log, 'can open view');
+                    return this.checkCallback(checking, 'previous-note', markdownView.file, folder, format);
+                    // This command will only show up in Command Palette when the check function returns true
                 }
+                else if (checking) return false;
             }
         });
 
@@ -345,36 +322,28 @@ export default class Diarium extends Plugin {
                         })
                 });
 
-                if (this.checkCallback('show-in-calendar'))
-                    menu.addItem(item => {
-                        item
-                            .setTitle('Show daily note in calendar')
-                            .setIcon('lucide-calendar-search')
-                            .onClick(() => {
-                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:show-in-calendar`);
-                            })
-                    });
+                this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp);
+                this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp);
+                this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp);
 
-                if (this.checkCallback('next-note'))
-                    menu.addItem(item => {
-                        item
-                            .setTitle('Go to next daily note')
-                            .setIcon('lucide-chevrons-right')
-                            .onClick(() => {
-                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:next-note`);
-                            })
-                    });
+                menu.addSeparator();
 
+            })
 
-                if (this.checkCallback('previous-note'))
-                    menu.addItem(item => {
-                        item
-                            .setTitle('Go to previous daily note')
-                            .setIcon('lucide-chevrons-left')
-                            .onClick(() => {
-                                enhancedApp.commands.executeCommandById(`${this.manifest.id}:previous-note`);
-                            })
-                    });
+        );
+
+        this.registerEvent(
+            this.app.workspace.on('file-menu', (menu, file, source) => {
+                const enhancedApp = this.app as EnhancedApp;
+
+                if (file instanceof TFile) {
+                    menu.addSeparator();
+                    /* const cal = */ this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp, file);
+                    /* const next = */ this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
+                    /* const prev = */ this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp, file);
+                    /* if (cal && next && prev) */
+                    menu.addSeparator();
+                }
             })
         );
 
@@ -440,30 +409,72 @@ export default class Diarium extends Plugin {
         workspace.revealLeaf(leaf!);
     }
 
-    checkCallback(commandID: string) {
-        const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (markdownView) {
-            // If checking is true, we're simply "checking" if the command can be run.
-            // If checking is false, then we want to actually perform the operation.
-
-            const { folder, format }: any = getModifiedFolderAndFormat();
-
-            if (markdownView.file && isDailyNote(markdownView.file, folder, format)) {
-                // printToConsole(logLevel.log, 'can open view');
-                if (commandID == 'show-in-calendar') return true;
-
-                const index = this.dailyNotes.findIndex((note) => {
-                    return (note == markdownView.file as TFile);
-                });
-                if (commandID == 'next-note' && index != this.dailyNotes.length - 1) return true;
-                if (commandID == 'previous-note' && index != 0) return true;
-                return false;
+    checkCallback(checking: boolean, commandID: string, file: TFile, folder: string, format: string) {
+        if (isDailyNote(file, folder, format)) {
+            // printToConsole(logLevel.log, 'can open view');
+            if (commandID == 'show-in-calendar') {
+                if (checking) return true;
+                const noteMoment = getMoment(file, folder, format);
+                this.refreshViews(true, false, noteMoment);
+                this.openLeaf(ViewType.calendarView, LeafType.tab);
             }
-            else return false;
-            // This command will only show up in Command Palette when the check function returns true
+            else {
+                const index = this.dailyNotes.findIndex((note) => {
+                    return (note == file as TFile);
+                });
+                if (commandID == 'next-note') {
+                    if (checking) {
+                        if (index != this.dailyNotes.length - 1) return true;
+                        else return false;
+                    }
+                    void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index + 1]);
+                }
+                else if (commandID == 'previous-note') {
+                    if (checking) {
+                        if (index != 0) return true;
+                        else return false;
+                    }
+                    void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index - 1]);
+                }
+            }
+
         }
+        else if (checking) return false;
     }
 
+    addMenuItem(menu: Menu, commandID: string, title: string, icon: IconName, enhancedApp: EnhancedApp, file?: TFile) {
+        let isAvailable = false;
+        const { folder, format }: any = getModifiedFolderAndFormat();
+        if (file) {
+            isAvailable = this.checkCallback(true, commandID, file, folder, format) || false;
+            if (isAvailable) {
+                menu.addItem(item => {
+                    item
+                        .setTitle(title)
+                        .setIcon(icon)
+                        .onClick(() => {
+                            this.checkCallback(false, commandID, file, folder, format);
+                        })
+                });
+            }
+        }
+        else {
+            const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+            if (markdownView && markdownView.file) {
+                isAvailable = this.checkCallback(true, commandID, markdownView.file, folder, format) || false;
+                if (isAvailable)
+                    menu.addItem(item => {
+                        item
+                            .setTitle(title)
+                            .setIcon(icon)
+                            .onClick(() => {
+                                this.checkCallback(false, commandID, markdownView.file as TFile, folder, format);
+                            })
+                    });
+            }
+        }
+
+    }
     /* refreshNotes() {
         this.dailyNotes = getAllDailyNotes();
         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
