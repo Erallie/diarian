@@ -272,7 +272,7 @@ export default class Diarian extends Plugin {
             }
         });
 
-        this.addCommand({ // Refresh notes
+        /* this.addCommand({ // Refresh notes
             id: 'refresh-notes',
             name: 'Refresh daily notes',
             icon: 'lucide-refresh-ccw',
@@ -282,7 +282,7 @@ export default class Diarian extends Plugin {
                 this.refreshViews(true, true);
                 printToConsole(logLevel.info, 'Daily notes refreshed!');
             }
-        });
+        }); */
 
         this.addCommand({ // Select view
             id: 'select-view',
