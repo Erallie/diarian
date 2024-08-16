@@ -565,28 +565,28 @@ export class DiarianSettingTab extends PluginSettingTab {
             .setDesc(timeStampDesc);
 
 
-        containerEl.createEl('span', { text: 'Timestamps will appear as:'/* , cls: 'setting-item-description' */ }).createEl('br');
+        /* containerEl.createEl('span', { text: 'Timestamps will appear as:'}).createEl('br');
         const timeStampFormatContainer = containerEl.createEl('span', { text: '— ', cls: 'text-accent' });
+        const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
+        timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent' });
+        const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
+        timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' }); */
+
+
+
+        const timeStampPreview = new DocumentFragment();
+
+        timeStampPreview.textContent = 'Timestamps will appear as:';
+        timeStampPreview.createEl('br');
+        const timeStampFormatContainer = timeStampPreview.createEl('span', { text: '— ', cls: 'text-accent' });
         const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
         timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent' });
         const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
         timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' });
 
-
-        /*
-        const timeStampPreview = new DocumentFragment();
-
-        timeStampPreview.textContent = 'Timestamps will appear as:';
-        timeStampPreview.createEl('br');
-        const timeStampFormatContainer = timeStampPreview.createEl('span', { text: '— ', cls: 'text-accent setting-item-description' });
-        const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent setting-item-description' });
-        timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent setting-item-description' });
-        const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent setting-item-description' });
-        timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent setting-item-description' });
-
         new Setting(containerEl)
-            .setName('Preview')
-            .setDesc(timeStampPreview); */
+            .setName(timeStampPreview)
+        // .setDesc(timeStampPreview);
 
         //#endregion
 
