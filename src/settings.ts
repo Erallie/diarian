@@ -508,7 +508,7 @@ export class DiariumSettingTab extends PluginSettingTab {
         //#region Timestamps
         new Setting(containerEl).setName('Timestamps').setHeading();
 
-        //#region setup
+        //#region Setup
         const dateStampDesc = new DocumentFragment();
         dateStampDesc.textContent =
             "The ";

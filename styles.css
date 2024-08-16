@@ -18,6 +18,9 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
+.note-preview:hover {
+    cursor: pointer;
+}
 /* .bottom-modal-text.is-ios,
 .bottom-modal-text.is-android,
 .bottom-modal-text {
