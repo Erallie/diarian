@@ -71,11 +71,12 @@ export default class Diarian extends Plugin {
 
 
             const enhancedApp = this.app as EnhancedApp;
-            if (this.settings.calStartup)
-                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
 
             if (this.settings.onThisDayStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+            if (this.settings.calStartup)
+                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+
         });
 
         // This creates an icon in the left ribbon.
