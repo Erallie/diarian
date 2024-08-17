@@ -76,6 +76,7 @@ export interface DiarianSettings {
     disableFuture: boolean;
     headingFormat: string;
     calLocation: LeafType;
+    calStartup: boolean;
 
     previewLength: number;
     openInNewPane: boolean;
@@ -83,6 +84,7 @@ export interface DiarianSettings {
     showNoteTitle: boolean;
     useQuote: boolean;
     onThisDayLoc: LeafType;
+    onThisDayStartup: boolean;
 
     reviewInterval: number;
     reviewIntervalUnit: Unit;
@@ -92,8 +94,6 @@ export interface DiarianSettings {
     dateStampFormat: string;
     timeStampFormat: string;
 
-    calStartup: boolean;
-    onThisDayStartup: boolean;
 }
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
@@ -101,6 +101,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     calLocation: LeafType.tab,
+    calStartup: false,
 
     previewLength: 250,
     openInNewPane: false,
@@ -108,6 +109,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     showNoteTitle: true,
     useQuote: true,
     onThisDayLoc: 'right' as LeafType,
+    onThisDayStartup: false,
 
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
@@ -115,10 +117,8 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     reviewDelayUnit: Unit.month,
 
     dateStampFormat: 'M/D/YYYY',
-    timeStampFormat: 'h:mm A',
+    timeStampFormat: 'h:mm A'
 
-    calStartup: false,
-    onThisDayStartup: false
 }
 //#endregion
 
