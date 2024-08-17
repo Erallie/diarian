@@ -94,6 +94,11 @@ export interface DiarianSettings {
     dateStampFormat: string;
     timeStampFormat: string;
 
+    defaultMaxRating: number;
+    ratingProp: string;
+    filledStroke: string;
+    emptyStroke: string;
+
 }
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
@@ -117,7 +122,12 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     reviewDelayUnit: Unit.month,
 
     dateStampFormat: 'M/D/YYYY',
-    timeStampFormat: 'h:mm A'
+    timeStampFormat: 'h:mm A',
+
+    defaultMaxRating: 5,
+    ratingProp: 'rating',
+    filledStroke: '★',
+    emptyStroke: '☆'
 
 }
 //#endregion

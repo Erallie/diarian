@@ -18,8 +18,21 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
-.note-preview:hover {
+.note-preview:hover,
+.rating-status-bar:hover {
     cursor: pointer;
+}
+
+.rating span {
+    font-size: 2.5em;
+}
+
+.rating span:hover {
+    cursor: pointer;
+}
+
+.rating {
+    text-align: center;
 }
 
 /* .bottom-modal-text.is-ios,

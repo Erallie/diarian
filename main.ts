@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, Workspace } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, getFrontMatterInfo } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
@@ -77,6 +77,7 @@ export default class Diarian extends Plugin {
             if (this.settings.calStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
 
+
         });
 
         // This creates an icon in the left ribbon.
@@ -85,7 +86,7 @@ export default class Diarian extends Plugin {
             // this.openCalendar();
             const enhancedApp = this.app as EnhancedApp;
             const menu = new Menu();
-            menu.addItem((item) =>
+            menu.addItem((item) => // New daily note
                 item
                     .setTitle('New daily note')
                     .setIcon('lucide-file-plus')
@@ -93,7 +94,7 @@ export default class Diarian extends Plugin {
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:new-note`);
                     }));
 
-            menu.addItem((item) =>
+            menu.addItem((item) => // Open calendar
                 item
                     .setTitle('Open calendar')
                     .setIcon('lucide-calendar')
@@ -101,7 +102,7 @@ export default class Diarian extends Plugin {
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
                     }));
 
-            menu.addItem((item) =>
+            menu.addItem((item) => // Open on this day
                 item
                     .setTitle('Open on this day')
                     .setIcon('lucide-history')
@@ -109,7 +110,7 @@ export default class Diarian extends Plugin {
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
                     }));
 
-            menu.addItem((item) =>
+            menu.addItem((item) => // Open importer
                 item
                     .setTitle('Open importer')
                     .setIcon('lucide-import')
@@ -390,6 +391,39 @@ export default class Diarian extends Plugin {
             })
         );
 
+
+        const ratingStatBar = this.addStatusBarItem();
+        ratingStatBar.classList.add('rating-status-bar');
+        ratingStatBar.setText('');
+        ratingStatBar.addEventListener('click', (ev) => {
+            new RatingView(this.app, this, ratingStatBar).open();
+        });
+
+        // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
+
+        this.registerEvent(
+            this.app.workspace.on('file-open', (file) => {
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (file instanceof TFile && isDailyNote(file, folder, format)) {
+                    this.app.fileManager.processFrontMatter(
+                        file,
+                        (frontmatter) => {
+                            const rating: string = frontmatter[this.settings.ratingProp];
+
+                            if (rating === undefined || rating == '') {
+                                printToConsole(logLevel.log, 'Rating is blank!');
+                                //Add functionality to insert rating here.
+                                this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
+                                //Add functionality to insert rating here.
+                            }
+                            else {
+                                this.setStatBarText(ratingStatBar, rating);
+                            }
+                        }
+                    );
+
+                }
+            }))
         // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
         // Using this function will automatically remove the event listener when this plugin is disabled.
         /* this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
@@ -404,6 +438,36 @@ export default class Diarian extends Plugin {
 
     onunload() {
         // this.app.unregister()
+    }
+
+    setStatBarText(statBar: HTMLElement, rating: string) {
+
+        const match = /^(\d+)\/(\d+)$/.exec(rating);
+        if (match === null) {
+            printToConsole(logLevel.warn, `'${rating}' is not a valid rating property!`);
+        }
+        else {
+            const value = Number.parseInt(match[1]);
+            let filled = value;
+            const max = Number.parseInt(match[2]);
+            if (filled > max) {
+                printToConsole(logLevel.warn, 'The rating cannot be larger than the maximum!');
+            }
+            else {
+                let empty = max - filled;
+                let ratingText = '';
+                while (filled > 0) {
+                    ratingText += this.settings.filledStroke;
+                    filled--;
+                }
+                while (empty > 0) {
+                    ratingText += this.settings.emptyStroke;
+                    empty--;
+                }
+                statBar.setText(ratingText);
+
+            }
+        }
     }
 
     async loadSettings() {
@@ -671,6 +735,104 @@ class SelectView extends Modal {
                 enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:refresh-notes`);
                 this.close();
             }) */
+
+    }
+
+    onClose() {
+        const { contentEl } = this;
+        contentEl.empty();
+    }
+}
+
+
+class RatingView extends Modal {
+    plugin: Diarian;
+    maxValue: number;
+    defaultVal: number;
+    statBar: HTMLElement;
+
+    constructor(app: App, plugin: Diarian, statBar: HTMLElement, defaultVal?: number) {
+        super(app);
+        this.plugin = plugin;
+        this.maxValue = plugin.settings.defaultMaxRating;
+        this.statBar = statBar;
+        if (defaultVal)
+            this.defaultVal = defaultVal;
+        else
+            this.defaultVal = 0;
+    }
+
+    onOpen() {
+        const { contentEl } = this;
+        new Setting(contentEl).setName('Add rating').setHeading();
+
+        const enhancedApp = this.app as EnhancedApp;
+        // contentEl.setText('Open view');
+
+        // contentEl.createEl('br');
+
+
+        const rating = contentEl.createEl('p', { cls: 'rating' });
+
+        let ratingStrokes: HTMLSpanElement[] = [];
+
+        const setDefaultStroke = (currentVal: number, defaultVal?: number) => {
+            let newDefault = this.defaultVal;
+            if (defaultVal)
+                newDefault = defaultVal;
+            if (currentVal <= newDefault)
+                return this.plugin.settings.filledStroke;
+            else
+                return this.plugin.settings.emptyStroke;
+        }
+
+
+        for (let i = 0; i < this.maxValue; i++) {
+            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i + 1) });
+            ratingStrokes[i].addEventListener('mouseenter', (ev) => {
+                for (let ii = 0; ii < this.maxValue; ii++) {
+                    if (ii <= i)
+                        ratingStrokes[ii].setText(this.plugin.settings.filledStroke);
+                    else
+                        ratingStrokes[ii].setText(this.plugin.settings.emptyStroke);
+                }
+            });
+            ratingStrokes[i].addEventListener('click', (ev) => {
+
+                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                const file = markdownView?.file;
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
+                    this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+                        frontmatter[this.plugin.settings.ratingProp] = `${i + 1}/${this.maxValue}`;
+                    });
+                    this.plugin.setStatBarText(this.statBar, `${i + 1}/${this.maxValue}`);
+                    this.close();
+                }
+            });
+        }
+
+        rating.addEventListener('mouseleave', (ev) => {
+            for (let i = 0; i < this.maxValue; i++) {
+                ratingStrokes[i].setText(setDefaultStroke(i + 1));
+            }
+        })
+
+        const settings = contentEl.createDiv();
+
+        new Setting(settings)
+            .setName('Maximum value')
+            .setDesc('The maximum value the rating can have.')
+            .addSlider((slider) =>
+                slider
+                    .setLimits(1, 10, 1)
+                    .setValue(this.maxValue)
+                    .setDynamicTooltip()
+                    .onChange((value) => {
+                        this.maxValue = value;
+                        this.onClose();
+                        this.onOpen();
+                    }))
 
     }
 
