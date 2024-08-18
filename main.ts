@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, ToggleComponent } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, ToggleComponent, TAbstractFile } from 'obsidian';
 import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
@@ -84,7 +84,6 @@ export default class Diarian extends Plugin {
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
             if (this.settings.calStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
-
 
         });
 
@@ -375,8 +374,8 @@ export default class Diarian extends Plugin {
                 });
 
                 this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp);
-                this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp);
                 this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp);
+                this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp);
 
                 menu.addSeparator();
 
@@ -391,8 +390,8 @@ export default class Diarian extends Plugin {
                 if (file instanceof TFile) {
                     menu.addSeparator();
                     /* const cal = */ this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp, file);
-                    /* const next = */ this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
                     /* const prev = */ this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp, file);
+                    /* const next = */ this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
                     /* if (cal && next && prev) */
                     menu.addSeparator();
                 }
@@ -407,31 +406,17 @@ export default class Diarian extends Plugin {
             this.openRatingView(ratingStatBar);
         });
 
+
+        const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (markdownView) {
+            this.changeStatBar(ratingStatBar, markdownView.file);
+        }
+
         // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 
         this.registerEvent(
             this.app.workspace.on('file-open', (file) => {
-                const { folder, format }: any = getModifiedFolderAndFormat();
-                if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                    this.app.fileManager.processFrontMatter(
-                        file,
-                        (frontmatter) => {
-                            const rating: string = frontmatter[this.settings.ratingProp];
-
-                            if (rating === undefined || rating == '') {
-                                // printToConsole(logLevel.log, 'Rating is blank!');
-                                //Add functionality to insert rating here.
-                                this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
-                                //Add functionality to insert rating here.
-                            }
-                            else {
-                                this.setStatBarText(ratingStatBar, rating);
-                            }
-                        }
-                    );
-
-                }
-                else ratingStatBar.setText('');
+                this.changeStatBar(ratingStatBar, file);
             }))
         // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
         // Using this function will automatically remove the event listener when this plugin is disabled.
@@ -443,6 +428,30 @@ export default class Diarian extends Plugin {
         // this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 
 
+    }
+
+    changeStatBar(ratingStatBar: HTMLElement, file: TFile | null) {
+        const { folder, format }: any = getModifiedFolderAndFormat();
+        if (file instanceof TFile && isDailyNote(file, folder, format)) {
+            this.app.fileManager.processFrontMatter(
+                file,
+                (frontmatter) => {
+                    const rating: string = frontmatter[this.settings.ratingProp];
+
+                    if (rating === undefined || rating == '') {
+                        // printToConsole(logLevel.log, 'Rating is blank!');
+                        //Add functionality to insert rating here.
+                        this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
+                        //Add functionality to insert rating here.
+                    }
+                    else {
+                        this.setStatBarText(ratingStatBar, rating);
+                    }
+                }
+            );
+
+        }
+        else ratingStatBar.setText('');
     }
 
     onunload() {
