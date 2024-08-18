@@ -459,7 +459,14 @@ export default class Diarian extends Plugin {
         // When registering intervals, this function will automatically clear the interval when the plugin is disabled.
         // this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 
+    }
 
+    async loadSettings() {
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    }
+
+    async saveSettings() {
+        await this.saveData(this.settings);
     }
 
     changeStatBar(ratingStatBar: HTMLElement, file: TFile | null) {
@@ -526,14 +533,6 @@ export default class Diarian extends Plugin {
 
             }
         }
-    }
-
-    async loadSettings() {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-    }
-
-    async saveSettings() {
-        await this.saveData(this.settings);
     }
 
     async openLeaf(viewType: ViewType, leafType: LeafType) {
@@ -656,12 +655,6 @@ export default class Diarian extends Plugin {
         }
 
     }
-    /* refreshNotes() {
-        this.dailyNotes = getAllDailyNotes();
-        // printToConsole(logLevel.log, this.dailyNotes.length.toString());
-        this.refreshViews(true, true);
-        printToConsole(logLevel.info, 'Daily notes refreshed!');
-    } */
 
     /* setCalDate(date: Date) {
         const calView = this.app.workspace.getLeavesOfType(ViewType.calendarView);
