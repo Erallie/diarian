@@ -21,6 +21,14 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
+.text-muted {
+    color: var(--text-muted);
+}
+
+.text-faint {
+    color: var(--text-faint);
+}
+
 .note-preview:hover,
 .rating-status-bar:hover,
 .rating-show-settings-text:hover {

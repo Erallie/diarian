@@ -41,25 +41,37 @@ export class RatingView extends Modal {
         let ratingStrokes: HTMLSpanElement[] = [];
 
         const setDefaultStroke = (currentVal: number) => {
-            // let newDefault = this.defaultVal;
-            // if (defaultVal)
-            //     newDefault = defaultVal;
+            // If filled stroke
             if (currentVal <= this.defaultVal)
                 return this.plugin.settings.filledStroke;
+            // If empty stroke
             else
                 return this.plugin.settings.emptyStroke;
         }
 
+        const setDefaultClass = (currentVal: number) => {
+            // If filled stroke
+            if (currentVal <= this.defaultVal)
+                return '';
+            // If empty stroke
+            else
+                return 'text-faint';
+        }
+
 
         for (let i = 0; i < this.maxValue; i++) {
-            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i + 1) });
+            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i + 1), cls: setDefaultClass(i + 1) });
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
                 for (let ii = 0; ii < this.maxValue; ii++) {
-                    if (ii <= i)
+                    if (ii <= i) {
                         ratingStrokes[ii].setText(this.plugin.settings.filledStroke);
-                    else
+                        ratingStrokes[ii].className = 'text-accent';
+                    }
+                    else {
                         ratingStrokes[ii].setText(this.plugin.settings.emptyStroke);
+                        ratingStrokes[ii].className = 'text-faint';
+                    }
                 }
             });
             ratingStrokes[i].onClickEvent((ev) => {
@@ -79,6 +91,7 @@ export class RatingView extends Modal {
         rating.addEventListener('mouseleave', (ev) => {
             for (let i = 0; i < this.maxValue; i++) {
                 ratingStrokes[i].setText(setDefaultStroke(i + 1));
+                ratingStrokes[i].className = setDefaultClass(i + 1);
             }
         })
 
