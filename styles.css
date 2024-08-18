@@ -29,6 +29,14 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-faint);
 }
 
+.rating-status-bar:hover {
+    background-color: var(--interactive-hover);
+}
+
+.rating-status-bar:hover .text-accent {
+    color: var(--text-accent-hover);
+}
+
 .note-preview:hover,
 .rating-status-bar:hover,
 .rating-show-settings-text:hover {

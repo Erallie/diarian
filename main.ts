@@ -512,24 +512,19 @@ export default class Diarian extends Plugin {
         else {
             const value = Number.parseInt(match[1]);
             this.defaultRating = value;
-            let filled = value;
             const max = Number.parseInt(match[2]);
             this.defMaxRating = max;
-            if (filled > max) {
+            if (value > max) {
                 printToConsole(logLevel.warn, 'The rating cannot be larger than the maximum!');
             }
             else {
-                let empty = max - filled;
-                let ratingText = '';
-                while (filled > 0) {
-                    ratingText += this.settings.filledStroke;
-                    filled--;
-                }
-                while (empty > 0) {
-                    ratingText += this.settings.emptyStroke;
-                    empty--;
-                }
-                statBar.setText(ratingText);
+                const fullRating = new DocumentFragment;
+                const filledText = this.settings.filledStroke.repeat(value);
+                const emptyText = this.settings.emptyStroke.repeat(max - value);
+                // fullRating.textContent = filledText;
+                fullRating.createEl('span', { text: filledText, cls: 'text-accent' });
+                fullRating.createEl('span', { text: emptyText, cls: 'text-faint' });
+                statBar.setText(fullRating);
 
             }
         }
