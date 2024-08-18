@@ -87,6 +87,23 @@ export default class Diarian extends Plugin {
 
         });
 
+        //#region Add rating status bar
+        const ratingStatBar = this.addStatusBarItem();
+        ratingStatBar.classList.add('rating-status-bar');
+        ratingStatBar.setText('');
+        ratingStatBar.onClickEvent((ev) => {
+            this.openRatingView(ratingStatBar);
+        });
+        this.ratingStatBar = ratingStatBar;
+
+
+        const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+        if (markdownView) {
+            this.changeStatBar(ratingStatBar, markdownView.file);
+        }
+        //#endregion
+
+
         // This creates an icon in the left ribbon.
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
@@ -208,6 +225,26 @@ export default class Diarian extends Plugin {
         });
 
         //#region file commands
+        this.addCommand({ // Show in calendar
+            id: 'insert-rating',
+            name: 'Insert rating',
+            icon: 'lucide-star',
+            checkCallback: (checking: boolean) => {
+                // Conditions to check
+                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                if (markdownView && markdownView.file instanceof TFile) {
+                    // If checking is true, we're simply "checking" if the command can be run.
+                    // If checking is false, then we want to actually perform the operation.
+
+                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    // printToConsole(logLevel.log, 'can open view');
+                    return this.checkCallback(checking, 'insert-rating', markdownView.file, folder, format, ratingStatBar);
+                    // This command will only show up in Command Palette when the check function returns true
+                }
+                else if (checking) return false;
+            }
+        });
+
         this.addCommand({ // Show in calendar
             id: 'show-in-calendar',
             name: 'Show daily note in calendar',
@@ -372,6 +409,9 @@ export default class Diarian extends Plugin {
                             enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
                 });
+                this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star', enhancedApp);
+
+                menu.addSeparator();
 
                 this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp);
                 this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp);
@@ -389,28 +429,20 @@ export default class Diarian extends Plugin {
 
                 if (file instanceof TFile) {
                     menu.addSeparator();
-                    /* const cal = */ this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp, file);
-                    /* const prev = */ this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp, file);
-                    /* const next = */ this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
-                    /* if (cal && next && prev) */
+
+                    this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp, file);
+                    this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp, file);
+                    this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
+
+                    menu.addSeparator();
+
+                    this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star', enhancedApp);
+
                     menu.addSeparator();
                 }
             })
         );
 
-
-        const ratingStatBar = this.addStatusBarItem();
-        ratingStatBar.classList.add('rating-status-bar');
-        ratingStatBar.setText('');
-        ratingStatBar.onClickEvent((ev) => {
-            this.openRatingView(ratingStatBar);
-        });
-
-
-        const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (markdownView) {
-            this.changeStatBar(ratingStatBar, markdownView.file);
-        }
 
         // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 
@@ -463,6 +495,7 @@ export default class Diarian extends Plugin {
     openRatingView(statBar: HTMLElement) {
         new RatingView(this.app, this, statBar, this.defaultRating, this.defMaxRating).open();
     }
+
     setStatBarText(statBar: HTMLElement, rating: string) {
 
         const match = /^(\d+)\/(\d+)$/.exec(rating);
@@ -541,33 +574,49 @@ export default class Diarian extends Plugin {
         workspace.revealLeaf(leaf!);
     }
 
-    checkCallback(checking: boolean, commandID: string, file: TFile, folder: string, format: string) {
+    checkCallback(checking: boolean, commandID: string, file: TFile, folder: string, format: string, statBar?: HTMLElement) {
         if (isDailyNote(file, folder, format)) {
             // printToConsole(logLevel.log, 'can open view');
+            switch (commandID) {
+                case 'show-in-calendar':
+                    if (checking) return true;
+                    const noteMoment = getMoment(file, folder, format);
+                    this.refreshViews(true, false, noteMoment);
+                    this.openLeaf(ViewType.calendarView, LeafType.tab);
+                    break;
+                case 'insert-rating':
+                    if (checking) return true;
+                    // if (statBar)
+                    if (statBar)
+                        this.openRatingView(statBar);
+                    else
+                        this.openRatingView(this.ratingStatBar);
+                default:
+                    const index = this.dailyNotes.findIndex((note) => {
+                        return (note == file as TFile);
+                    });
+                    switch (commandID) {
+                        case 'next-note':
+                            if (checking) {
+                                if (index != this.dailyNotes.length - 1) return true;
+                                else return false;
+                            }
+                            void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index + 1]);
+                            break;
+                        case 'previous-note':
+                            if (checking) {
+                                if (index != 0) return true;
+                                else return false;
+                            }
+                            void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index - 1]);
+                            break;
+                    }
+            }
             if (commandID == 'show-in-calendar') {
                 if (checking) return true;
                 const noteMoment = getMoment(file, folder, format);
                 this.refreshViews(true, false, noteMoment);
                 this.openLeaf(ViewType.calendarView, LeafType.tab);
-            }
-            else {
-                const index = this.dailyNotes.findIndex((note) => {
-                    return (note == file as TFile);
-                });
-                if (commandID == 'next-note') {
-                    if (checking) {
-                        if (index != this.dailyNotes.length - 1) return true;
-                        else return false;
-                    }
-                    void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index + 1]);
-                }
-                else if (commandID == 'previous-note') {
-                    if (checking) {
-                        if (index != 0) return true;
-                        else return false;
-                    }
-                    void this.app.workspace.getLeaf(false).openFile(this.dailyNotes[index - 1]);
-                }
             }
 
         }
