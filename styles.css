@@ -8,7 +8,10 @@ If your plugin does not need CSS, delete this file.
 */
 
 
-
+.rating-show-settings-text {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-faint);
+}
 
 .setting-error {
     color: var(--text-error);
@@ -19,7 +22,8 @@ If your plugin does not need CSS, delete this file.
 }
 
 .note-preview:hover,
-.rating-status-bar:hover {
+.rating-status-bar:hover,
+.rating-show-settings-text:hover {
     cursor: pointer;
 }
 

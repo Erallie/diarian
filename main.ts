@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, getFrontMatterInfo } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, ToggleComponent } from 'obsidian';
 import { CalendarView } from './src/react-nodes/calendar-view';
 import { OnThisDayView } from './src/react-nodes/on-this-day-view';
 import { ImportView } from './src/import-journal';
@@ -18,6 +18,9 @@ export default class Diarian extends Plugin {
     view: View;
     app: App;
     dailyNotes: TFile[];
+    defaultRating: number;
+    defMaxRating: number;
+    ratingStatBar: HTMLElement;
 
     async onload() {
         await this.loadSettings();
@@ -395,8 +398,8 @@ export default class Diarian extends Plugin {
         const ratingStatBar = this.addStatusBarItem();
         ratingStatBar.classList.add('rating-status-bar');
         ratingStatBar.setText('');
-        ratingStatBar.addEventListener('click', (ev) => {
-            new RatingView(this.app, this, ratingStatBar).open();
+        ratingStatBar.onClickEvent((ev) => {
+            this.openRatingView(ratingStatBar);
         });
 
         // This adds a status bar item to the bottom of the app. Does not work on mobile apps.
@@ -423,6 +426,7 @@ export default class Diarian extends Plugin {
                     );
 
                 }
+                else ratingStatBar.setText('');
             }))
         // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
         // Using this function will automatically remove the event listener when this plugin is disabled.
@@ -437,9 +441,14 @@ export default class Diarian extends Plugin {
     }
 
     onunload() {
+        // this.ratingStatBar.removeEventListener('click', null, true);
+        // this.ratingStatBar.removeEventListener('click', () => { this.openRatingView(this.ratingStatBar) });
         // this.app.unregister()
     }
 
+    openRatingView(statBar: HTMLElement) {
+        new RatingView(this.app, this, statBar, this.defaultRating, this.defMaxRating).open();
+    }
     setStatBarText(statBar: HTMLElement, rating: string) {
 
         const match = /^(\d+)\/(\d+)$/.exec(rating);
@@ -448,8 +457,10 @@ export default class Diarian extends Plugin {
         }
         else {
             const value = Number.parseInt(match[1]);
+            this.defaultRating = value;
             let filled = value;
             const max = Number.parseInt(match[2]);
+            this.defMaxRating = max;
             if (filled > max) {
                 printToConsole(logLevel.warn, 'The rating cannot be larger than the maximum!');
             }
@@ -750,12 +761,17 @@ class RatingView extends Modal {
     maxValue: number;
     defaultVal: number;
     statBar: HTMLElement;
+    settingsShown: boolean;
 
-    constructor(app: App, plugin: Diarian, statBar: HTMLElement, defaultVal?: number) {
+    constructor(app: App, plugin: Diarian, statBar: HTMLElement, defaultVal?: number, defMax?: number) {
         super(app);
         this.plugin = plugin;
-        this.maxValue = plugin.settings.defaultMaxRating;
+        if (defMax)
+            this.maxValue = defMax;
+        else
+            this.maxValue = this.plugin.settings.defaultMaxRating;
         this.statBar = statBar;
+        this.settingsShown = false;
         if (defaultVal)
             this.defaultVal = defaultVal;
         else
@@ -773,14 +789,15 @@ class RatingView extends Modal {
 
 
         const rating = contentEl.createEl('p', { cls: 'rating' });
+        rating.id = 'rating';
 
         let ratingStrokes: HTMLSpanElement[] = [];
 
-        const setDefaultStroke = (currentVal: number, defaultVal?: number) => {
-            let newDefault = this.defaultVal;
-            if (defaultVal)
-                newDefault = defaultVal;
-            if (currentVal <= newDefault)
+        const setDefaultStroke = (currentVal: number) => {
+            // let newDefault = this.defaultVal;
+            // if (defaultVal)
+            //     newDefault = defaultVal;
+            if (currentVal <= this.defaultVal)
                 return this.plugin.settings.filledStroke;
             else
                 return this.plugin.settings.emptyStroke;
@@ -789,6 +806,7 @@ class RatingView extends Modal {
 
         for (let i = 0; i < this.maxValue; i++) {
             ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i + 1) });
+            ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
                 for (let ii = 0; ii < this.maxValue; ii++) {
                     if (ii <= i)
@@ -797,8 +815,7 @@ class RatingView extends Modal {
                         ratingStrokes[ii].setText(this.plugin.settings.emptyStroke);
                 }
             });
-            ratingStrokes[i].addEventListener('click', (ev) => {
-
+            ratingStrokes[i].onClickEvent((ev) => {
                 const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
                 const file = markdownView?.file;
                 const { folder, format }: any = getModifiedFolderAndFormat();
@@ -818,26 +835,83 @@ class RatingView extends Modal {
             }
         })
 
+        // const showSettings = new ToggleComponent(contentEl);
+        const showSettingsText = contentEl.createEl('p', { cls: 'rating-show-settings-text' });
         const settings = contentEl.createDiv();
 
-        new Setting(settings)
-            .setName('Maximum value')
-            .setDesc('The maximum value the rating can have.')
-            .addSlider((slider) =>
-                slider
-                    .setLimits(1, 10, 1)
-                    .setValue(this.maxValue)
-                    .setDynamicTooltip()
-                    .onChange((value) => {
-                        this.maxValue = value;
-                        this.onClose();
-                        this.onOpen();
-                    }))
+        if (this.settingsShown) {
+            new Setting(settings)
+                .setName('Maximum value')
+                .setDesc('The maximum value the rating can have.')
+                .addSlider((slider) =>
+                    slider
+                        .setLimits(1, 10, 1)
+                        .setValue(this.maxValue)
+                        .setDynamicTooltip()
+                        .onChange((value) => {
+                            this.maxValue = value;
+                            this.onClose();
+                            this.onOpen();
+                        }));
+            showSettingsText.setText('Hide settings');
+        }
+        else {
+            showSettingsText.setText('Show settings');
+            settings.empty();
+        }
+
+        /* function handleSettings() {
+        };
+
+        handleSettings(); */
+
+
+        showSettingsText.onClickEvent((ev) => {
+            this.settingsShown = !this.settingsShown;
+            // handleSettings();
+
+            if (this.settingsShown) {
+                new Setting(settings)
+                    .setName('Maximum value')
+                    .setDesc('The maximum value the rating can have.')
+                    .addSlider((slider) =>
+                        slider
+                            .setLimits(1, 10, 1)
+                            .setValue(this.maxValue)
+                            .setDynamicTooltip()
+                            .onChange((value) => {
+                                this.maxValue = value;
+                                this.onClose();
+                                this.onOpen();
+                            }));
+                showSettingsText.setText('Hide settings');
+            }
+            else {
+                showSettingsText.setText('Show settings');
+                settings.empty();
+            }
+        })
+
+        /* showSettings.setValue(false)
+            .setTooltip('Show extra settings')
+            .onChange((value) => {
+                if (value) {
+                }
+                else settings.empty();
+            }) */
+
 
     }
 
     onClose() {
         const { contentEl } = this;
+        let ratingStrokes: HTMLElement[] | null[] = [];
+        for (let i = 0; i < this.maxValue; i++) {
+            ratingStrokes[i] = document.getElementById(`rating-${i}`);
+        }
+        const rating = document.getElementById('rating');
+        //remove event listeners here
         contentEl.empty();
+
     }
 }
