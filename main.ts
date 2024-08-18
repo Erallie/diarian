@@ -29,7 +29,10 @@ export default class Diarian extends Plugin {
 
 
         this.app.workspace.onLayoutReady(() => {
-            this.dailyNotes = getAllDailyNotes();
+
+            const { folder, format }: any = getModifiedFolderAndFormat();
+            this.dailyNotes = getAllDailyNotes(folder, format);
+            this.sortDailyNotes(folder, format);
 
             this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.app));
             this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.app));

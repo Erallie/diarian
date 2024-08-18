@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
-import { getAllDailyNotes } from './get-daily-notes';
+import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
 
 
 //#region constants
@@ -672,7 +672,9 @@ export class DiarianSettingTab extends PluginSettingTab {
                     .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
                     .setWarning()
                     .onClick(() => {
-                        this.plugin.dailyNotes = getAllDailyNotes();
+                        const { folder, format }: any = getModifiedFolderAndFormat();
+                        this.plugin.dailyNotes = getAllDailyNotes(folder, format);
+                        this.plugin.sortDailyNotes(folder, format);
                         // printToConsole(logLevel.log, this.dailyNotes.length.toString());
                         this.plugin.refreshViews(true, true);
                         printToConsole(logLevel.info, 'Daily notes refreshed!');

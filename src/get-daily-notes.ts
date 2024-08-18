@@ -31,11 +31,11 @@ export function getDailyNoteSettings() {
 }
 
 
-export function getAllDailyNotes() {
+export function getAllDailyNotes(folder: string, format: string) {
 
     const allFiles = this.app.vault.getFiles();
     const filteredFiles = allFiles.filter((file: TFile) => {
-        const { format, folder } = getModifiedFolderAndFormat();
+        // const { format, folder } = getModifiedFolderAndFormat();
         return isDailyNote(file, folder, format);
     });
     // printToConsole(logLevel.log, filteredFiles.length.toString());
