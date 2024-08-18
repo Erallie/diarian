@@ -27,7 +27,7 @@ export class RatingView extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-        new Setting(contentEl).setName('Add rating').setHeading();
+        new Setting(contentEl).setName('How are you feeling right now?').setHeading();
 
         const enhancedApp = this.app as EnhancedApp;
         // contentEl.setText('Open view');
