@@ -2,7 +2,7 @@ import { App, Modal, Setting, ButtonComponent } from 'obsidian';
 import type Diarian from 'main';
 import type { EnhancedApp } from 'main';
 
-class SelectView extends Modal {
+export class SelectView extends Modal {
     plugin: Diarian;
 
     constructor(app: App, plugin: Diarian) {

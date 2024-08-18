@@ -3,10 +3,10 @@ import { Root, createRoot } from "react-dom/client";
 import { App, Modal, normalizePath } from "obsidian";
 // import useContext from "../hooks/useContext";
 import type Diarian from 'main';
-import { printToConsole, logLevel, DEFAULT_FORMAT } from '../constants';
+import { printToConsole, logLevel, DEFAULT_FORMAT } from 'src/constants';
 import moment from 'moment';
-import { writeNote } from '../import-journal';
-import { getDailyNoteSettings } from '../get-daily-notes';
+import { writeNote } from 'src/import-journal';
+import { getDailyNoteSettings } from 'src/get-daily-notes';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'kk:mm:ss';
