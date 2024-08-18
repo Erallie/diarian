@@ -2,9 +2,9 @@ import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown } f
 // import * as zip from "@zip.js/zip.js";
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarian from 'main';
-import { logLevel, printToConsole, DEFAULT_FORMAT } from './constants';
+import { logLevel, printToConsole } from './constants';
 import moment from 'moment';
-import { getDailyNoteSettings, getModifiedFolderAndFormat } from './get-daily-notes';
+import { getModifiedFolderAndFormat } from './get-daily-notes';
 
 
 export class ImportView extends Modal {

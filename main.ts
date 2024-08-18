@@ -1,11 +1,11 @@
 import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, ToggleComponent } from 'obsidian';
-import { CalendarView } from './src/react-nodes/calendar-view';
-import { OnThisDayView } from './src/react-nodes/on-this-day-view';
-import { ImportView } from './src/import-journal';
-import { ViewType, printToConsole, logLevel } from './src/constants';
+import { CalendarView } from 'src/react-nodes/calendar-view';
+import { OnThisDayView } from 'src/react-nodes/on-this-day-view';
+import { ImportView } from 'src/import-journal';
+import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap } from 'src/settings';
-import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat } from './src/get-daily-notes';
-import { NewDailyNote } from './src/react-nodes/new-note';
+import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat } from 'src/get-daily-notes';
+import { NewDailyNote } from 'src/react-nodes/new-note';
 
 
 export type EnhancedApp = App & {

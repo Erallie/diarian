@@ -2,7 +2,7 @@ import { TFile, View, App } from "obsidian";
 // import useContext from "../hooks/useContext";
 import NotePreview from "./note-preview";
 import { getTimeSpanTitle, Unit, printToConsole, logLevel } from '../constants';
-import type Diarian from '../../main';
+import type Diarian from 'main';
 import moment from 'moment';
 
 interface Props {
