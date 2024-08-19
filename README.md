@@ -13,18 +13,22 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - An **On this day** review pane in the sidebar with the included settings:
 	- The interval between days to review (eg. every 3 months)
 	- How long ago to start including notes (eg. 6 months ago or earlier)
+- Import a pre-existing journal from [Diarium](https://diariumapp.com/).
+- A **Daily rating** for each daily note that displays in your status bar.
+	- Three ways to insert a **Daily rating**:
+		- The **Command palette**
+		- The file and editor context menus
+		- By clicking the status bar text
+- Insert a timestamp into the current note from the editor context menu.
+- Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports multiple notes per day.
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
-- Import a pre-existing journal from [Diarium](https://diariumapp.com/).
-- Insert a timestamp into the current note from the context menu.
-- Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
 	- Allows for nested daily notes sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 ## Planned features
 Being in early development, there are some important features I have yet to add:
 - The option to display attached images in the Calendar view on the tiles of days that include them.
-- Functionality to insert a dynamic rating into your note.
 ## Excluded features
 Since this plugin started as a project for my own personal use, there are features present in [Diarium](https://diariumapp.com/) that I do *not* plan on including in this plugin:
 - The ability to import tracker data from [Diarium](https://diariumapp.com/).
