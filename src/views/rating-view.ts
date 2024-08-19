@@ -95,9 +95,11 @@ export class RatingView extends Modal {
             }
         })
 
-        // const showSettings = new ToggleComponent(contentEl);
-        const showSettingsText = contentEl.createEl('p', { cls: 'rating-show-settings-text' });
+        const showSettingsEl = contentEl.createEl('p', { cls: 'rating-show-settings-text' });
+
         const settings = contentEl.createDiv();
+
+
 
         if (this.settingsShown) {
             new Setting(settings)
@@ -113,10 +115,59 @@ export class RatingView extends Modal {
                             this.onClose();
                             this.onOpen();
                         }));
-            showSettingsText.setText('Hide settings');
+            //#region hideText
+            const hideText = new DocumentFragment;
+            const hideSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            hideSvg.setAttribute('width', '18');
+            hideSvg.setAttribute('height', '18');
+            hideSvg.setAttribute('viewBox', '0 0 24 24');
+            hideSvg.setAttribute('fill', 'none');
+            hideSvg.setAttribute('stroke', 'currentColor');
+            hideSvg.setAttribute('stroke-width', '1.5');
+            hideSvg.setAttribute('stroke-linecap', 'round');
+            hideSvg.setAttribute('stroke-linejoin', 'round');
+            hideSvg.setAttribute('class', 'lucide lucide-chevron-right');
+
+            const hidePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            hidePath.setAttribute('d',
+                'm6 9 6 6 6-6');
+
+
+            // Append elements
+            hideSvg.appendChild(hidePath);
+            hideText.appendChild(hideSvg);
+
+            hideText.createEl('span', { text: 'Hide settings' });
+            //#endregion
+            showSettingsEl.setText(hideText);
         }
         else {
-            showSettingsText.setText('Show settings');
+
+            //#region showText
+            const showText = new DocumentFragment;
+            const showSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            showSvg.setAttribute('width', '18');
+            showSvg.setAttribute('height', '18');
+            showSvg.setAttribute('viewBox', '0 0 24 24');
+            showSvg.setAttribute('fill', 'none');
+            showSvg.setAttribute('stroke', 'currentColor');
+            showSvg.setAttribute('stroke-width', '1.5');
+            showSvg.setAttribute('stroke-linecap', 'round');
+            showSvg.setAttribute('stroke-linejoin', 'round');
+            showSvg.setAttribute('class', 'lucide lucide-chevron-right');
+
+            const showPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            showPath.setAttribute('d',
+                'm9 18 6-6-6-6');
+
+
+            // Append elements
+            showSvg.appendChild(showPath);
+            showText.appendChild(showSvg);
+
+            showText.createEl('span', { text: 'Show settings' });
+            //#endregion
+            showSettingsEl.setText(showText);
             settings.empty();
         }
 
@@ -126,7 +177,7 @@ export class RatingView extends Modal {
         handleSettings(); */
 
 
-        showSettingsText.onClickEvent((ev) => {
+        showSettingsEl.onClickEvent((ev) => {
             this.settingsShown = !this.settingsShown;
             // handleSettings();
 
@@ -144,10 +195,59 @@ export class RatingView extends Modal {
                                 this.onClose();
                                 this.onOpen();
                             }));
-                showSettingsText.setText('Hide settings');
+                //#region hideText
+                const hideText = new DocumentFragment;
+                const hideSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                hideSvg.setAttribute('width', '18');
+                hideSvg.setAttribute('height', '18');
+                hideSvg.setAttribute('viewBox', '0 0 24 24');
+                hideSvg.setAttribute('fill', 'none');
+                hideSvg.setAttribute('stroke', 'currentColor');
+                hideSvg.setAttribute('stroke-width', '1.5');
+                hideSvg.setAttribute('stroke-linecap', 'round');
+                hideSvg.setAttribute('stroke-linejoin', 'round');
+                hideSvg.setAttribute('class', 'lucide lucide-chevron-right');
+
+                const hidePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                hidePath.setAttribute('d',
+                    'm6 9 6 6 6-6');
+
+
+                // Append elements
+                hideSvg.appendChild(hidePath);
+                hideText.appendChild(hideSvg);
+
+                hideText.createEl('span', { text: 'Hide settings' });
+                //#endregion
+                showSettingsEl.setText(hideText);
             }
             else {
-                showSettingsText.setText('Show settings');
+
+                //#region showText
+                const showText = new DocumentFragment;
+                const showSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                showSvg.setAttribute('width', '18');
+                showSvg.setAttribute('height', '18');
+                showSvg.setAttribute('viewBox', '0 0 24 24');
+                showSvg.setAttribute('fill', 'none');
+                showSvg.setAttribute('stroke', 'currentColor');
+                showSvg.setAttribute('stroke-width', '1.5');
+                showSvg.setAttribute('stroke-linecap', 'round');
+                showSvg.setAttribute('stroke-linejoin', 'round');
+                showSvg.setAttribute('class', 'lucide lucide-chevron-right');
+
+                const showPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                showPath.setAttribute('d',
+                    'm9 18 6-6-6-6');
+
+
+                // Append elements
+                showSvg.appendChild(showPath);
+                showText.appendChild(showSvg);
+
+                showText.createEl('span', { text: 'Show settings' });
+                //#endregion
+                showSettingsEl.setText(showText);
                 settings.empty();
             }
         })

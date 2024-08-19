@@ -7,10 +7,23 @@ If your plugin does not need CSS, delete this file.
 
 */
 
+.svg {
+    align-content: baseline;
+}
 
 .rating-show-settings-text {
     font-size: var(--font-ui-smaller);
     color: var(--text-faint);
+}
+
+.rating-show-settings-text svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rating-show-settings-text span {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .setting-error {
