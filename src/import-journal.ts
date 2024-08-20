@@ -31,7 +31,14 @@ export class ImportView extends Modal {
         const instrDesc = new DocumentFragment();
         const instrList = instrDesc.createEl('ol'/* , { cls: 'instructions' } */);
         const list1 = instrList.createEl('li', { text: 'Open ' });
-        list1.createEl('strong', { text: 'Diarian' });
+        // list1.createEl('strong', { text: 'Diarium' });
+
+        list1.createEl("a", {
+            text: "Diarium",
+            attr: {
+                href: "diarium://",
+            },
+        });
         list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
         if (Platform.isMacOS && Platform.isDesktop) {
             list1.createEl('span', { text: ' tab.' });
@@ -89,7 +96,7 @@ export class ImportView extends Modal {
 
         const zipFileSetting = new Setting(this.contentEl)
             .setName("Choose zip file")
-            .setDesc("Select the zip file exported from Diarian.");
+            .setDesc("Select the zip file exported from Diarium.");
         const zipFile = zipFileSetting.controlEl.createEl("input", {
             attr: {
                 type: "file",
