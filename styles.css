@@ -477,7 +477,7 @@ button.react-calendar__tile--active:enabled:focus {
     height: 100%;
     object-fit: cover;
     object-position: center center;
-    filter: brightness(60%) contrast(95%);
+    filter: brightness(75%) contrast(95%);
 }
 
 button.filled-date:has(img) {
@@ -491,7 +491,7 @@ button.filled-date:has(img) :not(img) {
 
 button.filled-date:enabled:hover:has(img) .calendar-attachment,
 button.filled-date:enabled:focus:has(img) .calendar-attachment {
-    filter: brightness(65%) contrast(100%);
+    filter: brightness(85%) contrast(100%);
 }
 
 button.filled-date:enabled:hover:has(img) {
