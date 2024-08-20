@@ -11,9 +11,9 @@ export enum CalType {
     hebrew = 'hebrew',
     islamic = 'islamic',
     iso8601 = 'iso8601' */
-    gregory = 'gregorian',
-    hebrew = 'hebrew',
-    islamic = 'islamic',
+    gregory = 'Gregorian',
+    hebrew = 'Hebrew',
+    islamic = 'Islamic',
     iso8601 = 'ISO 8601'
 }
 
@@ -44,9 +44,9 @@ export const convertCalType: { [key: string]: CalendarType } = {
 };
 
 export enum LeafType {
-    tab = 'tab',
-    right = 'right sidebar',
-    left = 'left sidebar'
+    tab = 'Tab',
+    right = 'Right sidebar',
+    left = 'Left sidebar'
 };
 
 
@@ -105,7 +105,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     calendarType: 'iso8601' as CalType,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
-    calLocation: LeafType.tab,
+    calLocation: 'tab' as LeafType.tab,
     calStartup: false,
 
     previewLength: 250,
