@@ -147,10 +147,12 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
 
 
                 return (
-                    <div className='dot-container'>
-                        <Dots />
+                    <>
+                        <div className='dot-container'>
+                            <Dots />
+                        </div>
                         <Image filteredDates={filteredDates} folder={folder} format={format} app={app} />
-                    </div>
+                    </>
                 )
             }
 
@@ -273,10 +275,11 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                             const imgFile = app.vault.getFileByPath(match[1]);
                             if (imgFile) {
                                 const resourcePath = app.vault.getResourcePath(imgFile);
-                                const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
+                                setImgPath(resourcePath);
+                                /* const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
                                 if (newMatch) {
                                     setImgPath(newMatch[1]);
-                                }
+                                } */
                             }
                         }
 
@@ -285,11 +288,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     break;
             }
         }
-        imagePath()/* 
-            .then(path => {
-                setImgPath(path);
-                printToConsole(logLevel.log, imgPath)
-            }) */
+        imagePath();
     }, [filteredDates, folder, format, app]);
     if (imgPath != '')
         return (
