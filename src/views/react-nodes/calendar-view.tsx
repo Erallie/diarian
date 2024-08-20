@@ -1,21 +1,27 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense, useState, useEffect } from "react";
 import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar } from 'react-calendar';
-import { useState } from 'react';
 import moment from 'moment';
 import type Diarian from 'main';
 import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import NotePreview from './note-preview';
-import { ViewType } from 'src/constants';
+import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { NewDailyNote } from "./new-note";
-import { CalendarType, convertCalType } from 'src/settings';
+import { convertCalType } from 'src/settings';
 
 interface ContainerProps {
     view: View;
     plugin: Diarian;
     app: App;
     thisComp: CalendarView;
+}
+
+interface ImageProps {
+    filteredDates: moment.Moment[];
+    folder: string;
+    format: string;
+    app: App;
 }
 
 export class CalendarView extends ItemView {
@@ -97,9 +103,11 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         innerSetDate(nextDate);
         thisComp.startDate = nextDate;
     }
+
+
     function tileContent({ date, view }: any) {
         if (view === 'month') {
-            let filteredDates = [];
+            let filteredDates: moment.Moment[] = [];
             if ((filteredDates = filledDates.filter(
                 dDate => isSameDay(moment(date), dDate)))
                 .length !== 0) {
@@ -118,9 +126,30 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
                         •
                     </span>
                 );
+
+
+                /*
+                if (imgPath != '') {
+                    return (
+                        <div className='dot-container'>
+                            <Dots />
+                            <img src={imgPath} className='calendar-attachment' />
+                        </div>
+                    )
+                }
+                else
+                    return (
+                        <div className='dot-container'>
+                            <Dots />
+                        </div>
+                    ) */
+
+
+
                 return (
                     <div className='dot-container'>
                         <Dots />
+                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} />
                     </div>
                 )
             }
@@ -205,3 +234,66 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         </div>
     )
 };
+
+/* async function imagePath(filteredDates: moment.Moment[], folder: string, format: string, app: App) {
+    // let imgPath = '';
+    for (let date of filteredDates) {
+        const thisNote = getNoteByMoment(date, folder, format);
+        await app.vault.cachedRead(thisNote)
+            .then((content) => {
+                const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/.exec(content);
+                if (match) {
+                    const imgFile = app.vault.getFileByPath(match[1]);
+                    if (imgFile) {
+                        const resourcePath = app.vault.getResourcePath(imgFile);
+                        const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
+                        if (newMatch) {
+                            return newMatch[1];
+                        }
+                    }
+                }
+
+            });
+    }
+    return '';
+} */
+
+const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
+    // printToConsole(logLevel.log, 'created image');
+
+    const [imgPath, setImgPath] = useState('');
+    useEffect(() => {
+        const imagePath = async () => {
+            for (let date of filteredDates) {
+                const thisNote = getNoteByMoment(date, folder, format);
+                await app.vault.cachedRead(thisNote)
+                    .then((content) => {
+                        const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/.exec(content);
+                        if (match) {
+                            const imgFile = app.vault.getFileByPath(match[1]);
+                            if (imgFile) {
+                                const resourcePath = app.vault.getResourcePath(imgFile);
+                                const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
+                                if (newMatch) {
+                                    setImgPath(newMatch[1]);
+                                }
+                            }
+                        }
+
+                    });
+                if (imgPath != '')
+                    break;
+            }
+        }
+        imagePath()/* 
+            .then(path => {
+                setImgPath(path);
+                printToConsole(logLevel.log, imgPath)
+            }) */
+    }, [filteredDates, folder, format, app]);
+    if (imgPath != '')
+        return (
+            <img src={imgPath} className='calendar-attachment' />
+        )
+    return (<></>)
+}
