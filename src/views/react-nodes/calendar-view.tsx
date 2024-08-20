@@ -272,7 +272,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     .then((content) => {
                         const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/.exec(content);
                         if (match) {
-                            const imgFile = app.vault.getFileByPath(match[1]);
+                            const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
                             if (imgFile) {
                                 const resourcePath = app.vault.getResourcePath(imgFile);
                                 setImgPath(resourcePath);
