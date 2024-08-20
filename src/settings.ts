@@ -450,9 +450,9 @@ export class DiarianSettingTab extends PluginSettingTab {
         new Setting(containerEl).setName('Note previews')/* .setDesc('Settings that will apply to note previews in the Calendar view and the \'On this day\' view.') */.setHeading();
 
         new Setting(containerEl)
-            .setName("Display note title")
+            .setName("Display note name")
             .setDesc(
-                "Render the note title above the preview text when showing note previews.",
+                "Render the note name above the preview text when showing note previews.",
             )
             .addToggle((toggle) =>
                 toggle
