@@ -270,7 +270,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                 const thisNote = getNoteByMoment(date, folder, format);
                 await app.vault.cachedRead(thisNote)
                     .then((content) => {
-                        const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/.exec(content);
+                        const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/i.exec(content);
                         if (match) {
                             const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
                             if (imgFile) {
