@@ -10,12 +10,13 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
 	- Command to show the currently active daily note in the **Calendar** view.
+	- Display attached images on the tiles of days that include them.
 - An **On this day** review pane in the sidebar with the included settings:
 	- The interval between days to review (eg. every 3 months)
 	- How long ago to start including notes (eg. 6 months ago or earlier)
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
-- A **Daily rating** for each daily note that displays in your status bar.
-	- Three ways to insert a **Daily rating**:
+- A **rating** for each daily note that displays in your status bar.
+	- Three ways to insert a **rating**:
 		- The **Command palette**
 		- The file and editor context menus
 		- By clicking the status bar text
@@ -28,7 +29,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 ## Planned features
 Being in early development, there are some important features I have yet to add:
-- The option to display attached images in the Calendar view on the tiles of days that include them.
+- The ability to automatically insert your template from **Settings → Daily notes** when creating a daily note.
 ## Excluded features
 Since this plugin started as a project for my own personal use, there are features present in [Diarium](https://diariumapp.com/) that I do *not* plan on including in this plugin:
 - The ability to import tracker data from [Diarium](https://diariumapp.com/).
