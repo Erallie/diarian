@@ -235,13 +235,13 @@ export class ImportView extends Modal {
                     const data = JSON.parse(text);
                     if (data.date) {
                         printToConsole(logLevel.log, 'Is separate entry');
-                        await createEntry(data, format, folder, mapViewProperty);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
                         const dataArray: Array<any> = JSON.parse(text);
                         for (const data of dataArray) {
-                            await createEntry(data, format, folder, mapViewProperty);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin);
                         }
                         break;
                     }
@@ -373,9 +373,9 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 
 
-async function createEntry(data: any, format: string, folder: string, mapViewProperty: string,) {
+async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty), format, folder);
+    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder);
 }
 
 export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {
@@ -421,13 +421,13 @@ export async function writeNote(date: any, content: string, format: string, alte
 
 
 // Transformation functions
-function formatContent(array: any, moment: moment.Moment, mapViewProperty: string,) {
+function formatContent(array: any, moment: moment.Moment, mapViewProperty: string, plugin: Diarian) {
     let frontmatter = '---';
     if (array.location) {
         frontmatter += `\n${mapViewProperty}: ${array.location}`;
     }
     if (array.rating) {
-        frontmatter += `\nrating: ${array.rating}/5`;
+        frontmatter += `\n${plugin.settings.ratingProp}: ${array.rating}/5`;
     }
     if (array.tags.length != 0) {
         frontmatter += `\ntags:`;

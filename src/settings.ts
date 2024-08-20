@@ -641,6 +641,91 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         //#endregion
 
+        //#region Rating
+        new Setting(containerEl).setName('Rating').setHeading();
+
+        new Setting(containerEl)
+            .setName('Default Maximum')
+            .setDesc('The default maximum value a rating can have.')
+            .addSlider(slider => slider
+                .setLimits(1, 10, 1)
+                .setValue(this.plugin.settings.defaultMaxRating)
+                .setDynamicTooltip()
+                .onChange(async (value) => {
+                    this.plugin.settings.defaultMaxRating = value;
+                    await this.plugin.saveSettings();
+                }));
+
+        new Setting(containerEl)
+            .setName('Property name')
+            .setDesc('The name of the property ratings will be stored in.')
+            .addText(text => text
+                .setPlaceholder('rating')
+                .setValue(this.plugin.settings.ratingProp)
+                .onChange(async (value) => {
+                    this.plugin.settings.ratingProp = value;
+                    await this.plugin.saveSettings();
+                }));
+
+        const filledStroke = new Setting(containerEl)
+            .setName('Filled Rating Item')
+            .setDesc('Enter the unicode character or emoji you\'d like to represent a filled rating item.');
+
+        const emptyStroke = new Setting(containerEl)
+            .setName('Empty Rating Item')
+            .setDesc('Enter the unicode character or emoji you\'d like to represent an empty rating item.');
+
+        // const ratingPreview = containerEl.createEl('p');
+        const ratingPreviewSetting = new Setting(containerEl);
+
+        const ratingPreview = new DocumentFragment();
+
+        ratingPreview.textContent = 'Ratings will apear as:';
+        ratingPreview.createEl('br');
+        // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
+        ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
+        ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+
+        ratingPreviewSetting.setName(ratingPreview);
+
+
+        filledStroke.addText(text => text
+            .setPlaceholder('★')
+            .setValue(this.plugin.settings.filledStroke)
+            .onChange(async (value) => {
+                this.plugin.settings.filledStroke = value;
+                await this.plugin.saveSettings();
+
+                const ratingPreview = new DocumentFragment();
+
+                ratingPreview.textContent = 'Ratings will apear as:';
+                ratingPreview.createEl('br');
+                // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
+                ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+
+                ratingPreviewSetting.setName(ratingPreview);
+            }));
+
+        emptyStroke.addText(text => text
+            .setPlaceholder('☆')
+            .setValue(this.plugin.settings.emptyStroke)
+            .onChange(async (value) => {
+                this.plugin.settings.emptyStroke = value;
+                await this.plugin.saveSettings();
+
+                const ratingPreview = new DocumentFragment();
+
+                ratingPreview.textContent = 'Ratings will apear as:';
+                ratingPreview.createEl('br');
+                // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
+                ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+
+                ratingPreviewSetting.setName(ratingPreview);
+            }));
+        //#endregion
+
         //#region Danger zone
 
         new Setting(containerEl).setName('Danger zone').setHeading();
