@@ -19,7 +19,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Three ways to insert a **rating**:
 		- The **Command palette**
 		- The file and editor context menus
-		- By clicking the status bar text
+		- By clicking the status bar text (on desktop).
 - Insert a timestamp into the current note from the editor context menu.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports multiple notes per day.
@@ -30,6 +30,8 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 ## Planned features
 Being in early development, there are some important features I have yet to add:
 - The ability to automatically insert your template from **Settings → Daily notes** when creating a daily note.
+- Options to specify what to do when importing a note/entry with a name that already exists.
+	- Currently, the existing note is left untouched, and the new entry is not inserted.
 ## Excluded features
 Since this plugin started as a project for my own personal use, there are features present in [Diarium](https://diariumapp.com/) that I do *not* plan on including in this plugin:
 - The ability to import tracker data from [Diarium](https://diariumapp.com/).
