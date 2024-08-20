@@ -174,7 +174,28 @@ export class ImportView extends Modal {
             }
         } */
 
-        const importSetting = new Setting(this.contentEl).setName("Import").setDesc("Begin the importing process.");
+        const importDesc = new DocumentFragment;
+        importDesc.textContent = 'Begin the importing process.';
+        /* const importDescNotes = importDesc.createEl('ul');
+        const importNotes1 = importDescNotes.createEl('li', { text: 'Attachments will be uploaded to the location specified under ' });
+        importNotes1.createEl('strong', { text: 'Settings → Files and links → Default location for new attachments' });
+        importNotes1.createEl('span', { text: '.' })
+        const importNotes2 = importDescNotes.createEl('li', { text: 'Properties will be populated according to the data you exported from Diarium.' })
+        const importNotes2a = importNotes2.createEl('ul');
+        const importNotes2a1 = importNotes2a.createEl('li', { text: 'The ' })
+        importNotes2a1.createEl('strong', { text: 'rating' });
+        importNotes2a1.createEl('span', { text: ' property name can be set under ' }).createEl('strong', { text: 'Settings → Diarian → Rating → Property name' });
+        importNotes2a1.createEl('span', { text: '.' }); */
+        importDesc.createEl('br');
+        importDesc.createEl('span', { text: 'View ' }).createEl("a", {
+            text: "importer notes",
+            attr: {
+                href: "https://github.com/Erallie/diarian?tab=readme-ov-file#importer-notes",
+            },
+        });
+        importDesc.createEl('span', { text: '.' });
+
+        const importSetting = new Setting(this.contentEl).setName("Import").setDesc(importDesc);
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
