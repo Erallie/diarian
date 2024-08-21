@@ -490,15 +490,21 @@ button.filled-date:has(img) :not(img) {
 }
 
 button.filled-date:enabled:hover:has(img) .calendar-attachment,
-button.filled-date:enabled:focus:has(img) .calendar-attachment {
+button.filled-date:enabled:focus:has(img) .calendar-attachment,
+button.react-calendar__tile--active:has(img) .calendar-attachment,
+button.react-calendar__tile--active:enabled:hover:has(img) .calendar-attachment,
+button.react-calendar__tile--active:enabled:focus:has(img) .calendar-attachment {
     filter: brightness(85%) contrast(100%);
 }
 
-button.filled-date:enabled:hover:has(img) {
+button.filled-date:enabled:hover:has(img),
+button.filled-date:enabled:focus:has(img) {
     border-color: var(--interactive-accent-hover);
 }
 
-button.filled-date:enabled:focus:has(img) {
+button.react-calendar__tile--active:has(img),
+button.react-calendar__tile--active:enabled:hover:has(img),
+button.react-calendar__tile--active:enabled:focus:has(img) {
     border-color: hsl(calc(var(--accent-h) + 120), var(--accent-s), max(var(--accent-l) - 5%, 10%));
 }
 
