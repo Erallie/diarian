@@ -732,7 +732,7 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         const refreshDesc = new DocumentFragment();
 
-        refreshDesc.textContent = 'Diarian usually only checks files you ';
+        refreshDesc.textContent = 'Diarian usually only checks notes you ';
         refreshDesc.createEl('strong', { text: 'create' });
         refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'delete' });
         refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'rename' });
