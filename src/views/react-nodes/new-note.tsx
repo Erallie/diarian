@@ -6,7 +6,7 @@ import type Diarian from 'main';
 import { printToConsole, logLevel, DEFAULT_FORMAT } from 'src/constants';
 import moment from 'moment';
 import { writeNote } from 'src/import-journal';
-import { getDailyNoteSettings } from 'src/get-daily-notes';
+import { getModifiedFolderAndFormat } from 'src/get-daily-notes';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const TIME_FORMAT = 'kk:mm:ss';
@@ -68,15 +68,9 @@ export class NewDailyNote extends Modal {
             // printToConsole(logLevel.log, dateString + timeString);
             const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
 
-            let { format, folder }: any = getDailyNoteSettings();
-            if (format == '') format = DEFAULT_FORMAT;
+            const { format, folder } = getModifiedFolderAndFormat();
 
-            let newFolder = '';
-
-            if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
-            else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
-
-            writeNote(noteDate, '', format, newFolder, true);
+            writeNote(noteDate, '', format, folder, true);
             modal.close();
         }
 
