@@ -131,6 +131,10 @@ To insert a timestamp, do one of the following:
     ![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
 
 If the active note is from the current day, only the time will be inserted in the timestamp. Otherwise, both the date and the time will be inserted.
+## Multiple daily notes
+This plugin reads your settings under **Settings → Daily notes** to create new daily notes.
+
+To create multiple notes per day, you must change the **Date format** to include the time. Once that is done, new notes with the new format will show up in the **Calendar**.
 # Installation
 ## Use BRAT
 Install this plugin using [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) by doing the following:
