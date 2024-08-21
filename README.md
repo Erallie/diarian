@@ -41,6 +41,8 @@ Since this plugin started as a project for my own personal use, there are featur
 	- The [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
 	- For those features, I suggest plugins from the [Obsidian Marketplace](obsidian://show-plugin?id=password) like [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)) or [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection))
+
+Feel free to create an [issue](https://github.com/Erallie/diarian/issues) if you'd like me to include any of these features!
 # Instructions
 ## Calendar
 Access the **Calendar** view from the context menu that opens after clicking the **ribbon icon**.
@@ -98,7 +100,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 - Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
 	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
 	- If [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
-	- Importing tracker data is not currently supported. Feel free to create an issue if you'd like me to add support for it!
+	- Importing tracker data is not currently supported. Feel free to create an [issue](https://github.com/Erallie/diarian/issues) if you'd like me to add support for it!
 ## Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
 
