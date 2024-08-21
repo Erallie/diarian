@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Modal, Plugin, Setting, ButtonComponent, TFile, WorkspaceLeaf, Menu, IconName, ToggleComponent, TAbstractFile } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Plugin, TFile, WorkspaceLeaf, Menu, IconName, Platform } from 'obsidian';
 import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
@@ -117,42 +117,7 @@ export default class Diarian extends Plugin {
         const ribbonIconEl = this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
             // this.openCalendar();
-            const enhancedApp = this.app as EnhancedApp;
-            const menu = new Menu();
-            menu.addItem((item) => // New daily note
-                item
-                    .setTitle('New daily note')
-                    .setIcon('lucide-file-plus')
-                    .onClick(() => {
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:new-note`);
-                    }));
-
-            menu.addItem((item) => // Open calendar
-                item
-                    .setTitle('Open calendar')
-                    .setIcon('lucide-calendar')
-                    .onClick(() => {
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
-                    }));
-
-            menu.addItem((item) => // Open on this day
-                item
-                    .setTitle('Open on this day')
-                    .setIcon('lucide-history')
-                    .onClick(() => {
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
-                    }));
-
-            menu.addItem((item) => // Open importer
-                item
-                    .setTitle('Open importer')
-                    .setIcon('lucide-import')
-                    .onClick(() => {
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-importer`);
-                    }));
-
-
-            menu.showAtMouseEvent(evt);
+            this.openSelectView(evt);
         });
         // Perform additional things with the ribbon
         // ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -345,7 +310,7 @@ export default class Diarian extends Plugin {
             name: 'Select Diarian view',
             icon: 'lucide-book-heart',
             callback: () => {
-                new SelectView(this.app, this).open();
+                this.openSelectView();
             }
         });
 
@@ -506,6 +471,56 @@ export default class Diarian extends Plugin {
         // this.ratingStatBar.removeEventListener('click', null, true);
         // this.ratingStatBar.removeEventListener('click', () => { this.openRatingView(this.ratingStatBar) });
         // this.app.unregister()
+    }
+
+    openSelectView(evt?: MouseEvent) {
+        if (evt) {
+            this.selectViewMenu().showAtMouseEvent(evt);
+        }
+        else if (Platform.isMobile) {
+            this.selectViewMenu().showAtPosition({ x: 20, y: 20 })
+        }
+        else {
+            new SelectView(this.app, this).open();
+        }
+    }
+
+    selectViewMenu() {
+        const enhancedApp = this.app as EnhancedApp;
+        const menu = new Menu();
+        menu.addItem((item) => // New daily note
+            item
+                .setTitle('New daily note')
+                .setIcon('lucide-file-plus')
+                .onClick(() => {
+                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:new-note`);
+                }));
+
+        menu.addItem((item) => // Open calendar
+            item
+                .setTitle('Open calendar')
+                .setIcon('lucide-calendar')
+                .onClick(() => {
+                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+                }));
+
+        menu.addItem((item) => // Open on this day
+            item
+                .setTitle('Open on this day')
+                .setIcon('lucide-history')
+                .onClick(() => {
+                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                }));
+
+        menu.addItem((item) => // Open importer
+            item
+                .setTitle('Open importer')
+                .setIcon('lucide-import')
+                .onClick(() => {
+                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-importer`);
+                }));
+
+        return menu;
     }
 
     openRatingView(statBar: HTMLElement) {
