@@ -64,9 +64,9 @@ Select a note preview to open it.
 
 ### Editor Navigation
 You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
-- `Diarian: Show daily note in calendar`
-- `Diarian: Go to previous daily note`
-- `Diarian: Go to next daily note`
+- **Diarian: Show daily note in calendar**
+- **Diarian: Go to previous daily note**
+- **Diarian: Go to next daily note**
 
 These commands can also be accessed from the file context menu.
 
@@ -108,18 +108,18 @@ The status bar reads the note properties to determine the rating. If no rating h
 
 To set a rating, do one of the following things:
 - Click the rating in the status bar (on desktop).
-- Perform the `Diarian: Insert rating` command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
+- Perform the **Diarian: Insert rating** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
 - Select **Insert rating** from the file context menu or the editor context menu.
-	![rating-context-menu](./Attachments/rating-context-menu.png#interface)
+    ![rating-context-menu](./Attachments/rating-context-menu.png#interface)
 
 A modal will then open that will allow you to set the rating as you like.
 
 ![rating-modal](./Attachments/rating-modal.png#interface)
 ## Timestamp
 To insert a timestamp, do one of the following:
-- Perform the `Diarian: Insert timestamp` command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
-- Select `Insert timestamp` from the editor context menu.
-	![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
+- Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
+- Select **Insert timestamp** from the editor context menu.
+    ![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
 
 If the active note is from the current day, only the time will be inserted in the timestamp. Otherwise, both the date and the time will be inserted.
 # Installation
