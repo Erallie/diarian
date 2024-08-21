@@ -225,7 +225,7 @@ export default class Diarian extends Plugin {
         });
 
         //#region file commands
-        this.addCommand({ // Show in calendar
+        this.addCommand({ // Insert rating
             id: 'insert-rating',
             name: 'Insert rating',
             icon: 'lucide-star',
