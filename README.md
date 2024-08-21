@@ -9,18 +9,14 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - A **Calendar** view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
-	- Command to show the currently active daily note in the **Calendar** view.
+	- Commands to navigate between daily notes.
 	- Display attached images on the tiles of days that include them.
 - An **On this day** review pane in the sidebar with the included settings:
 	- The interval between days to review (eg. every 3 months)
 	- How long ago to start including notes (eg. 6 months ago or earlier)
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
-- A **rating** for each daily note that displays in your status bar.
-	- Three ways to insert a **rating**:
-		- The **Command palette**
-		- The file and editor context menus
-		- By clicking the status bar text (on desktop).
-- Insert a timestamp into the current note from the editor context menu.
+- A rating for each daily note that displays in the status bar.
+- Insert a timestamp into the current note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports multiple notes per day.
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
@@ -29,7 +25,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 ## Planned features
 Being in early development, there are some important features I have yet to add:
-- The ability to automatically insert your template from **Settings → Daily notes** when creating a daily note.
+- The ability to automatically insert your template defined under **Settings → Daily notes** when creating a daily note.
 - Options to specify what to do when importing a note/entry with a name that already exists.
 	- Currently, the existing note is left untouched, and the new entry is not inserted.
 ## Excluded features
@@ -45,8 +41,89 @@ Since this plugin started as a project for my own personal use, there are featur
 	- The [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
 	- For those features, I suggest plugins from the [Obsidian Marketplace](obsidian://show-plugin?id=password) like [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)) or [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection))
+# Instructions
+## Calendar
+Access the **Calendar** view from the context menu that opens after clicking the **ribbon icon**.
+
+![open-calendar](./Attachments/open-calendar.png#interface)
+
+The **Calendar** view displays all your daily notes in a calendar layout.
+
+![calendar-view](./Attachments/calendar-view.png#interface)
+
+- The number of **dots** ( • ) on a tile represents how many daily notes you have written that day.
+- If you have images attached, the first image you attached that day will show up on the tile of that day.
+
+Select the **plus button** ( ![plus button](./Attachments/icons/lucide-plus.svg#icon) ) to create a new note on that day.
+
+![new-note-calendar](./Attachments/new-note-calendar.png#interface)
+
+Select a note preview to open it.
+
+![note-preview-calendar](./Attachments/note-preview-calendar.png#interface)
+
+### Editor Navigation
+You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
+- `Diarian: Show daily note in calendar`
+- `Diarian: Go to previous daily note`
+- `Diarian: Go to next daily note`
+
+These commands can also be accessed from the file context menu.
+
+![calendar-navigation](./Attachments/calendar-navigation.png#interface)
+## On this day
+Access the **On this day** view from the context menu that opens after clicking the **ribbon icon**.
+
+![open-on-this-day](./Attachments/open-on-this-day.png#interface)
+
+The **On this day** view displays notes written on previous days.
+
+![on-this-day-view](./Attachments/on-this-day-view.png#interface)
+
+The interval between days to review (eg. every 3 months) and how long ago to start including notes (eg. 6 months ago or earlier) can be adjusted under **Settings → Diarian → On this day**.
+
+Select a note preview to open it.
+
+![note-preview-on-this-day](./Attachments/note-preview-on-this-day.png#interface)
+## Importer
+Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
+
+![open-importer](./Attachments/open-importer.png#interface)
+
+The **Importer** allows you to import a pre-existing journal from [Diarium](https://diariumapp.com/):
+1. Follow the instructions onscreen to export your [Diarium](https://diariumapp.com/) journal to your local files.
+2. After they've been exported, choose the exported zip file, and then select **Import**.
+### Importer notes
+- Attachments will be uploaded to the location specified under **Settings → Files and links → Default location for new attachments**.
+- Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
+	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
+	- If [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
+	- Importing tracker data is not currently supported. Feel free to create an issue if you'd like me to add support for it!
+## Rating
+A rating will appear in the status bar whenever you're viewing a daily note.
+
+![rating-status-bar](./Attachments/rating-status-bar.png#interface)
+
+The status bar reads the note properties to determine the rating. If no rating has been set, the status bar will display an empty rating.
+
+To set a rating, do one of the following things:
+- Click the rating in the status bar (on desktop).
+- Perform the `Diarian: Insert rating` command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
+- Select **Insert rating** from the file context menu or the editor context menu.
+	![rating-context-menu](./Attachments/rating-context-menu.png#interface)
+
+A modal will then open that will allow you to set the rating as you like.
+
+![rating-modal](./Attachments/rating-modal.png#interface)
+## Timestamp
+To insert a timestamp, do one of the following:
+- Perform the `Diarian: Insert timestamp` command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
+- Select `Insert timestamp` from the editor context menu.
+	![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
+
+If the active note is from the current day, only the time will be inserted in the timestamp. Otherwise, both the date and the time will be inserted.
 # Installation
-## Using BRAT
+## Use BRAT
 Install this plugin using [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) by doing the following:
 1. Make sure the [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) plugin is installed in your vault.
 2. Go to **Settings → BRAT → Beta Plugin List → Add Beta Plugin**
