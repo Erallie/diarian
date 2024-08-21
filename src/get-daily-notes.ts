@@ -42,7 +42,7 @@ export function getAllDailyNotes(folder: string, format: string) {
     return filteredFiles;
 };
 
-export function isDailyNote(file: TFile, folder: string, format: string) {
+export function isDailyNote(file: TFile, folder: string, format: string, pathOverride?: string) {
 
     // const index = (path + file.name).search(regex);
 
@@ -53,7 +53,9 @@ export function isDailyNote(file: TFile, folder: string, format: string) {
         checkIndex = 0;
 
     // printToConsole(logLevel.log, file.path);
-    const path = file.path;
+    let path = file.path;
+    if (pathOverride)
+        path = pathOverride;
 
     let matchesBookends;
     if (checkIndex == 0)

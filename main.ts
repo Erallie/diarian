@@ -43,11 +43,20 @@ export default class Diarian extends Plugin {
             this.registerEvent( //on rename
                 this.app.vault.on('rename', (file, oldPath) => {
                     const { folder, format }: any = getModifiedFolderAndFormat();
-                    if (file instanceof TFile && isDailyNote(file, folder, format)) {
-                        this.dailyNotes[this.dailyNotes.length] = file;
-                        this.sortDailyNotes(folder, format);
-                        // if (this.app.workspace.layoutReady)
-                        this.refreshViews(true, true);
+                    if (file instanceof TFile) {
+                        if (isDailyNote(file, folder, format, oldPath)) {
+                            this.dailyNotes = this.dailyNotes.filter(thisFile => {
+                                return (thisFile != file);
+                            });
+                            // if (this.app.workspace.layoutReady)
+                            this.refreshViews(true, true);
+                        }
+                        if (isDailyNote(file, folder, format)) {
+                            this.dailyNotes[this.dailyNotes.length] = file;
+                            this.sortDailyNotes(folder, format);
+                            // if (this.app.workspace.layoutReady)
+                            this.refreshViews(true, true);
+                        }
                     }
                 }));
 
