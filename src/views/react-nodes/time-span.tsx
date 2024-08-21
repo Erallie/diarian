@@ -29,7 +29,7 @@ export const TimeSpan = ({ notes, thisMoment, /* wrapper, */ view, plugin, app }
         <>
             <h2>{
                 getTimeSpanTitle(
-                    now.diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff),
+                    now.diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff) + 1,
                     unit
                 )
             } ago</h2>
