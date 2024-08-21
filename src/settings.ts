@@ -125,7 +125,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     timeStampFormat: 'h:mm A',
 
     defaultMaxRating: 5,
-    ratingProp: 'rating',
+    ratingProp: 'daily rating',
     filledStroke: '★',
     emptyStroke: '☆'
 
