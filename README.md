@@ -137,7 +137,7 @@ To install this plugin manually, follow these steps:
 3. Go to your **Plugins folder** (`[vault root]/.obsidian/plugins`) and create a new subfolder called `diarian`.
 4. Move the downloaded files to the new folder.
 # Credits
-- I made use of this [React calendar](https://github.com/wojtekmaj/react-calendar#readme) for my own Calendar view.
+- I made use of this [React calendar](https://github.com/wojtekmaj/react-calendar#readme) for my own **Calendar** view.
 - I modified [this code](https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22-L47) from the [obsidian-daily-notes-interface](https://github.com/liamcain/obsidian-daily-notes-interface) to retrieve settings from the Daily notes core plugin and the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin.
 - I referenced [this source](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/c353550c49c274bbf3cc00026feca7e8766b0e48/src/main.ts#L82-L100) from the [Journal Review](obsidian://show-plugin?id=journal-review) ([github](https://github.com/Kageetai/obsidian-plugin-journal-review)) plugin to learn how to open a custom view pane.
 - I modified [`NotePreview.tsx`](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/33a69940a5fcb5cb0eb45d34fca619f570ab5854/src/components/NotePreview.tsx) and [`TimeSpan.tsx`](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/33a69940a5fcb5cb0eb45d34fca619f570ab5854/src/components/TimeSpan.tsx) from the [Journal Review](obsidian://show-plugin?id=journal-review) ([github](https://github.com/Kageetai/obsidian-plugin-journal-review)) plugin to display note previews.
