@@ -1,4 +1,4 @@
-import { StrictMode, Suspense, useState, useEffect } from "react";
+import { StrictMode, useState, useEffect } from "react";
 import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar } from 'react-calendar';
@@ -6,7 +6,7 @@ import moment from 'moment';
 import type Diarian from 'main';
 import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import NotePreview from './note-preview';
-import { ViewType, printToConsole, logLevel } from 'src/constants';
+import { ViewType } from 'src/constants';
 import { NewDailyNote } from "./new-note";
 import { convertCalType } from 'src/settings';
 
@@ -236,29 +236,6 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         </div>
     )
 };
-
-/* async function imagePath(filteredDates: moment.Moment[], folder: string, format: string, app: App) {
-    // let imgPath = '';
-    for (let date of filteredDates) {
-        const thisNote = getNoteByMoment(date, folder, format);
-        await app.vault.cachedRead(thisNote)
-            .then((content) => {
-                const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(|((?!\[\[).(?<!]]))+)?]]/.exec(content);
-                if (match) {
-                    const imgFile = app.vault.getFileByPath(match[1]);
-                    if (imgFile) {
-                        const resourcePath = app.vault.getResourcePath(imgFile);
-                        const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
-                        if (newMatch) {
-                            return newMatch[1];
-                        }
-                    }
-                }
-
-            });
-    }
-    return '';
-} */
 
 const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');

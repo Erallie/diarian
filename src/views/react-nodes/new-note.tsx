@@ -1,9 +1,7 @@
-import * as React from "react";
+import { StrictMode } from "react";
 import { Root, createRoot } from "react-dom/client";
-import { App, Modal, normalizePath } from "obsidian";
-// import useContext from "../hooks/useContext";
+import { App, Modal } from "obsidian";
 import type Diarian from 'main';
-import { printToConsole, logLevel, DEFAULT_FORMAT } from 'src/constants';
 import moment from 'moment';
 import { writeNote } from 'src/import-journal';
 import { getModifiedFolderAndFormat } from 'src/get-daily-notes';
@@ -32,39 +30,10 @@ export class NewDailyNote extends Modal {
 
         const modal = this;
 
-        /* if (this.date) this.dateString = moment(this.date).format(DATE_FORMAT);
-        else this.dateString = moment().format(DATE_FORMAT);
-
-        this.timeString = moment().format(TIME_FORMAT); */
-        // contentEl.setText('Open view');
-
-        // contentEl.createEl('br');
-
-        /* const openCalendarButton = new DocumentFragment();
-        openCalendarButton.createEl('img', {
-            text: "Open calendar",
-            attr: {
-                src: "Attachments/icons/lucide-calendar-search.svg"
-            },
-        });
-        openCalendarButton.createEl('span', { text: ' Open calendar' }); */
-
-
-        /* const [selectedDate, setDate] = React.useState(moment().format('YYYY-MM-DD'));
-
-        function setNewDate(value: any) {
-            setDate(value);
-        } */
-
-        /* 
-                const [dateString, setDateString] = React.useState(this.dateString);
-                const [timeString, setTimeString] = React.useState(this.timeString); */
-
         let dateString = this.dateString;
         let timeString = this.timeString;
-        // let dateTimeString = dateString + 'T' + timeString;
 
-        function createNote(event: React.MouseEvent<HTMLButtonElement>) {
+        function createNote() {
             // printToConsole(logLevel.log, dateString + timeString);
             const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
 
@@ -83,21 +52,10 @@ export class NewDailyNote extends Modal {
             timeString = event.target.value;
             // printToConsole(logLevel.log, timeString);
         }
-        /* function setDateTime(event: React.ChangeEvent<HTMLInputElement>) {
-            dateTimeString = event.target.value;
-            // printToConsole(logLevel.log, timeString);
-        } */
 
-        /* async function formAction(data: FormData) {
-            let noteMoment = moment(data.get('date')?.toString(), 'YYYY-MM-DD');
-        } */
         this.root.render(
-            <React.StrictMode>
+            <StrictMode>
 
-                {/* <input id='date' className='new-note-input' aria-label="Date and Time" type="datetime-local" defaultValue={dateTimeString} onChange={setDateTime} /> */}
-                {/* <div className="modal-close-button"></div>
-                <div className="modal-title"></div>
-                <div className="modal-content"> */}
                 <div className="new-note-div">
                     <label htmlFor='date' className='new-note-label'>Date</label>
                     <input id='date' className='new-note-input' type="date" onChange={setDate} defaultValue={dateString} />
@@ -109,7 +67,7 @@ export class NewDailyNote extends Modal {
                 <button onClick={createNote} >Create note</button>
                 {/* </div> */}
 
-            </React.StrictMode>
+            </StrictMode>
         );
 
 

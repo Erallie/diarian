@@ -1,4 +1,4 @@
-import { App, Vault, normalizePath, Notice, TFile } from 'obsidian';
+import { normalizePath, TFile } from 'obsidian';
 import Diarian from 'main';
 import moment from 'moment';
 import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';

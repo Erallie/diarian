@@ -1,5 +1,4 @@
 import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown } from 'obsidian';
-// import * as zip from "@zip.js/zip.js";
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarian from 'main';
 import { logLevel, printToConsole } from './constants';
