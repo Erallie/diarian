@@ -108,7 +108,7 @@ export default class Diarian extends Plugin {
 
         const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
         if (markdownView) {
-            this.changeStatBar(ratingStatBar, markdownView.file);
+            this.onFileOpen(ratingStatBar, markdownView.file);
         }
         //#endregion
 
@@ -394,7 +394,7 @@ export default class Diarian extends Plugin {
 
         this.registerEvent( //On file open
             this.app.workspace.on('file-open', (file) => {
-                this.changeStatBar(ratingStatBar, file);
+                this.onFileOpen(ratingStatBar, file);
             }))
 
     }
@@ -407,9 +407,10 @@ export default class Diarian extends Plugin {
         await this.saveData(this.settings);
     }
 
-    changeStatBar(ratingStatBar: HTMLElement, file: TFile | null) {
+    onFileOpen(ratingStatBar: HTMLElement, file: TFile | null) {
         const { folder, format }: any = getModifiedFolderAndFormat();
         if (file instanceof TFile && isDailyNote(file, folder, format)) {
+            this.refreshViews(true, false, getMoment(file, folder, format));
             this.app.fileManager.processFrontMatter(
                 file,
                 (frontmatter) => {
