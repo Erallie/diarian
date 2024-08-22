@@ -287,18 +287,6 @@ export default class Diarian extends Plugin {
             }
         });
 
-        /* this.addCommand({ // Refresh notes
-            id: 'refresh-notes',
-            name: 'Refresh daily notes',
-            icon: 'lucide-refresh-ccw',
-            callback: () => {
-                this.dailyNotes = getAllDailyNotes();
-                // printToConsole(logLevel.log, this.dailyNotes.length.toString());
-                this.refreshViews(true, true);
-                printToConsole(logLevel.info, 'Daily notes refreshed!');
-            }
-        }); */
-
         this.addCommand({ // Select view
             id: 'select-view',
             name: 'Select Diarian view',
