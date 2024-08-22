@@ -1,12 +1,12 @@
 import { StrictMode, useState, useEffect } from "react";
 import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
-import { Calendar } from 'react-calendar';
+import { Calendar, OnArgs } from 'react-calendar';
 import moment from 'moment';
 import type Diarian from 'main';
 import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import NotePreview from './note-preview';
-import { ViewType } from 'src/constants';
+import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { NewDailyNote } from "./new-note";
 import { convertCalType } from 'src/settings';
 
@@ -192,10 +192,48 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         new NewDailyNote(app, plugin, moment(selectedDate)).open();
     }
 
+    const [navLabel, setNavLabel] = useState('Show months');
+    const [jumpAmount, setJumpAmount] = useState(' a year');
+
+    function onViewChange({ view }: OnArgs) {
+        switch (view) {
+            case 'month':
+                setNavLabel('Show months');
+                setJumpAmount(' a year');
+                break;
+            case 'year':
+                setNavLabel('Show years');
+                setJumpAmount(' a decade');
+                break;
+            case 'decade':
+                setNavLabel('Show decades');
+                setJumpAmount(' a century');
+                break;
+            case 'century':
+                setNavLabel('Cannot jump further out');
+                setJumpAmount('');
+                break;
+            default:
+                printToConsole(logLevel.warn, 'Cannot set navigationAriaLabel:\nview is not properly defined!')
+        }
+    }
+
+    const jumpLabel = (jumpType: string) => {
+        switch (jumpType) {
+            case 'next':
+                return 'Jump ahead' + jumpAmount;
+            case 'prev':
+                return 'Jump back' + jumpAmount;
+            default:
+                printToConsole(logLevel.warn, 'Cannot set next2AriaLabel or prev2AriaLabel:\njumpType is not properly defined!')
+                return '';
+        }
+    }
+
     const calType = convertCalType[plugin.settings.calendarType];
     return (
         <div className='calendar-container'>
-            <Calendar onClickDay={outerSetDate} calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={outerSetDate} onViewChange={onViewChange} navigationAriaLabel={navLabel} next2AriaLabel={jumpLabel('next')} nextAriaLabel='Next' prev2AriaLabel={jumpLabel('prev')} prevAriaLabel='Previous' calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >
