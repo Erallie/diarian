@@ -61,8 +61,6 @@ Since this plugin started as a project for my own personal use, there are featur
 	- For those features, I suggest plugins from the [Obsidian Marketplace](obsidian://show-plugin?id=password) like [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)), [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection)),[^1] or [Lock Screen](obsidian://show-plugin?id=obsidian-lock-screen-plugin) ([github](https://github.com/ericbiewener/obsidian-lock-screen-plugin)).[^1]
 	- If you sync your vault, [Remotely Save](obsidian://show-plugin?id=remotely-save) ([github](https://github.com/remotely-save/remotely-save)) has an option to encrypt your files on the remote location. The files on your local computer will not be encrypted though.
 
-%%[^2]: [Protected Note](obsidian://show-plugin?id=protected-note) ([github](https://github.com/mmiksaa/obsidian-protected-note)) makes the [Obsidian](https://obsidian.md) app overheat on iOS. It is only recommended for desktop and Android.%%
-
 [^1]: [Password Protection](obsidian://show-plugin?id=password-protection) ([github](https://github.com/qing3962/password-protection)) and [Lock Screen](obsidian://show-plugin?id=obsidian-lock-screen-plugin) ([github](https://github.com/ericbiewener/obsidian-lock-screen-plugin)) *only* put a password on your vault or a folder in your vault; they do *not* encrypt or decrypt it.
 	
 	If you require an encryption feature, browse the Obsidian Marketplace for [plugins with encryption](obsidian://show-plugin?id=encrypt).
