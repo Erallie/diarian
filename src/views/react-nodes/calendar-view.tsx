@@ -230,9 +230,52 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         }
     }
 
+    function jumpToToday() {
+        thisComp.refresh(plugin, new Date());
+    }
+
+    function refresh() {
+        thisComp.refresh(plugin);
+    }
+
     const calType = convertCalType[plugin.settings.calendarType];
     return (
         <div className='calendar-container'>
+            <div className='calendar-custom-buttons'>
+                <button onClick={jumpToToday} aria-label='Jump to today' >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={18}
+                        height={18}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-sun"
+                    >
+                        <circle cx={12} cy={12} r={4} />
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg></button>
+                <button onClick={refresh} aria-label='Refresh calendar' >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={18}
+                        height={18}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-refresh-ccw"
+                    >
+                        <path d="M21 12a9 9 0 00-9-9 9.75 9.75 0 00-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5M3 12a9 9 0 009 9 9.75 9.75 0 006.74-2.74L21 16" />
+                        <path d="M16 16h5v5" />
+                    </svg></button>
+            </div>
             <Calendar onClickDay={outerSetDate} onViewChange={onViewChange} navigationAriaLabel={navLabel} next2AriaLabel={jumpLabel('next')} nextAriaLabel='Next' prev2AriaLabel={jumpLabel('prev')} prevAriaLabel='Previous' calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
