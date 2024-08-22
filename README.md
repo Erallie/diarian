@@ -4,6 +4,24 @@ Your all-in-one journaling plugin for [Obsidian](https://obsidian.md).
 This plugin adds functionality from the [Diarium](https://diariumapp.com/) journal app to the note-taking app we all know and love.
 
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
+## Table of Contents
+1. [Features](#features)
+	1. [Key features](#key-features)
+	2. [Planned features](#planned-features)
+	3. [Excluded features](#excluded-features)
+2. [Instructions](#instructions)
+	1. [Calendar](#calendar)
+		1. [Editor navigation](#editor-navigation)
+	2. [On this day](#on-this-day)
+	3. [Importer](#importer)
+		1. [Importer notes](#importer-notes)
+	4. [Rating](#rating)
+	5. [Timestamp](#timestamp)
+	6. [Multiple daily notes](#multiple-daily-notes)
+3. [Installation](#installation)
+	1. [Use BRAT](#use-brat)
+	2. [Manual installation](#manual-installation)
+4. [Credits](#credits)
 # Features
 ## Key features
 - A **Calendar** view that displays which days have daily notes on them.
@@ -16,7 +34,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- How long ago to start including notes (eg. 6 months ago or earlier)
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
 - A rating for each daily note that displays in the status bar.
-- Insert a timestamp into the current note.
+- Insert a timestamp into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports multiple notes per day.
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
@@ -71,13 +89,13 @@ Select a note preview to open it.
 
 ![note-preview-calendar](./Attachments/note-preview-calendar.png#interface)
 
-### Editor Navigation
+### Editor navigation
 You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
 - **Diarian: Show daily note in calendar**
 - **Diarian: Go to previous daily note**
 - **Diarian: Go to next daily note**
 
-These commands can also be accessed from the file context menu.
+These commands can also be accessed from the file and editor context menus.
 
 ![calendar-navigation](./Attachments/calendar-navigation.png#interface)
 ## On this day
@@ -141,7 +159,7 @@ Install this plugin using [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([gi
 1. Make sure the [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) plugin is installed in your vault.
 2. Go to **Settings → BRAT → Beta Plugin List → Add Beta Plugin**
 3. Enter `https://github.com/Erallie/diarian` into the input field and select **Add Plugin**.
-## Manual Installation
+## Manual installation
 To install this plugin manually, follow these steps:
 1. Go to the [Releases](https://github.com/Erallie/diarian/releases) page and find the latest release.
 2. Download `main.js`, `manifest.json`, and `styles.css`.
