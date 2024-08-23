@@ -17,7 +17,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 		1. [Importer notes](#importer-notes)
 	4. [Rating](#rating)
 	5. [Timestamp](#timestamp)
-	6. [Multiple daily notes](#multiple-daily-notes)
+	6. [Multiple/nested daily notes](#multiplenested-daily-notes)
 3. [Installation](#installation)
 	1. [Use BRAT](#use-brat)
 	2. [Manual installation](#manual-installation)
@@ -147,10 +147,23 @@ To insert a timestamp, do one of the following:
     ![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
 
 If the active note is from the current day, only the time will be inserted in the timestamp. Otherwise, both the date and the time will be inserted.
-## Multiple daily notes
+## Multiple/nested daily notes
 This plugin reads your settings under **Settings → Daily notes** to create new daily notes.
+- To create **multiple notes per day**, you must change the **Date format** to include the time within the note name.
+- To create **nested daily notes**, change the **Date format** to include **slashes** ( / ) to indicate folders and subfolders.
 
-To create multiple notes per day, you must change the **Date format** to include the time. Once that is done, new notes with the new format will show up in the **Calendar**.
+> [!example]- Format example
+> If you create a new daily note when
+> - The **Date format** is set to `YYYY/M-MMMM/dddd, Do [at] h.mm A`
+> - The current date is August 23, 2024
+> - The time is 11:15 AM
+> 
+> A new note will be created:
+> - Named **"Friday, 23rd at 11.15 AM"**
+> - In the subfolder **"8-August"**
+> 	- Nested under the folder **"2024"**
+
+Once that is done, new notes with the new format will show up in the **Calendar**.
 # Installation
 ## Use BRAT
 Install this plugin using [BRAT](obsidian://show-plugin?id=obsidian42-brat) ([github](https://github.com/TfTHacker/obsidian42-brat)) by doing the following:
@@ -168,7 +181,7 @@ To install this plugin manually, follow these steps:
 - I modified [this code](https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22-L47) from the [obsidian-daily-notes-interface](https://github.com/liamcain/obsidian-daily-notes-interface) to retrieve settings from the Daily notes core plugin and the [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) plugin.
 	- The modifications in my own code can be found in [`get-daily-notes.ts`](https://github.com/Erallie/diarian/blob/eb08ddda08fdbe91632e4a4a4e966986e2bff052/src/get-daily-notes.ts#L9-L31) and in [`import-journal.ts`](https://github.com/Erallie/diarian/blob/eb08ddda08fdbe91632e4a4a4e966986e2bff052/src/import-journal.ts#L520-L543).
 - I modified [this source](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/c353550c49c274bbf3cc00026feca7e8766b0e48/src/main.ts#L82-L100) from the [Journal Review](obsidian://show-plugin?id=journal-review) ([github](https://github.com/Kageetai/obsidian-plugin-journal-review)) plugin to learn how to open a custom view pane.
-	- My own modifications can be found in [`main.ts`](https://github.com/Erallie/diarian/blob/eb08ddda08fdbe91632e4a4a4e966986e2bff052/main.ts#L533-L569) and [`note-preview.tsx`](https://github.com/Erallie/diarian/blob/ab81a1afddb1f90964b1d20501ebbbf7859204bc/src/views/react-nodes/note-preview.tsx#L51-L69).
+	- My own modifications can be found in [`main.ts`](https://github.com/Erallie/diarian/blob/eb08ddda08fdbe91632e4a4a4e966986e2bff052/main.ts#L533-L569) and [`note-preview.tsx`](https://github.com/Erallie/diarian/blob/73d8512a37c18f1cbc63e0a4d37bbb771c2f7716/src/views/react-nodes/note-preview.tsx#L84-L135).
 - I modified [`NotePreview.tsx`](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/33a69940a5fcb5cb0eb45d34fca619f570ab5854/src/components/NotePreview.tsx) and [`TimeSpan.tsx`](https://github.com/Kageetai/obsidian-plugin-journal-review/blob/33a69940a5fcb5cb0eb45d34fca619f570ab5854/src/components/TimeSpan.tsx) from the [Journal Review](obsidian://show-plugin?id=journal-review) ([github](https://github.com/Kageetai/obsidian-plugin-journal-review)) plugin to display note previews.
 	- The modifications in my own code are found in [`note-preview.tsx`](https://github.com/Erallie/diarian/blob/eb08ddda08fdbe91632e4a4a4e966986e2bff052/src/views/react-nodes/note-preview.tsx) and [`time-span.tsx`](https://github.com/Erallie/diarian/blob/ab81a1afddb1f90964b1d20501ebbbf7859204bc/src/views/react-nodes/note-preview.tsx#L51-L68).
 - I referenced [JSON/CSV Importer](obsidian://show-plugin?id=obsidian-import-json) ([github](https://github.com/farling42/obsidian-import-json)) and the official [Importer](obsidian://show-plugin?id=obsidian-importer) ([github](https://github.com/obsidianmd/obsidian-importer)) to understand how to code my own import feature.
