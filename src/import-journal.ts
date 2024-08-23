@@ -95,13 +95,13 @@ export class ImportView extends Modal {
         }); */
 
         const zipFileSetting = new Setting(this.contentEl)
-            .setName("Choose zip file")
-            .setDesc("Select the zip file exported from Diarium.");
+            .setName("Choose exported file")
+            .setDesc("Select the zip or json file exported from Diarium.");
         const zipFile = zipFileSetting.controlEl.createEl("input", {
             attr: {
                 type: "file",
                 multiple: false,
-                accept: ".zip"
+                accept: ".zip, .json"
             }
         });
 
@@ -237,7 +237,7 @@ export class ImportView extends Modal {
             // const { files: datafiles } = jsonFile;
             const { files: datafiles } = zipFile;
             if (datafiles === null || !datafiles.length) {
-                const errorText = 'No zip file has been selected.';
+                const errorText = 'No file has been selected.';
                 printToConsole(logLevel.error, errorText);
                 setText(errorText, 'setting-error');
                 return;
@@ -253,14 +253,40 @@ export class ImportView extends Modal {
             let { format, folder }: any = getModifiedFolderAndFormat();
 
             for (let i = 0; i < datafiles.length; i++) {
+                let index = 0;
+                let progressMax = datafiles.length;
+
+                if (datafiles[i].name.endsWith('.json')) {
+                    const srcText = await datafiles[i].text();
+                    const data = JSON.parse(srcText);
+                    if (data.date) {
+                        // printToConsole(logLevel.log, 'Is separate entry');
+                        progressMax = datafiles.length;
+                        index++;
+                        progressBar.setValue(index / progressMax * 100);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                    }
+                    else {
+                        // printToConsole(logLevel.log, 'Contains all entries');
+                        const dataArray: Array<any> = data;
+                        progressMax = datafiles.length + dataArray.length - 1;
+                        for (const data of dataArray) {
+                            index++;
+                            progressBar.setValue(index / progressMax * 100);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                        }
+                    }
+                    continue;
+                }
+
                 // create a BlobReader to read with a ZipReader the zip from a Blob object
                 const reader = new ZipReader(new BlobReader(datafiles[i]));
 
                 // get all entries from the zip
                 const entries = await reader.getEntries();
-                let progressMax = entries.length;
+                progressMax = entries.length;
 
-                let index = 0;
+
                 for (let entry of entries) {
                     progressBar.setValue(index / progressMax * 100);
                     //skip if is folder
