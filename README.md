@@ -48,7 +48,6 @@ Being in early development, there are some important features I have yet to add:
 	- Currently, the existing note is left untouched, and the new entry is not inserted.
 ## Excluded features
 Since this plugin started as a project for my own personal use, there are features present in [Diarium](https://diariumapp.com/) that I do *not* plan on including in this plugin:
-- The ability to import tracker data from [Diarium](https://diariumapp.com/).
 - The following views from [Diarium](https://diariumapp.com/):
 	- The **Timeline** view
 	- The **Map** view
@@ -123,7 +122,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 - Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
 	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
 	- If [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
-	- Importing tracker data is not currently supported. Feel free to create an [issue](https://github.com/Erallie/diarian/issues) if you'd like me to add support for it!
+	- Each tracker exported from [Diarium](https://diariumapp.com/) will be imported as an individual property.
 ## Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
 
