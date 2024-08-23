@@ -48,7 +48,6 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
         const isMiddleButton = evt.button === 1;
         let newLeaf = false;
         if (!plugin.settings.openInNewPane && !isMiddleButton) {
-
             const { workspace } = app;
 
             let leaf: WorkspaceLeaf | null;
