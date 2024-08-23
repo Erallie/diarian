@@ -477,8 +477,9 @@ export async function writeNote(date: any, content: string, format: string, alte
         await this.app.vault.create(newPath, content, { ctime: Number.parseInt(date.format('x')) });
         if (openNote) {
             const note = this.app.vault.getFileByPath(newPath);
-
-            void this.app.workspace.getLeaf(false).openFile(note);
+            if (plugin && app)
+                openDailyNote(note, plugin, app);
+            else printToConsole(logLevel.warn, `Cannot open ${note.name}!\nEither plugin or app is not defined!`);
         }
 
     }
