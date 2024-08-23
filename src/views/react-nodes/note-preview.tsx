@@ -1,6 +1,7 @@
-import { App, MarkdownRenderer, TFile, View, WorkspaceLeaf } from "obsidian";
+import { App, MarkdownRenderer, MarkdownView, TFile, View, WorkspaceLeaf } from "obsidian";
 import { Ref, useRef } from "react";
 import type Diarian from 'main';
+import { isDailyNote, getModifiedFolderAndFormat } from "src/get-daily-notes";
 
 interface Props {
     note: TFile;
@@ -50,12 +51,33 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
         if (!plugin.settings.openInNewPane && !isMiddleButton) {
             const { workspace } = app;
 
-            let leaf: WorkspaceLeaf | null;
+            let leaf: WorkspaceLeaf | null = null;
             const leaves = workspace.getLeavesOfType('markdown');
 
             if (leaves.length > 0) {
                 // A leaf with our view already exists, use that
-                leaf = leaves[0];
+                for (let i = 0; i < leaves.length; i++) {
+                    const file = (leaves[i].view as MarkdownView).file;
+                    if (file == note) {
+                        leaf = leaves[i];
+                        break;
+                    }
+                }
+
+                if (!leaf) {
+                    for (let i = 0; i < leaves.length; i++) {
+                        const file = (leaves[i].view as MarkdownView).file;
+                        const { folder, format } = getModifiedFolderAndFormat();
+                        if (file && isDailyNote(file, folder, format)) {
+                            leaf = leaves[i];
+                            break;
+                        }
+                    }
+                }
+
+                if (!leaf) {
+                    leaf = leaves[0];
+                }
 
                 workspace.revealLeaf(leaf!);
                 leaf.openFile(note);
