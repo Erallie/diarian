@@ -311,6 +311,12 @@ div.dot-container {
     margin-bottom: 1em;
 }
 
+.react-calendar__navigation__label__labelText {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .calendar-custom-buttons {
     /* display: flex; */
     height: 40px;
