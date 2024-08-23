@@ -31,7 +31,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
         if (ref.current) {
             // clear the element before rendering, otherwise it will append
-            ref.current.innerHTML = "";
+            ref.current.empty();
 
             await MarkdownRenderer.render(
                 app,
