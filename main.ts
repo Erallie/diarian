@@ -289,7 +289,7 @@ export default class Diarian extends Plugin {
 
         this.addCommand({ // Select view
             id: 'select-view',
-            name: 'Select Diarian view',
+            name: 'Select view',
             icon: 'lucide-book-heart',
             callback: () => {
                 this.openSelectView();
@@ -560,7 +560,7 @@ export default class Diarian extends Plugin {
                         this.openRatingView(this.ratingStatBar);
                 default:
                     const index = this.dailyNotes.findIndex((note) => {
-                        return (note == file as TFile);
+                        return (note == file);
                     });
                     switch (commandID) {
                         case 'next-note':
@@ -616,7 +616,8 @@ export default class Diarian extends Plugin {
                             .setTitle(title)
                             .setIcon(icon)
                             .onClick(() => {
-                                this.checkCallback(false, commandID, markdownView.file as TFile, folder, format);
+                                if (markdownView.file instanceof TFile)
+                                    this.checkCallback(false, commandID, markdownView.file, folder, format);
                             })
                     });
             }
