@@ -110,7 +110,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
     let unit = plugin.settings.reviewDelayUnit; */
 
     return (
-        <div>
+        <div className='note-preview-container' >
             {array.map(({ notes, moment, id }) => (
                 <TimeSpan key={id} notes={notes} thisMoment={moment} view={view} plugin={plugin} app={app} />
             ))}

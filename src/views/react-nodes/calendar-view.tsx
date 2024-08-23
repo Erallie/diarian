@@ -313,7 +313,9 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
                     </svg>
                     {/* {' '}Create new daily note */}</button>
             </div>
-            {showNotesNode}
+            <div className='note-preview-container'>
+                {showNotesNode}
+            </div>
         </div>
     )
 };

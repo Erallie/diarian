@@ -52,6 +52,11 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent-hover);
 }
 
+.note-preview-container {
+    padding-bottom: var(--size-4-1);
+    /* background-color: black; */
+}
+
 .note-preview:hover,
 .rating-status-bar:hover,
 .rating-show-settings-text:hover {
