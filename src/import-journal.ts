@@ -1,4 +1,4 @@
-import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown, WorkspaceLeaf, MarkdownView } from 'obsidian';
+import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown, ProgressBarComponent } from 'obsidian';
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarian from 'main';
 import { logLevel, printToConsole } from './constants';
@@ -199,17 +199,38 @@ export class ImportView extends Modal {
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
-        const errorTextEl = contentEl.createEl('div', { cls: 'setting-error'/*  bottom-modal-text' */ });
-        errorTextEl.empty();
+        /* const errorTextEl = contentEl.createEl('div', { cls: 'setting-error' });
+        errorTextEl.empty(); */
 
         const importTextEl = contentEl.createEl('div'/* , { cls: 'bottom-modal-text' } */);
         importTextEl.empty();
 
+        /* const progressBarDiv = contentEl.createEl('div');
+        progressBarDiv.empty(); */
+
         // use https://docs.obsidian.md/Reference/TypeScript+API/ProgressBarComponent instead of importTextEl
 
-        function setText(text: any, msg: string) {
-            text.empty();
-            text.createEl('span', { text: msg });
+        function setText(msg: string, cls?: string) {
+            importTextEl.empty();
+            let text = new DocumentFragment;
+            if (cls) {
+                const textArray = msg.split('\n');
+                for (let i = 0; i < textArray.length; i++) {
+                    text.createEl('span', { text: textArray[i], cls: cls })
+                    if (i != textArray.length - 1)
+                        text.createEl('br');
+                }
+            }
+            else {
+                const textArray = msg.split('\n');
+                for (let i = 0; i < textArray.length; i++) {
+                    text.createEl('span', { text: textArray[i] })
+                    if (i != textArray.length - 1)
+                        text.createEl('br');
+                }
+            }
+            new Setting(importTextEl)
+                .setName(text);
         }
 
         importButton.onclick = async () => {
@@ -218,13 +239,14 @@ export class ImportView extends Modal {
             if (datafiles === null || !datafiles.length) {
                 const errorText = 'No zip file has been selected.';
                 printToConsole(logLevel.error, errorText);
-                setText(errorTextEl, errorText);
+                setText(errorText, 'setting-error');
                 return;
             }
 
             const importText = 'Starting import...'
-            setText(importTextEl, importText);
+            setText(importText);
             printToConsole(logLevel.info, importText);
+            const progressBar = new ProgressBarComponent(contentEl).setValue(0);
 
             const mapViewProperty = getMapViewProperty();
 
@@ -236,8 +258,11 @@ export class ImportView extends Modal {
 
                 // get all entries from the zip
                 const entries = await reader.getEntries();
+                let progressMax = entries.length;
 
+                let index = 0;
                 for (let entry of entries) {
+                    progressBar.setValue(index / progressMax * 100);
                     //skip if is folder
                     if (entry.directory) continue;
 
@@ -262,13 +287,19 @@ export class ImportView extends Modal {
 
                     const data = JSON.parse(text);
                     if (data.date) {
-                        printToConsole(logLevel.log, 'Is separate entry');
+                        // printToConsole(logLevel.log, 'Is separate entry');
+                        progressMax = entries.length;
+                        index++;
+                        progressBar.setValue(index / progressMax * 100);
                         await createEntry(data, format, folder, mapViewProperty, this.plugin);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
                         const dataArray: Array<any> = JSON.parse(text);
+                        progressMax = entries.length + dataArray.length;
                         for (const data of dataArray) {
+                            index++;
+                            progressBar.setValue(index / progressMax * 100);
                             await createEntry(data, format, folder, mapViewProperty, this.plugin);
                         }
                         break;
@@ -277,6 +308,9 @@ export class ImportView extends Modal {
 
 
                 for (let entry of entries) {
+                    index++;
+                    progressBar.setValue(index / progressMax * 100);
+
                     //skip if is folder
                     if (entry.directory) continue;
 
@@ -359,7 +393,7 @@ export class ImportView extends Modal {
 
             let finishedText = 'Import finished!'
             if (Platform.isMobile) finishedText += '\nReopen your vault to access the imported files.';
-            setText(importTextEl, finishedText);
+            setText(finishedText);
             printToConsole(logLevel.info, finishedText);
 
 
