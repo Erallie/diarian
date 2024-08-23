@@ -1,4 +1,4 @@
-import { App, MarkdownRenderer, TFile, View } from "obsidian";
+import { App, MarkdownRenderer, TFile, View, WorkspaceLeaf } from "obsidian";
 import { Ref, useRef } from "react";
 import type Diarian from 'main';
 
@@ -46,10 +46,33 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
     const onClick = (evt: any) => {
         const isMiddleButton = evt.button === 1;
-        const newLeaf =
-            isMiddleButton || plugin.settings.openInNewPane;
+        let newLeaf = false;
+        if (!plugin.settings.openInNewPane && !isMiddleButton) {
 
-        void app.workspace.getLeaf(newLeaf).openFile(note);
+            const { workspace } = app;
+
+            let leaf: WorkspaceLeaf | null;
+            const leaves = workspace.getLeavesOfType('markdown');
+
+            if (leaves.length > 0) {
+                // A leaf with our view already exists, use that
+                leaf = leaves[0];
+
+                workspace.revealLeaf(leaf!);
+                leaf.openFile(note);
+            }
+            else {
+                // Our view could not be found in the workspace, create a new leaf
+
+                newLeaf = true;
+                void app.workspace.getLeaf(newLeaf).openFile(note);
+            }
+        }
+        else {
+            newLeaf = true;
+            void app.workspace.getLeaf(newLeaf).openFile(note);
+        }
+
     };
 
 
