@@ -517,6 +517,14 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     if (array.lunar && array.lunar != '') {
         frontmatter += `\nlunar phase: ${array.lunar}`
     }
+    if (array.tracker.length != 0) {
+        for (let string of array.tracker) {
+            const markdownString = htmlToMarkdown(string);
+            const key = markdownString.slice(0, markdownString.lastIndexOf(':'));
+            const value = markdownString.slice(markdownString.lastIndexOf(':'));
+            frontmatter += `\n"${key}"${value}`;
+        }
+    }
     frontmatter += '\n---';
     let body = '';
     if (array.heading != '') {
