@@ -67,8 +67,8 @@ export class ImportView extends Modal {
         else {
             const list5 = instrList.createEl('li', { text: 'Select ' });
             list5.createEl('strong', { text: 'Export → Save to Files' });
-            list5.createEl('span', { text: '  and save the zip file to any location.' });
-            instrList.createEl('li', { text: 'Import your saved zip file below.' });
+            list5.createEl('span', { text: '  and save the exported file to any location.' });
+            instrList.createEl('li', { text: 'Import your saved zip or json file below.' });
         }
         // instrList.createEl('li', { text: 'Decompress the exported zip file.' }); //Change this wording!
 
