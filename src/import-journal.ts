@@ -1,9 +1,10 @@
-import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown } from 'obsidian';
+import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown, WorkspaceLeaf, MarkdownView } from 'obsidian';
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
 import Diarian from 'main';
 import { logLevel, printToConsole } from './constants';
 import moment from 'moment';
 import { getModifiedFolderAndFormat } from './get-daily-notes';
+import { openDailyNote } from './views/react-nodes/note-preview';
 
 
 export class ImportView extends Modal {
@@ -405,7 +406,7 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
     await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder);
 }
 
-export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean) {
+export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean, plugin?: Diarian, app?: App) {
 
     /* if (!format || !folder) {
         let { format, folder }: moment.Moment = getDailyNoteSettings();
@@ -431,7 +432,11 @@ export async function writeNote(date: any, content: string, format: string, alte
     const fileExists = await this.app.vault.getFileByPath(newPath);
     //create new file
     if (fileExists) {
-        if (openNote) void this.app.workspace.getLeaf(false).openFile(fileExists);
+        if (openNote) {
+            if (plugin && app)
+                openDailyNote(fileExists, plugin, app);
+            else printToConsole(logLevel.warn, `Cannot open ${fileExists.name}!\nEither plugin or app is not defined!`);
+        }
         else return;
     }
     else {

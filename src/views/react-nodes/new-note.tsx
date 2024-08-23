@@ -32,6 +32,8 @@ export class NewDailyNote extends Modal {
 
         let dateString = this.dateString;
         let timeString = this.timeString;
+        const plugin = this.plugin;
+        const app = this.app;
 
         function createNote() {
             // printToConsole(logLevel.log, dateString + timeString);
@@ -39,7 +41,7 @@ export class NewDailyNote extends Modal {
 
             const { format, folder } = getModifiedFolderAndFormat();
 
-            writeNote(noteDate, '', format, folder, true);
+            writeNote(noteDate, '', format, folder, true, plugin, app);
             modal.close();
         }
 

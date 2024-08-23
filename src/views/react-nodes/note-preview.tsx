@@ -46,54 +46,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
 
     const onClick = (evt: any) => {
-        const isMiddleButton = evt.button === 1;
-        let newLeaf = false;
-        if (!plugin.settings.openInNewPane && !isMiddleButton) {
-            const { workspace } = app;
-
-            let leaf: WorkspaceLeaf | null = null;
-            const leaves = workspace.getLeavesOfType('markdown');
-
-            if (leaves.length > 0) {
-                // A leaf with our view already exists, use that
-                for (let i = 0; i < leaves.length; i++) {
-                    const file = (leaves[i].view as MarkdownView).file;
-                    if (file == note) {
-                        leaf = leaves[i];
-                        break;
-                    }
-                }
-
-                if (!leaf) {
-                    for (let i = 0; i < leaves.length; i++) {
-                        const file = (leaves[i].view as MarkdownView).file;
-                        const { folder, format } = getModifiedFolderAndFormat();
-                        if (file && isDailyNote(file, folder, format)) {
-                            leaf = leaves[i];
-                            break;
-                        }
-                    }
-                }
-
-                if (!leaf) {
-                    leaf = leaves[0];
-                }
-
-                workspace.revealLeaf(leaf!);
-                leaf.openFile(note);
-            }
-            else {
-                // Our view could not be found in the workspace, create a new leaf
-
-                newLeaf = true;
-                void app.workspace.getLeaf(newLeaf).openFile(note);
-            }
-        }
-        else {
-            newLeaf = true;
-            void app.workspace.getLeaf(newLeaf).openFile(note);
-        }
-
+        openDailyNote(note, plugin, app, evt);
     };
 
 
@@ -127,3 +80,56 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 };
 
 export default NotePreview;
+
+export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any) {
+
+    let isMiddleButton = false;
+    if (evt)
+        isMiddleButton = evt.button === 1;
+    const { workspace } = app;
+    // let newLeaf = false;
+    if (!plugin.settings.openInNewPane && !isMiddleButton) {
+
+        let leaf: WorkspaceLeaf | null = null;
+        const leaves = workspace.getLeavesOfType('markdown');
+
+        if (leaves.length > 0) {
+            // A leaf with our view already exists, use that
+            for (let i = 0; i < leaves.length; i++) {
+                const file = (leaves[i].view as MarkdownView).file;
+                if (file == note) {
+                    leaf = leaves[i];
+                    break;
+                }
+            }
+
+            if (!leaf) {
+                for (let i = 0; i < leaves.length; i++) {
+                    const file = (leaves[i].view as MarkdownView).file;
+                    const { folder, format } = getModifiedFolderAndFormat();
+                    if (file && isDailyNote(file, folder, format)) {
+                        leaf = leaves[i];
+                        break;
+                    }
+                }
+            }
+
+            if (!leaf) {
+                leaf = leaves[0];
+            }
+
+            workspace.revealLeaf(leaf!);
+            leaf!.openFile(note);
+        }
+        else {
+            // Our view could not be found in the workspace, create a new leaf
+
+            // newLeaf = false;
+            void workspace.getLeaf(false).openFile(note);
+        }
+    }
+    else {
+        // newLeaf = true;
+        void app.workspace.getLeaf(true).openFile(note);
+    }
+}
