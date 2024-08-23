@@ -313,10 +313,23 @@ div.dot-container {
 
 .calendar-custom-buttons {
     /* display: flex; */
-    height: 44px;
+    height: 40px;
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
+    /* text-align: center; */
+    position: relative;
+    width: 350px;
+    max-width: 100%;
+}
+
+.today-cal-button {
+    position: absolute;
+    left: 0;
+}
+
+.refresh-cal-button {
+    position: absolute;
+    right: 0;
 }
 
 /* .calendar-custom-buttons button {
