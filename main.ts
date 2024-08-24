@@ -712,7 +712,10 @@ export default class Diarian extends Plugin {
     }
 
     runInterval() {
-        if (moment().isSameOrAfter(moment(this.settings.notifInfo.reminderTime))) {
+        const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
+        if (mappedNotifType !== NotifType.modal)
+            clearInterval(this.reminderIntervalID);
+        else if (moment().isSameOrAfter(moment(this.settings.notifInfo.reminderTime))) {
             new Notification(this.app, this).open();
             clearInterval(this.reminderIntervalID);
         }
