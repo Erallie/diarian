@@ -1,5 +1,5 @@
 import { App, Modal, Setting, ButtonComponent } from 'obsidian';
-import { StrictMode } from "react";
+import { StrictMode, ReactElement } from "react";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'main';
 import type { EnhancedApp } from 'main';
@@ -69,14 +69,17 @@ export class Notification extends Modal {
                 i++
             }
 
-            const MappedOptions = () => options.map((option: any) =>
+            /* return options.map((option: any) =>
                 <option key={option.id} value={option.key}>
                     {option.value}
                 </option>
-            );
+            ); */
             return (
                 <>
-                    <MappedOptions />
+                    {options.map((option: any) =>
+                        <option key={option.id} value={option.key}>
+                            {option.value}
+                        </option>)}
                 </>
             )
         }
