@@ -447,12 +447,12 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         //#region Notification
         const revNotifTypeDesc = new DocumentFragment;
-        revNotifTypeDesc.textContent = 'The type of notification to receive when there are new notes from ';
+        revNotifTypeDesc.textContent = 'Receive a notification via this method when there are notes from ';
         revNotifTypeDesc.createEl('strong', { text: "On this day" });
         revNotifTypeDesc.createEl('span', { text: " to review." });
 
         new Setting(containerEl)
-            .setName('Notification type')
+            .setName('Notifications')
             .setDesc(revNotifTypeDesc)
             .addDropdown((dropdown) =>
                 dropdown
