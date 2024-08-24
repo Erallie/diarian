@@ -32,17 +32,22 @@ If your plugin does not need CSS, delete this file.
     font-style: var(--h3-style);
 } */
 
+div.modal:has(>.notification-buttons) {
+    padding: var(--size-4-5) var(--size-4-3);
+}
+
 div.notification-buttons {
-    display: block;
+    display: flex;
     width: 100%;
     margin-bottom: var(--size-2-3);
 }
 
 div.notification-buttons button,
 div.notification-buttons select {
-    /* flex-grow: 1; */
+    flex-shrink: 1;
     margin-right: var(--size-2-3);
     vertical-align: middle;
+    text-overflow: ellipsis;
 }
 
 button.notification-select-button {
