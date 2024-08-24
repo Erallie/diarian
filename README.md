@@ -121,7 +121,9 @@ Pop-up notifications will appear as a modal when you first open your vault.
 
 ![pop-up-notifications.png](./Attachments/pop-up-notifications.png#interface)
 
-If dismissed by selecting one of the listed options, pop-up notifications will not appear again that day unless you select **Remind me later**.
+If dismissed by selecting **Open on this day** or **Ignore**, pop-up notifications will not appear again that day.
+
+If **Remind me later** is selected, the notification will appear again after the chosen duration when your vault is open.
 ## Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
