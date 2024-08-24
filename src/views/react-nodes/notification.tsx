@@ -57,24 +57,6 @@ export class Notification extends Modal {
                 this.close();
             }); */
 
-        const ReminderChoices = () => {
-            let options = [];
-            let i = 0;
-            for (let [key, value] of Object.entries(ReminderDelay)) {
-                options[i] = {
-                    key: key,
-                    value: value,
-                    id: i
-                }
-                i++
-            }
-            return options.map((option: any) =>
-                <option key={option.id} value={option.key}>
-                    {option.value}
-                </option>
-            );
-        }
-
         function endReminder() {
             plugin.settings.notifInfo = {
                 lastNotified: moment(),
@@ -173,4 +155,22 @@ export class Notification extends Modal {
         const { contentEl } = this;
         contentEl.empty();
     }
+}
+
+const ReminderChoices = () => {
+    let options = [];
+    let i = 0;
+    for (let [key, value] of Object.entries(ReminderDelay)) {
+        options[i] = {
+            key: key,
+            value: value,
+            id: i
+        }
+        i++
+    }
+    return options.map((option: any) =>
+        <option key={option.id} value={option.key}>
+            {option.value}
+        </option>
+    );
 }

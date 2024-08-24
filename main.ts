@@ -8,7 +8,7 @@ import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderA
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { RatingView } from 'src/views/rating-view';
 import { SelectView } from 'src/views/select-view';
-import { Notification } from 'src/views/notification';
+import { Notification } from 'src/views/react-nodes/notification';
 
 
 export type EnhancedApp = App & {
