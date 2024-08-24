@@ -13,6 +13,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	1. [Calendar](#calendar)
 		1. [Editor navigation](#editor-navigation)
 	2. [On this day](#on-this-day)
+		1. [Notifications](#notifications)
 	3. [Importer](#importer)
 		1. [Importer notes](#importer-notes)
 	4. [Rating](#rating)
@@ -29,9 +30,11 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Create daily notes on any day from the calendar.
 	- Commands to navigate between daily notes.
 	- Display attached images on the tiles of days that include them.
-- An **On this day** review pane in the sidebar with the included settings:
-	- The interval between days to review (eg. every 3 months)
-	- How long ago to start including notes (eg. 6 months ago or earlier)
+- An **On this day** review pane in the sidebar.
+	- Specify in the settings:
+		- The interval between days to review (eg. every 3 months)
+		- How long ago to start including notes (eg. 6 months ago or earlier)
+	- Get notified when there are daily notes to review.
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
 - A rating for each daily note that displays in the status bar.
 - Insert a timestamp into the active note.
@@ -109,6 +112,16 @@ The interval between days to review (eg. every 3 months) and how long ago to sta
 Select a note preview to open it.
 
 ![note-preview-on-this-day](./Attachments/note-preview-on-this-day.png#interface)
+### Notifications
+You can optionally receive a notification when there are daily notes from **On this day** to review.
+
+To enable notifications, set **Settings → Diarian → On this day → Notifications** to either **Pop-up modal** or **Notice**.
+
+Pop-up notifications will appear as a modal when you first open your vault.
+
+![pop-up-notifications.png](./Attachments/pop-up-notifications.png#interface)
+
+If dismissed by selecting one of the listed options, pop-up notifications will not appear again that day unless you select **Remind me later**.
 ## Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
