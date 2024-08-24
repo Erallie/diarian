@@ -2,6 +2,7 @@ import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
 import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
+import moment from 'moment';
 
 
 //#region constants
@@ -68,6 +69,45 @@ const getMaxTimeSpan = (unit: Unit) => {
             return 100;
     }
 };
+
+export enum NotifType {
+    none = 'None',
+    modal = 'Pop-up modal',
+    notice = 'Notice'
+}
+
+export const notifTypeMap: { [key: string]: NotifType } = {
+    none: NotifType.none,
+    modal: NotifType.modal,
+    notice: NotifType.notice
+};
+
+export interface NotifInfo {
+    lastNotified: moment.Moment;
+    needToRemind: boolean;
+    reminderTime?: moment.Moment;
+}
+
+export const DEFAULT_NOTIF_INFO: NotifInfo = {
+    lastNotified: moment().subtract(1, 'day'),
+    needToRemind: false,
+}
+
+export enum ReminderDelay {
+    fiveMin = 'In 5 minutes',
+    tenMin = 'In 10 minutes',
+    thirtyMin = 'In 30 minutes',
+    oneHr = 'In 1 hour',
+    twoHr = 'In 2 hours'
+}
+
+export const reminderDelayMap: { [key: string]: ReminderDelay } = {
+    fiveMin: ReminderDelay.fiveMin,
+    tenMin: ReminderDelay.tenMin,
+    thirtyMin: ReminderDelay.thirtyMin,
+    oneHr: ReminderDelay.oneHr,
+    twoHr: ReminderDelay.twoHr
+};
 //#endregion
 
 //#region Setting defaults
@@ -83,13 +123,16 @@ export interface DiarianSettings {
     useCallout: boolean;
     showNoteTitle: boolean;
     useQuote: boolean;
-    onThisDayLoc: LeafType;
-    onThisDayStartup: boolean;
 
     reviewInterval: number;
     reviewIntervalUnit: Unit;
     reviewDelay: number;
     reviewDelayUnit: Unit;
+    revNotifType: NotifType;
+    notifInfo: NotifInfo;
+
+    onThisDayLoc: LeafType;
+    onThisDayStartup: boolean;
 
     dateStampFormat: string;
     timeStampFormat: string;
@@ -113,13 +156,16 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     useCallout: true,
     showNoteTitle: true,
     useQuote: true,
-    onThisDayLoc: 'right' as LeafType,
-    onThisDayStartup: false,
 
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
     reviewDelay: 6,
     reviewDelayUnit: Unit.month,
+    revNotifType: 'none' as NotifType,
+    notifInfo: DEFAULT_NOTIF_INFO,
+
+    onThisDayLoc: 'right' as LeafType,
+    onThisDayStartup: false,
 
     dateStampFormat: 'M/D/YYYY',
     timeStampFormat: 'h:mm A',
@@ -397,6 +443,27 @@ export class DiarianSettingTab extends PluginSettingTab {
                     }),
             );
 
+        //#endregion
+
+        //#region Notification
+        const revNotifTypeDesc = new DocumentFragment;
+        revNotifTypeDesc.textContent = 'The type of notification to receive when there are new notes from ';
+        revNotifTypeDesc.createEl('strong', { text: "On this day" });
+        revNotifTypeDesc.createEl('span', { text: " to review." });
+
+        new Setting(containerEl)
+            .setName('Notification type')
+            .setDesc(revNotifTypeDesc)
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(NotifType)
+                    .setValue(this.plugin.settings.revNotifType)
+                    .onChange((value) => {
+                        this.plugin.settings.revNotifType = value as NotifType;
+                        void this.plugin.saveSettings();
+                        // this.plugin.refreshViews(false, true);
+                        this.display();
+                    }));
         //#endregion
 
         //#region On this day location

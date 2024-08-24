@@ -8,26 +8,6 @@ If your plugin does not need CSS, delete this file.
 */
 
 
-
-.svg {
-    align-content: baseline;
-}
-
-.rating-show-settings-text {
-    font-size: var(--font-ui-smaller);
-    color: var(--text-faint);
-}
-
-.rating-show-settings-text svg {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.rating-show-settings-text span {
-    display: inline-block;
-    vertical-align: middle;
-}
-
 .setting-error {
     color: var(--text-error);
 }
@@ -42,6 +22,59 @@ If your plugin does not need CSS, delete this file.
 
 .text-faint {
     color: var(--text-faint);
+}
+
+/* .notification-text span {
+    font-size: var(--h3-size);
+    line-height: var(--h3-line-height);
+    font-family: var(--h3-font);
+    color: var(--h3-color);
+    font-style: var(--h3-style);
+} */
+
+div.notification-buttons {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--size-2-3);
+}
+
+div.notification-buttons button,
+div.notification-buttons select {
+    /* flex-grow: 1; */
+    margin-right: var(--size-2-3);
+    vertical-align: middle;
+}
+
+button.notification-select-button {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+/* div.notification-buttons select option {
+    padding: var(--size-2-2);
+} */
+
+/* div.notification-buttons button svg {
+    vertical-align: middle;
+} */
+
+/* .svg {
+    align-content: baseline;
+} */
+
+.rating-show-settings-text {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-faint);
+}
+
+.rating-show-settings-text svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rating-show-settings-text span {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .rating-status-bar:hover {

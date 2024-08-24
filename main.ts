@@ -1,13 +1,14 @@
-import { App, Editor, MarkdownView, moment, View, Plugin, TFile, WorkspaceLeaf, Menu, IconName, Platform } from 'obsidian';
+import { App, Editor, MarkdownView, moment, View, Plugin, TFile, WorkspaceLeaf, Menu, IconName, Platform, Notice } from 'obsidian';
 import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
-import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap } from 'src/settings';
-import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat } from 'src/get-daily-notes';
+import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType } from 'src/settings';
+import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat, getPriorNotes } from 'src/get-daily-notes';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { RatingView } from 'src/views/rating-view';
 import { SelectView } from 'src/views/select-view';
+import { Notification } from 'src/views/notification';
 
 
 export type EnhancedApp = App & {
@@ -23,6 +24,7 @@ export default class Diarian extends Plugin {
     defaultRating: number;
     defMaxRating: number;
     ratingStatBar: HTMLElement;
+    reminderIntervalID: number;
 
     async onload() {
         await this.loadSettings();
@@ -94,6 +96,7 @@ export default class Diarian extends Plugin {
             if (this.settings.calStartup)
                 enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
 
+            this.openNotif();
         });
 
         //#region Add rating status bar
@@ -345,13 +348,13 @@ export default class Diarian extends Plugin {
                             enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
                         })
                 });
-                this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star', enhancedApp);
+                this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star');
 
                 menu.addSeparator();
 
-                this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp);
-                this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp);
-                this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp);
+                this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search');
+                this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left');
+                this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right');
 
                 menu.addSeparator();
 
@@ -361,18 +364,17 @@ export default class Diarian extends Plugin {
 
         this.registerEvent( //on file menu
             this.app.workspace.on('file-menu', (menu, file, source) => {
-                const enhancedApp = this.app as EnhancedApp;
 
                 if (file instanceof TFile) {
                     menu.addSeparator();
 
-                    this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', enhancedApp, file);
-                    this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', enhancedApp, file);
-                    this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', enhancedApp, file);
+                    this.addMenuItem(menu, 'show-in-calendar', 'Show daily note in calendar', 'lucide-calendar-search', file);
+                    this.addMenuItem(menu, 'previous-note', 'Go to previous daily note', 'lucide-chevrons-left', file);
+                    this.addMenuItem(menu, 'next-note', 'Go to next daily note', 'lucide-chevrons-right', file);
 
                     menu.addSeparator();
 
-                    this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star', enhancedApp);
+                    this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star');
 
                     menu.addSeparator();
                 }
@@ -393,6 +395,7 @@ export default class Diarian extends Plugin {
 
     async saveSettings() {
         await this.saveData(this.settings);
+        // printToConsole(logLevel.log, 'settings saved');
     }
 
     onFileOpen(ratingStatBar: HTMLElement, file: TFile | null) {
@@ -590,7 +593,7 @@ export default class Diarian extends Plugin {
         else if (checking) return false;
     }
 
-    addMenuItem(menu: Menu, commandID: string, title: string, icon: IconName, enhancedApp: EnhancedApp, file?: TFile) {
+    addMenuItem(menu: Menu, commandID: string, title: string, icon: IconName, file?: TFile) {
         let isAvailable = false;
         const { folder, format }: any = getModifiedFolderAndFormat();
         if (file) {
@@ -654,4 +657,64 @@ export default class Diarian extends Plugin {
             return momentA.diff(momentB);
         });
     }
-}
+
+    openNotif() {
+        const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
+        switch (mappedNotifType) {
+            case NotifType.none:
+                break;
+            case NotifType.modal:
+                const notifInfo = this.settings.notifInfo;
+                if (isSameDay(moment(), moment(notifInfo.lastNotified)) == false || (notifInfo.needToRemind && moment().isSameOrAfter(moment(notifInfo.reminderTime)))) {
+                    const priorNotes = getPriorNotes(this.dailyNotes, this);
+                    if (priorNotes && priorNotes.length > 0) {
+                        new Notification(this.app, this).open();
+                    }
+                    else {
+                        this.settings.notifInfo = {
+                            lastNotified: moment(),
+                            needToRemind: false
+                        }
+                        this.saveSettings();
+                    }
+                }
+                else if (notifInfo.needToRemind) {
+                    this.setReminder();
+                }
+                break;
+            case NotifType.notice:
+                const priorNotes = getPriorNotes(this.dailyNotes, this);
+                if (priorNotes && priorNotes.length > 0) {
+                    const notice = new DocumentFragment;
+                    const noticeSpan = notice.createSpan()
+                    noticeSpan.textContent = 'You have daily notes from on this day!';
+                    noticeSpan.createEl('br');
+                    if (Platform.isDesktop)
+                        noticeSpan.createEl('span', { text: 'Click to view them!' });
+                    else if (Platform.isMobile)
+                        noticeSpan.createEl('span', { text: 'Tap to view them!' });
+                    noticeSpan.onClickEvent((ev) => {
+                        const enhancedApp = this.app as EnhancedApp;
+                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                    });
+                    new Notice(notice, 15 * 1000); //Notice stays visible for 15 seconds
+                }
+                break;
+            default:
+                printToConsole(logLevel.warn, `Cannot set notification:\n"${this.settings.revNotifType}" is not a valid notification type!`);
+        }
+
+    }
+
+    setReminder() {
+        this.reminderIntervalID = window.setInterval(() => this.runInterval(), 60 * 1000); //Interval for every 1 minute
+        this.registerInterval(this.reminderIntervalID);
+    }
+
+    runInterval() {
+        if (moment().isSameOrAfter(moment(this.settings.notifInfo.reminderTime))) {
+            new Notification(this.app, this).open();
+            clearInterval(this.reminderIntervalID);
+        }
+    }
+}//
