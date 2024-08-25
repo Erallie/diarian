@@ -13,12 +13,19 @@ export function getDailyNoteSettings() {
         // const { internalPlugins } = <any>window.app;
         const { internalPlugins } = this.app;
 
-        const { folder, format } =
+        const { folder, format, template } =
             internalPlugins.getPluginById("daily-notes")?.instance?.options || {};
+
+
+        const templateFolder =
+            internalPlugins.getPluginById("templates")?.instance?.options.folder || null;
+
         // console.log("Daily note settings found.\n\tformat = " + format);
         return {
             format: format,
             folder: folder?.trim() || "",
+            defaultTemplate: template?.trim() || "",
+            templateFolder: templateFolder || ""
         };
     } catch (err) {
         const errorText = "No custom daily note settings found!"
@@ -26,6 +33,8 @@ export function getDailyNoteSettings() {
         return {
             format: 'YYYY-MM-DD',
             folder: '',
+            defaultTemplate: "",
+            templateFolder: ""
         };
     }
 }
