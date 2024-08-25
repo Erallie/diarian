@@ -18,7 +18,7 @@ export const TimeSpan = ({ notes, thisMoment, /* wrapper, */ view, plugin, app }
     // printToConsole(logLevel.log, thisMoment.toString());
 
 
-    const now = moment().hour(0).minute(0).second(0).millisecond(0);
+    const now = moment().endOf('day');
 
     if (!notes.length) {
         return null;
@@ -28,7 +28,7 @@ export const TimeSpan = ({ notes, thisMoment, /* wrapper, */ view, plugin, app }
         <>
             <h2>{
                 getTimeSpanTitle(
-                    now.diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff) + 1,
+                    now.diff(thisMoment, (unit + 's') as moment.unitOfTime.Diff)/*  + 1 */,
                     unit
                 )
             } ago</h2>

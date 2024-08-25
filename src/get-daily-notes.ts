@@ -123,7 +123,7 @@ export function isSameDay(date1: moment.Moment, date2: moment.Moment) {
 }
 
 export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
-    const now = moment().hour(0).minute(0).second(0).millisecond(0);
+    const now = moment().endOf('day');
 
     // printToConsole(logLevel.log, now.format('MMMM Do, YYYY [at] h:mm:ss.SSS A'));
     const reviewInterval = plugin.settings.reviewInterval;
@@ -136,7 +136,7 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
 
     for (let note of allNotes) {
         const noteDate = getMoment(note, folder, format);
-        const delayDiff = now.diff(noteDate, delayUnit, true) + 1;
+        const delayDiff = now.diff(noteDate, delayUnit, true)/*  + 1 */;
         //this might make it so that you need to be past the time of day for the note too. Consider making all .diff references rounded.
         const isInRange = delayDiff >= plugin.settings.reviewDelay;
 
@@ -145,22 +145,22 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
 
         switch (plugin.settings.reviewIntervalUnit) {
             case Unit.day:
-                intervalDiff = now.diff(noteDate, 'days') + 1;
+                intervalDiff = now.diff(noteDate, 'days')/*  + 1 */;
                 isMatch = (intervalDiff % reviewInterval == 0);
                 break;
             case Unit.week:
                 // intervalUnit = 'weeks';
-                intervalDiff = now.diff(noteDate, 'weeks') + 1;
+                intervalDiff = now.diff(noteDate, 'weeks')/*  + 1 */;
                 isMatch = (intervalDiff % reviewInterval == 0) && now.day() == noteDate.day();
                 break;
             case Unit.month:
                 // intervalUnit = 'months';
-                intervalDiff = now.diff(noteDate, 'months') + 1;
+                intervalDiff = now.diff(noteDate, 'months')/*  + 1 */;
                 isMatch = (intervalDiff % reviewInterval == 0) && now.date() == noteDate.date();
                 break;
             case Unit.year:
                 // intervalUnit = 'years';
-                intervalDiff = now.diff(noteDate, 'years') + 1;
+                intervalDiff = now.diff(noteDate, 'years')/*  + 1 */;
                 isMatch = (intervalDiff % reviewInterval == 0) && now.month() == noteDate.month() && now.date() == noteDate.date();
                 break;
             default:
