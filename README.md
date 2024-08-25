@@ -40,6 +40,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Get notified when there are daily notes to review.
 - Import a pre-existing journal from [Diarium](https://diariumapp.com/).
 - A rating for each daily note that displays in the status bar.
+	- Customize the Unicode characters or emojis used for the rating.
 - Insert a timestamp into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports multiple notes per day.
