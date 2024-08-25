@@ -689,7 +689,7 @@ export default class Diarian extends Plugin {
                     const noticeSpan = notice.createSpan()
                     noticeSpan.textContent = 'You have daily notes from on this day!';
                     noticeSpan.createEl('br');
-                    let noticeClick;
+                    let noticeClick: HTMLSpanElement;
                     if (Platform.isDesktop) {
                         noticeClick = noticeSpan.createEl('span', { text: 'Click here to view them!', cls: 'link' });
                         // noticeSpan.createEl('br');
