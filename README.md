@@ -14,9 +14,12 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 		1. [Editor navigation](#editor-navigation)
 	2. [On this day](#on-this-day)
 		1. [Notifications](#notifications)
+			1. [Pop-up modals](#pop-up-modals)
+			2. [Notices](#notices)
 	3. [Importer](#importer)
 		1. [Importer notes](#importer-notes)
 	4. [Rating](#rating)
+		1. [Customization](#customization)
 	5. [Timestamp](#timestamp)
 	6. [Multiple/nested daily notes](#multiplenested-daily-notes)
 3. [Installation](#installation)
@@ -116,7 +119,7 @@ Select a note preview to open it.
 You can optionally receive a notification when there are daily notes from **On this day** to review.
 
 To enable notifications, set **Settings → Diarian → On this day → Notifications** to either **Pop-up modal** or **Notice**.
-
+#### Pop-up modals
 Pop-up notifications will appear as a modal when you first open your vault.
 
 ![pop-up-notifications.png](./Attachments/pop-up-notifications.png#interface)
@@ -124,6 +127,14 @@ Pop-up notifications will appear as a modal when you first open your vault.
 If dismissed by selecting **Open on this day** or **Ignore**, pop-up notifications will not appear again that day.
 
 If **Remind me later** is selected, the notification will appear again after the chosen duration when your vault is open.
+#### Notices
+Notice notifications will appear when you first open your vault.
+
+![notice-notifications.png](./Attachments/notice-notifications.png#interface)
+
+Notices will remain onscreen until selected.
+- Select the link to open the **On this day** view.
+- Click or tap elsewhere on the notice to dismiss the notice.
 ## Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
@@ -154,6 +165,16 @@ To set a rating, do one of the following things:
 A modal will then open that will allow you to set the rating as you like.
 
 ![rating-modal](./Attachments/rating-modal.png#interface)
+### Customization
+Under **Settings → Diarian → Rating**, you can set the **Filled rating item** and the **Empty rating item** to any Unicode character or emoji you like.
+
+For example, here are some hearts:
+
+![rating-heart-example](./Attachments/rating-heart-example.png#interface)
+
+And here is some food:
+
+![rating-pizza-example](./Attachments/rating-pizza-example.png#interface)
 ## Timestamp
 To insert a timestamp, do one of the following:
 - Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
