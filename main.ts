@@ -689,11 +689,18 @@ export default class Diarian extends Plugin {
                     const noticeSpan = notice.createSpan()
                     noticeSpan.textContent = 'You have daily notes from on this day!';
                     noticeSpan.createEl('br');
-                    if (Platform.isDesktop)
-                        noticeSpan.createEl('span', { text: 'Click to view them!' });
-                    else if (Platform.isMobile)
-                        noticeSpan.createEl('span', { text: 'Tap to view them!' });
-                    noticeSpan.onClickEvent((ev) => {
+                    let noticeClick;
+                    if (Platform.isDesktop) {
+                        noticeClick = noticeSpan.createEl('span', { text: 'Click here to view them!', cls: 'link' });
+                        // noticeSpan.createEl('br');
+                        // noticeSpan.createEl('span', { text: 'Click elsewhere to dismiss.' });
+                    }
+                    else if (Platform.isMobile) {
+                        noticeClick = noticeSpan.createEl('span', { text: 'Tap here to view them!', cls: 'link' });
+                        // noticeSpan.createEl('br');
+                        // noticeSpan.createEl('span', { text: 'Tap elsewhere to dismiss.' });
+                    }
+                    noticeClick!.onClickEvent((ev) => {
                         const enhancedApp = this.app as EnhancedApp;
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
                     });

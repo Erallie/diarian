@@ -16,6 +16,21 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-accent)
 }
 
+.link {
+    color: var(--link-color);
+    text-decoration: var(--link-decoration);
+    text-decoration-thickness: var(--link-decoration-thickness);
+    font-weight: var(--link-weight);
+}
+
+.link:hover {
+    color: var(--link-color-hover);
+    text-decoration: var(--link-decoration-hover);
+    text-decoration-thickness: var(--link-decoration-thickness);
+    font-weight: var(--link-weight);
+    cursor: pointer;
+}
+
 .text-muted {
     color: var(--text-muted);
 }
