@@ -34,7 +34,8 @@ If your plugin does not need CSS, delete this file.
 
 div.modal:has(>.notification-buttons) {
     padding: var(--size-4-5) var(--size-4-3);
-    /* max-width: var(--modal-max-width); */
+    width: var(--modal-community-sidebar-width);
+    max-width: var(--modal-max-width-narrow);
 }
 
 div.notification-buttons {
@@ -45,16 +46,22 @@ div.notification-buttons {
 
 div.notification-buttons button,
 div.notification-buttons select {
-    flex-shrink: 1;
-    margin-right: var(--size-2-3);
+    flex-grow: 1;
     vertical-align: middle;
     text-overflow: ellipsis;
+}
+
+div.notification-buttons button {
+    margin-right: var(--size-2-3);
 }
 
 
 button.notification-select-button {
     background-color: var(--interactive-accent);
     color: var(--text-on-accent);
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    margin-bottom: var(--size-4-2);
 }
 
 /* div.notification-buttons select option {

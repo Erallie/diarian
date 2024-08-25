@@ -134,23 +134,23 @@ export class Notification extends Modal {
 
         this.root.render(
             <StrictMode>
-                <h2>You have notes from on this day!</h2>
+                <h2>You have notes<br />from on this day!</h2>
+                <button className='notification-select-button' onClick={openOnThisDay}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={18}
+                        height={18}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-external-link"
+                    >
+                        <path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                    </svg>Open on this day</button>
                 <div className='notification-buttons'>
-                    <button className='notification-select-button' onClick={openOnThisDay}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={18}
-                            height={18}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-external-link"
-                        >
-                            <path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                        </svg>Open on this day</button>
                     <button onClick={endReminder}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
