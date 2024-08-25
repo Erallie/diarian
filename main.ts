@@ -704,7 +704,7 @@ export default class Diarian extends Plugin {
                         const enhancedApp = this.app as EnhancedApp;
                         enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
                     });
-                    new Notice(notice, 15 * 1000); //Notice stays visible for 15 seconds
+                    new Notice(notice, 0);
                 }
                 break;
             default:
