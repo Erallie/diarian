@@ -352,7 +352,7 @@ div.dot-container {
 .calendar-custom-buttons button {
     /* margin: 0.1rem 0.2rem; */
     /* border: none; */
-    border: calc(var(--size-2-1) / 2) solid var(--background-modifier-border);
+    border: calc(var(--size-2-1) / 1.5) solid var(--background-primary);
     border-radius: 0;
     box-shadow: none;
     /* width: calc(100% - 0.1rem); */
@@ -363,24 +363,24 @@ div.dot-container {
 }
 
 .react-calendar button.react-calendar__tile:first-child {
-    border-top-left-radius: var(--radius-m);
+    border-top-left-radius: var(--radius-s);
 }
 
 .react-calendar button:last-child {
-    border-bottom-right-radius: var(--radius-m);
+    border-bottom-right-radius: var(--radius-s);
 }
 
 .react-calendar__navigation button:first-child,
 .react-calendar button.react-calendar__tile:nth-last-of-type(7) {
-    border-bottom-left-radius: var(--radius-m);
+    border-bottom-left-radius: var(--radius-s);
 }
 
 .react-calendar button.react-calendar__tile:nth-of-type(7) {
-    border-top-right-radius: var(--radius-m);
+    border-top-right-radius: var(--radius-s);
 }
 
 .calendar-custom-buttons button {
-    border-radius: var(--radius-m) var(--radius-m) 0 0;
+    border-radius: var(--radius-s) var(--radius-s) 0 0;
 }
 
 .react-calendar button:enabled:hover,
@@ -428,7 +428,7 @@ div.dot-container {
 .react-calendar__navigation button,
 .calendar-custom-buttons button {
     min-width: 44px;
-    background-color: var(--background-secondary);
+    background-color: var(--interactive-normal);
     /* margin: 0.05rem 0.1rem; */
 }
 
@@ -441,7 +441,7 @@ div.dot-container {
 .react-calendar__navigation button:enabled:focus,
 .calendar-custom-buttons button:enabled:hover,
 .calendar-custom-buttons button:enabled:focus {
-    background-color: var(--background-modifier-hover);
+    background-color: var(--interactive-hover);
 }
 
 /* .react-calendar__month-view--weekNumbers */
@@ -499,7 +499,7 @@ button.react-calendar__tile,
     max-width: 100%;
     padding: 10px 6.6667px;
     /* background: none; */
-    background-color: var(--background-secondary);
+    background-color: var(--interactive-normal);
     text-align: center;
     line-height: 16px;
     font: inherit;
@@ -520,7 +520,7 @@ button.react-calendar__tile:disabled {
 
 button.react-calendar__tile:enabled:hover,
 button.react-calendar__tile:enabled:focus {
-    background-color: var(--background-modifier-hover);
+    background-color: var(--interactive-hover);
 }
 
 button.filled-date {
