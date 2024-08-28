@@ -428,7 +428,7 @@ div.dot-container {
 .react-calendar__navigation button,
 .calendar-custom-buttons button {
     min-width: 44px;
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-secondary);
     /* margin: 0.05rem 0.1rem; */
 }
 
@@ -441,7 +441,7 @@ div.dot-container {
 .react-calendar__navigation button:enabled:focus,
 .calendar-custom-buttons button:enabled:hover,
 .calendar-custom-buttons button:enabled:focus {
-    background-color: var(--background-modifier-active-hover);
+    background-color: var(--background-modifier-hover);
 }
 
 /* .react-calendar__month-view--weekNumbers */
@@ -499,7 +499,7 @@ button.react-calendar__tile,
     max-width: 100%;
     padding: 10px 6.6667px;
     /* background: none; */
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-secondary);
     text-align: center;
     line-height: 16px;
     font: inherit;
@@ -520,7 +520,7 @@ button.react-calendar__tile:disabled {
 
 button.react-calendar__tile:enabled:hover,
 button.react-calendar__tile:enabled:focus {
-    background-color: var(--background-modifier-active-hover);
+    background-color: var(--background-modifier-hover);
 }
 
 button.filled-date {
