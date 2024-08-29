@@ -20,12 +20,17 @@ export function getDailyNoteSettings() {
         const templateFolder =
             internalPlugins.getPluginById("templates")?.instance?.options.folder || null;
 
+        const { dateFormat, timeFormat } =
+            internalPlugins.getPluginById("templates")?.instance?.options || {};
+
         // console.log("Daily note settings found.\n\tformat = " + format);
         return {
-            format: format,
+            format: format || "YYYY-MM-DD",
             folder: folder?.trim() || "",
             defaultTemplate: template?.trim() || "",
-            templateFolder: templateFolder || ""
+            templateFolder: templateFolder || "",
+            dateFormat: dateFormat || "YYYY-MM-DD",
+            timeFormat: timeFormat || "HH:mm"
         };
     } catch (err) {
         const errorText = "No custom daily note settings found!"
@@ -34,7 +39,9 @@ export function getDailyNoteSettings() {
             format: 'YYYY-MM-DD',
             folder: '',
             defaultTemplate: "",
-            templateFolder: ""
+            templateFolder: "",
+            dateFormat: "YYYY-MM-DD",
+            timeFormat: "HH:mm"
         };
     }
 }
