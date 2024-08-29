@@ -76,22 +76,22 @@ Feel free to create an [issue](https://github.com/Erallie/diarian/issues) if you
 ## Calendar
 Access the **Calendar** view from the context menu that opens after clicking the **ribbon icon**.
 
-![open-calendar](./Attachments/open-calendar.png#interface)
+![open-calendar](Attachments/open-calendar.png#interface)
 
 The **Calendar** view displays all your daily notes in a calendar layout.
 
-![calendar-view](./Attachments/calendar-view.png#interface)
+![calendar-view](Attachments/calendar-view.png#interface)
 
 - The number of **dots** ( • ) on a tile represents how many daily notes you have written that day.
 - If you have images attached, the first image you attached that day will show up on the tile of that day.
 
-Select the **plus button** ( ![plus button](./Attachments/icons/lucide-plus.svg#icon) ) to create a new note on that day.
+Select the **plus button** ( ![plus button](Attachments/icons/lucide-plus.svg#icon) ) to create a new note on that day.
 
-![new-note-calendar](./Attachments/new-note-calendar.png#interface)
+![new-note-calendar](Attachments/new-note-calendar.png#interface)
 
 Select a note preview to open it.
 
-![note-preview-calendar](./Attachments/note-preview-calendar.png#interface)
+![note-preview-calendar](Attachments/note-preview-calendar.png#interface)
 
 ### Editor navigation
 You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
@@ -101,21 +101,21 @@ You can navigate between daily notes from the editor by using the following comm
 
 These commands can also be accessed from the file and editor context menus.
 
-![calendar-navigation](./Attachments/calendar-navigation.png#interface)
+![calendar-navigation](Attachments/calendar-navigation.png#interface)
 ## On this day
 Access the **On this day** view from the context menu that opens after clicking the **ribbon icon**.
 
-![open-on-this-day](./Attachments/open-on-this-day.png#interface)
+![open-on-this-day](Attachments/open-on-this-day.png#interface)
 
 The **On this day** view displays notes written on previous days.
 
-![on-this-day-view](./Attachments/on-this-day-view.png#interface)
+![on-this-day-view](Attachments/on-this-day-view.png#interface)
 
 The interval between days to review (eg. every 3 months) and how long ago to start including notes (eg. 6 months ago or earlier) can be adjusted under **Settings → Diarian → On this day**.
 
 Select a note preview to open it.
 
-![note-preview-on-this-day](./Attachments/note-preview-on-this-day.png#interface)
+![note-preview-on-this-day](Attachments/note-preview-on-this-day.png#interface)
 ### Notifications
 You can optionally receive a notification when there are daily notes from **On this day** to review.
 
@@ -123,7 +123,7 @@ To enable notifications, set **Settings → Diarian → On this day → Notifica
 #### Pop-up modals
 Pop-up notifications will appear as a modal when you first open your vault.
 
-![pop-up-notifications.png](./Attachments/pop-up-notifications.png#interface)
+![pop-up-notifications.png](Attachments/pop-up-notifications.png#interface)
 
 If dismissed by selecting **Open on this day** or **Ignore**, pop-up notifications will not appear again that day.
 
@@ -131,7 +131,7 @@ If **Remind me later** is selected, the notification will appear again after the
 #### Notices
 Notice notifications will appear when you first open your vault.
 
-![notice-notifications.png](./Attachments/notice-notifications.png#interface)
+![notice-notifications.png](Attachments/notice-notifications.png#interface)
 
 Notices will remain onscreen until selected.
 - Select the link to open the **On this day** view.
@@ -139,7 +139,7 @@ Notices will remain onscreen until selected.
 ## Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
-![open-importer](./Attachments/open-importer.png#interface)
+![open-importer](Attachments/open-importer.png#interface)
 
 The **Importer** allows you to import a pre-existing journal from [Diarium](https://diariumapp.com/):
 1. Follow the instructions onscreen to export your [Diarium](https://diariumapp.com/) journal to your local files.
@@ -153,7 +153,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 ## Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
 
-![rating-status-bar](./Attachments/rating-status-bar.png#interface)
+![rating-status-bar](Attachments/rating-status-bar.png#interface)
 
 The status bar reads the note properties to determine the rating. If no rating has been set, the status bar will display an empty rating.
 
@@ -161,26 +161,26 @@ To set a rating, do one of the following things:
 - Click the rating in the status bar (on desktop).
 - Perform the **Diarian: Insert rating** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
 - Select **Insert rating** from the file context menu or the editor context menu.
-    ![rating-context-menu](./Attachments/rating-context-menu.png#interface)
+    ![rating-context-menu](Attachments/rating-context-menu.png#interface)
 
 A modal will then open that will allow you to set the rating as you like.
 
-![rating-modal](./Attachments/rating-modal.png#interface)
+![rating-modal](Attachments/rating-modal.png#interface)
 ### Customization
 Under **Settings → Diarian → Rating**, you can set the **Filled rating item** and the **Empty rating item** to any Unicode character or emoji you like.
 
 For example, here are some hearts:
 
-![rating-heart-example](./Attachments/rating-heart-example.png#interface)
+![rating-heart-example](Attachments/rating-heart-example.png#interface)
 
 And here is some food:
 
-![rating-pizza-example](./Attachments/rating-pizza-example.png#interface)
+![rating-pizza-example](Attachments/rating-pizza-example.png#interface)
 ## Timestamp
 To insert a timestamp, do one of the following:
 - Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
 - Select **Insert timestamp** from the editor context menu.
-    ![timestamp-context-menu](./Attachments/timestamp-context-menu.png#interface)
+    ![timestamp-context-menu](Attachments/timestamp-context-menu.png#interface)
 
 If the active note is from the current day, only the time will be inserted in the timestamp. Otherwise, both the date and the time will be inserted.
 ## Multiple/nested daily notes
