@@ -63,8 +63,11 @@ export class NewDailyNote extends Modal {
 
         let templates: any = [];
 
+        const { defaultTemplate, templateFolder } = getDailyNoteSettings();
+
+        let templateValue = "none";
+
         const TemplateChoices = () => {
-            let { defaultTemplate, templateFolder } = getDailyNoteSettings();
             // printToConsole(logLevel.log, defaultTemplate);
             let i = 0;
 
@@ -106,10 +109,9 @@ export class NewDailyNote extends Modal {
                     getTemplates(folder);
             }
 
-
-
             if (templates) {
-                if (hasDefault)
+                if (hasDefault) {
+                    templateValue = "0";
                     return (
                         <>
                             {templates.map((option: any) =>
@@ -118,6 +120,7 @@ export class NewDailyNote extends Modal {
                                 </option>)}
                         </>
                     )
+                }
                 else return (
                     <>
                         <option value="none">None</option>
@@ -133,6 +136,12 @@ export class NewDailyNote extends Modal {
             </>
             )
         }
+        // const [templateIndex, setTemplateIndex] = useState(0);
+
+        function setTemplate(event: React.ChangeEvent<HTMLSelectElement>) {
+            templateValue = event.target.value;
+            // printToConsole(logLevel.log, templateValue);
+        }
 
         this.root.render(
             <StrictMode>
@@ -146,8 +155,8 @@ export class NewDailyNote extends Modal {
                     <input id='time' className='new-note-input' type="time" onChange={setTime} defaultValue={timeString} />
                 </div>
                 <div className="new-note-div">
-                    <label htmlFor='template' className='new=note-label'>Starting template</label>
-                    <select className="dropdown" /* onChange={ } */>
+                    <label htmlFor='template' className='new-note-label'>Template</label>
+                    <select id='template' className="new-note-input dropdown" onChange={setTemplate}>
                         <TemplateChoices />
                     </select>
                 </div>
