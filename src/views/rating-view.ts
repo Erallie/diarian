@@ -29,12 +29,6 @@ export class RatingView extends Modal {
         const { contentEl } = this;
         new Setting(contentEl).setName('How are you feeling right now?').setHeading();
 
-        const enhancedApp = this.app as EnhancedApp;
-        // contentEl.setText('Open view');
-
-        // contentEl.createEl('br');
-
-
         const rating = contentEl.createEl('p', { cls: 'rating' });
         rating.id = 'rating';
 
