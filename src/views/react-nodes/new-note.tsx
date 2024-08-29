@@ -41,16 +41,6 @@ export class NewDailyNote extends Modal {
         const plugin = this.plugin;
         const app = this.app;
 
-        function createNote() {
-            // printToConsole(logLevel.log, dateString + timeString);
-            const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
-
-            const { format, folder } = getModifiedFolderAndFormat();
-
-            writeNote(noteDate, '', format, folder, true, plugin, app);
-            modal.close();
-        }
-
         function setDate(event: React.ChangeEvent<HTMLInputElement>) {
             dateString = event.target.value;
             // printToConsole(logLevel.log, dateString);
@@ -142,6 +132,54 @@ export class NewDailyNote extends Modal {
             templateValue = event.target.value;
             // printToConsole(logLevel.log, templateValue);
         }
+
+
+        async function createNote() {
+            // printToConsole(logLevel.log, dateString + timeString);
+            const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
+
+            const { format, folder } = getModifiedFolderAndFormat();
+
+            let content = '';
+
+            async function addTemplate(index: number) {
+                await app.vault.cachedRead(templates[index].file).then((data) => {
+                    const { dateFormat, timeFormat } = getDailyNoteSettings();
+                    content = data.replaceAll("{{date}}", noteDate.format(dateFormat));
+                    content = content.replaceAll('{{time}}', noteDate.format(timeFormat));
+
+                    let dateMatch;
+                    while ((dateMatch = /{{date:(((?!}}).)+)}}/g.exec(content)) !== null) {
+                        content = content.replace(dateMatch[0], noteDate.format(dateMatch[1]));
+                    }
+
+                    let timeMatch;
+                    while ((timeMatch = /{{time:(((?!}}).)+)}}/g.exec(content)) !== null) {
+                        content = content.replace(timeMatch[0], noteDate.format(timeMatch[1]));
+                    }
+                })
+            }
+
+            switch (templateValue) {
+                case "none":
+                    content = "";
+                    break;
+                case "0":
+                    await addTemplate(0)
+                    break;
+                default:
+                    const index = Number.parseInt(templateValue);
+                    if (!index) {
+                        printToConsole(logLevel.error, 'Cannot create new note:\nThe templateIndex is not properly defined!')
+                        return;
+                    }
+                    await addTemplate(index);
+            }
+
+            writeNote(noteDate, content, format, folder, true, plugin, app);
+            modal.close();
+        }
+
 
         this.root.render(
             <StrictMode>
