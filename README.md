@@ -64,7 +64,7 @@ Since this plugin started as a project for my own personal use, there are featur
 	- It depends on the feasibility of implementation.
 	- The [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
-	- For those features, I suggest plugins from the [Obsidian Marketplace](https://obsidian.md/plugins?search=password) like [Protected Note](https://obsidian.md/plugins?id=protected-note), [Password Protection](https://obsidian.md/plugins?id=password-protection),[^1] or [Lock Screen](https://obsidian.md/plugins?id=obsidian-lock-screen-plugin).[^1]
+	- For those features, I suggest [password](https://obsidian.md/plugins?search=password) or [encryption plugins](https://obsidian.md/plugins?search=encrypt) from the Obsidian Marketplace like [Protected Note](https://obsidian.md/plugins?id=protected-note), [Password Protection](https://obsidian.md/plugins?id=password-protection),[^1] or [Lock Screen](https://obsidian.md/plugins?id=obsidian-lock-screen-plugin).[^1]
 	- If you sync your vault, [Remotely Save](https://obsidian.md/plugins?id=remotely-save) has an option to encrypt your files on the remote location. The files on your local computer will not be encrypted though.
 
 [^1]: [Password Protection](https://obsidian.md/plugins?id=password-protection) and [Lock Screen](https://obsidian.md/plugins?id=obsidian-lock-screen-plugin) *only* put a password on your vault or a folder in your vault; they do *not* encrypt or decrypt it.
