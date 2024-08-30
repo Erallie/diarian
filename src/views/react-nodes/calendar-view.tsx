@@ -324,6 +324,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');
 
     const [imgPath, setImgPath] = useState('');
+    const [hasImage, setHasImage] = useState(false);
     useEffect(() => {
         const imagePath = async () => {
             for (let date of filteredDates) {
@@ -333,8 +334,9 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                         const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i.exec(content);
                         if (match) {
                             const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
-                            if (imgFile) {
+                            if (imgFile && !hasImage) {
                                 const resourcePath = app.vault.getResourcePath(imgFile);
+                                setHasImage(true);
                                 setImgPath(resourcePath);
                                 /* const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
                                 if (newMatch) {
