@@ -6,8 +6,7 @@ This plugin adds functionality from the [Diarium](https://diariumapp.com/) journ
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Table of Contents
 1. [Features](#features)
-	1. [Key features](#key-features)
-	2. [Planned features](#planned-features)
+	1. [Included features](#included-features)
 	3. [Excluded features](#excluded-features)
 2. [Instructions](#instructions)
 	1. [Calendar](#calendar)
@@ -27,7 +26,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	2. [Manual installation](#manual-installation)
 4. [Credits](#credits)
 # Features
-## Key features
+## Included features
 - A [**Calendar**](#calendar) view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
@@ -51,17 +50,13 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
 	- Allows for [nested daily notes](#multiplenested-daily-notes) sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
-## Planned features
-Being in early development, there are some important features I have yet to add:
-- Options to specify what to do when importing a note/entry with a name that already exists.
-	- Currently, the existing note is left untouched, and the new entry is not inserted.
 ## Excluded features
 Since this plugin started as a project for my own personal use, there are features present in [Diarium](https://diariumapp.com/) that I do *not* plan on including in this plugin:
 - The following views from [Diarium](https://diariumapp.com/):
 	- The **Timeline** view
 	- The **Map** view
 		- I recommend using the [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin for this feature. Diarian will automatically use your settings for it.
-- Any embedded feeds & events not mentioned in [Key features](#key-features) or [Planned features](#planned-features).
+- Any embedded feeds & events not mentioned in [Included features](#included-features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.
 	- The [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
