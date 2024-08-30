@@ -25,6 +25,7 @@ export class ImportView extends Modal {
         new Setting(contentEl).setName('Import journal').setHeading();
 
 
+        // #region instructions
         const instrDiv = contentEl.createDiv(/* { cls: 'instructions' } */);
 
         const instrDesc = new DocumentFragment();
@@ -74,6 +75,7 @@ export class ImportView extends Modal {
 
         new Setting(instrDiv).setName('Instructions').setDesc(instrDesc).setHeading();
 
+        // #endregion
 
         const zipFileSetting = new Setting(this.contentEl)
             .setName("Choose exported file")
@@ -155,6 +157,7 @@ export class ImportView extends Modal {
             }
         } */
 
+        //#region import button
         const importDesc = new DocumentFragment;
         importDesc.textContent = 'Begin the importing process.';
         /* const importDescNotes = importDesc.createEl('ul');
@@ -180,6 +183,7 @@ export class ImportView extends Modal {
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
+        //#endregion
 
         const importTextEl = contentEl.createEl('div');
         importTextEl.empty();
