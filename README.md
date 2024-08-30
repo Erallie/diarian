@@ -41,6 +41,9 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - [Import a pre-existing journal](#importer) from [Diarium](https://diariumapp.com/).
 - A [rating](#rating) for each daily note that displays in the status bar.
 	- [Customize](#customization) the Unicode characters or emojis used for the rating.
+- Select a template to be automatically inserted when creating a new daily note.
+	- Includes all markdown files in the folder specified under **Settings → Templates → Template folder location**.
+	- Defaults to the template defined under **Settings → Daily notes → Template file location**
 - Insert a [timestamp](#timestamp) into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports [multiple notes per day](#multiplenested-daily-notes).
@@ -50,7 +53,6 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 ## Planned features
 Being in early development, there are some important features I have yet to add:
-- The ability to automatically insert your template defined under **Settings → Daily notes** when creating a daily note.
 - Options to specify what to do when importing a note/entry with a name that already exists.
 	- Currently, the existing note is left untouched, and the new entry is not inserted.
 ## Excluded features
