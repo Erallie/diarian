@@ -98,7 +98,8 @@ export enum ReminderDelay {
     tenMin = 'In 10 minutes',
     thirtyMin = 'In 30 minutes',
     oneHr = 'In 1 hour',
-    twoHr = 'In 2 hours'
+    twoHr = 'In 2 hours',
+    fourHr = 'In 4 hours'
 }
 
 export const reminderDelayMap: { [key: string]: ReminderDelay } = {
@@ -106,7 +107,8 @@ export const reminderDelayMap: { [key: string]: ReminderDelay } = {
     tenMin: ReminderDelay.tenMin,
     thirtyMin: ReminderDelay.thirtyMin,
     oneHr: ReminderDelay.oneHr,
-    twoHr: ReminderDelay.twoHr
+    twoHr: ReminderDelay.twoHr,
+    fourHr: ReminderDelay.fourHr
 };
 //#endregion
 
