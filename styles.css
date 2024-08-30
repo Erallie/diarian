@@ -164,11 +164,6 @@ body:not(.is-ios):not(.is-android) .new-note-input {
     padding-inline-start: var(--size-4-6);
 }
 
-body.is-ios .new-note-input.dropdown,
-body.is-android .new-note-input.dropdown {
-    text-align: center;
-}
-
 
 div.modal:has(.new-note-div) {
     /* width: 50%; */
@@ -227,6 +222,11 @@ div.modal:has(.new-note-div) {
     /* box-sizing: border-box; */
     /* user-select: var(--text-selection); */
     /* #endregion */
+}
+
+body.is-ios .new-note-input.dropdown,
+body.is-android .new-note-input.dropdown {
+    text-align: center;
 }
 
 /* .new-note-input::before {} */
