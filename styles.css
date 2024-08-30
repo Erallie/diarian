@@ -160,7 +160,9 @@ div.modal:has(.select-view-button) {
     margin-bottom: var(--size-4-2);
 }
 
-body:not(.is-ios):not(.is-android) .new-note-input {
+body:not(.is-ios):not(.is-android) .new-note-input,
+body.is-ios .new-note-input.dropdown,
+body.is-android .new-note-input.dropdown {
     padding-inline-start: var(--size-4-6);
 }
 
@@ -208,14 +210,10 @@ div.modal:has(.new-note-div) {
 
 .new-note-input {
     flex: 2;
-    font-size: var(--font-ui-small);
-    box-sizing: border-box;
-    position: relative;
-    padding: var(--size-4-1) var(--size-4-2);
-}
-
-.new-note-input:not(.dropdown) {
     /* #region copied stuff */
+    font-size: var(--font-ui-small);
+    padding: var(--size-4-1) var(--size-4-2);
+    font-variant-numeric: tabular-nums;
     -webkit-app-region: no-drag;
     background-color: var(--background-modifier-form-field);
     border: var(--input-border-width) solid var(--background-modifier-border);
@@ -225,8 +223,9 @@ div.modal:has(.new-note-div) {
     outline: none;
     /* cursor: default;
     overflow: hidden; */
-    font-variant-numeric: tabular-nums;
+    position: relative;
     unicode-bidi: plaintext;
+    box-sizing: border-box;
     /* box-sizing: border-box; */
     /* user-select: var(--text-selection); */
     /* #endregion */
