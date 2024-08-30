@@ -19,6 +19,8 @@ const dupEntryMap: { [key: string]: DupEntry } = {
     lastEntry: DupEntry.lastEntry,
 };
 
+let skippedMoments: moment.Moment[] = [];
+
 export class ImportView extends Modal {
     plugin: Diarian;
     /* attachDir: string;
@@ -264,6 +266,8 @@ export class ImportView extends Modal {
             printToConsole(logLevel.info, importText);
             const progressBar = new ProgressBarComponent(contentEl).setValue(0);
 
+            skippedMoments = [];
+
             const mapViewProperty = getMapViewProperty();
 
             let { format, folder }: any = getModifiedFolderAndFormat();
@@ -363,6 +367,12 @@ export class ImportView extends Modal {
                     const fullName = entry.filename;
                     const date = fullName.slice(fullName.indexOf('/') + 1, fullName.lastIndexOf('/'));
                     const fileMoment = moment(date, 'YYYY-MM-DD_HHmmssSSS');
+
+                    if (skippedMoments.find((skippedMoment) => {
+                        return Math.abs(skippedMoment.diff(fileMoment, 'milliseconds', true)) < 1;
+                    }))
+                        continue;
+
                     const name = fullName.slice(fullName.lastIndexOf('/') + 1);
 
                     if (!entry.getData) {
@@ -517,7 +527,7 @@ export async function writeNote(date: any, content: { frontmatter: string, body:
                     })
                     break;
                 case DupEntry.firstEntry:
-                    // printToConsole(logLevel.info, `Note creation skipped:\n${fileExists.path} already exists!`)
+                    skippedMoments[skippedMoments.length] = date;
                     break;
                 case DupEntry.append:
                     this.app.vault.process(fileExists, (data: string) => {
