@@ -24,7 +24,6 @@ export class ImportView extends Modal {
         const { contentEl } = this;
         new Setting(contentEl).setName('Import journal').setHeading();
 
-        // contentEl.createEl('br');
 
         const instrDiv = contentEl.createDiv(/* { cls: 'instructions' } */);
 
@@ -75,24 +74,6 @@ export class ImportView extends Modal {
 
         new Setting(instrDiv).setName('Instructions').setDesc(instrDesc).setHeading();
 
-
-        /* const openCalendarButton = new DocumentFragment();
-        openCalendarButton.createEl('img', {
-            text: "Open calendar",
-            attr: {
-                src: "Attachments/icons/lucide-calendar-search.svg"
-            },
-        });
-        openCalendarButton.createEl('span', { text: ' Open calendar' }); */
-
-        /* const jsonFileSetting = new Setting(this.contentEl).setName("Choose json file").setDesc("Select the exported .json file containing your Diarian journal");
-        const jsonFile = jsonFileSetting.controlEl.createEl("input", {
-            attr: {
-                type: "file",
-                multiple: false,
-                accept: ".json"
-            }
-        }); */
 
         const zipFileSetting = new Setting(this.contentEl)
             .setName("Choose exported file")
@@ -199,16 +180,9 @@ export class ImportView extends Modal {
         const importButton = importSetting.controlEl.createEl("button");
         importButton.textContent = "Import";
 
-        /* const errorTextEl = contentEl.createEl('div', { cls: 'setting-error' });
-        errorTextEl.empty(); */
 
-        const importTextEl = contentEl.createEl('div'/* , { cls: 'bottom-modal-text' } */);
+        const importTextEl = contentEl.createEl('div');
         importTextEl.empty();
-
-        /* const progressBarDiv = contentEl.createEl('div');
-        progressBarDiv.empty(); */
-
-        // use https://docs.obsidian.md/Reference/TypeScript+API/ProgressBarComponent instead of importTextEl
 
         function setText(msg: string, cls?: string) {
             importTextEl.empty();
@@ -467,14 +441,6 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
 }
 
 export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean, plugin?: Diarian, app?: App) {
-
-    /* if (!format || !folder) {
-        let { format, folder }: moment.Moment = getDailyNoteSettings();
-        if (format == '') format = DEFAULT_FORMAT;
-        let newFolder = '';
-        if (normalizePath(folder) == '/') newFolder = normalizePath(folder);
-        else if (normalizePath(folder) != '') newFolder = normalizePath(folder) + '/';
-    } */
 
     const noteFormat = date.format(format);
 
