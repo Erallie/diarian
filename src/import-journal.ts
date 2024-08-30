@@ -7,9 +7,9 @@ import { getModifiedFolderAndFormat } from './get-daily-notes';
 import { openDailyNote } from './views/react-nodes/note-preview';
 
 export enum DupEntry {
-    append = 'Append',
-    firstEntry = 'First entry',
-    lastEntry = 'Last entry'
+    append = 'Append all new entries',
+    firstEntry = "Keep first entry (don't overwrite)",
+    lastEntry = 'Keep last entry (overwrite)'
 };
 
 
@@ -104,7 +104,7 @@ export class ImportView extends Modal {
 
         // #region duplicate entry
 
-        const dupEntryDesc = new DocumentFragment;
+        /* const dupEntryDesc = new DocumentFragment;
         dupEntryDesc.textContent = "What to do when multiple entries share the same note path."
         dupEntryDesc.createEl('br');
         dupEntryDesc.createEl('span', { text: "This also applies when an entry being imported has the path of a note that already exists." }).createEl('br');
@@ -114,12 +114,12 @@ export class ImportView extends Modal {
         dupEntryDesc.createEl('strong', { text: "First entry:" });
         dupEntryDesc.createEl('span', { text: " Only import the first entry/Do not touch the pre-existing note." }).createEl('br');
         dupEntryDesc.createEl('strong', { text: "Last entry:" });
-        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' });
+        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }); */
 
         let dupEntry = 'append' as DupEntry;
         const dupEntrySetting = new Setting(this.contentEl)
             .setName('How to handle duplicate notes')
-            .setDesc(dupEntryDesc)
+            .setDesc('What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.')
             .addDropdown((dropdown) =>
                 dropdown
                     .addOptions(DupEntry)
