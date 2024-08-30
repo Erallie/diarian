@@ -69,11 +69,6 @@ export class Notification extends Modal {
                 i++
             }
 
-            /* return options.map((option: any) =>
-                <option key={option.id} value={option.key}>
-                    {option.value}
-                </option>
-            ); */
             return (
                 <>
                     {options.map((option: any) =>
