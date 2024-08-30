@@ -164,6 +164,11 @@ body:not(.is-ios):not(.is-android) .new-note-input {
     padding-inline-start: var(--size-4-6);
 }
 
+body.is-ios .new-note-input.dropdown,
+body.is-android .new-note-input.dropdown {
+    text-align: center;
+}
+
 
 div.modal:has(.new-note-div) {
     /* width: 50%; */
@@ -202,11 +207,8 @@ div.modal:has(.new-note-div) {
 }
 
 .new-note-input {
-    flex: 2.5;
-}
-
-.new-note-input {
-
+    flex: 2;
+    /* #region copied stuff */
     -webkit-app-region: no-drag;
     background-color: var(--background-modifier-form-field);
     border: var(--input-border-width) solid var(--background-modifier-border);
@@ -224,6 +226,7 @@ div.modal:has(.new-note-div) {
     box-sizing: border-box;
     /* box-sizing: border-box; */
     /* user-select: var(--text-selection); */
+    /* #endregion */
 }
 
 /* .new-note-input::before {} */
