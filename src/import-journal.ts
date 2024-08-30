@@ -7,16 +7,16 @@ import { getModifiedFolderAndFormat } from './get-daily-notes';
 import { openDailyNote } from './views/react-nodes/note-preview';
 
 export enum DupEntry {
-    lastEntry = 'Last entry',
+    append = 'Append',
     firstEntry = 'First entry',
-    append = 'Append'
+    lastEntry = 'Last entry'
 };
 
 
 const dupEntryMap: { [key: string]: DupEntry } = {
-    lastEntry: DupEntry.lastEntry,
+    append: DupEntry.append,
     firstEntry: DupEntry.firstEntry,
-    append: DupEntry.append
+    lastEntry: DupEntry.lastEntry,
 };
 
 export class ImportView extends Modal {
@@ -107,17 +107,12 @@ export class ImportView extends Modal {
         dupEntryDesc.createEl('br');
         dupEntryDesc.createEl('span', { text: "This also applies when an entry being imported has the path of a note that already exists." }).createEl('br');
         dupEntryDesc.createEl('br');
-        dupEntryDesc.createEl('strong', { text: "Last entry:" });
-        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }).createEl('br');
-        // dupEntryDesc.createEl('span', { text: 'Any existing notes with this name will be replaced.' }).createEl('br');
-        // dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('strong', { text: 'Append:' });
+        dupEntryDesc.createEl('span', { text: " Append all new entries to the end of the note." }).createEl('br');
         dupEntryDesc.createEl('strong', { text: "First entry:" });
         dupEntryDesc.createEl('span', { text: " Only import the first entry/Do not touch the pre-existing note." }).createEl('br');
-        // dupEntryDesc.createEl('span', { text: "Any existing notes with this name will " }).createEl('em', "not");
-        // dupEntryDesc.createEl('span', { text: ' be overwritten, and nothing will be imported on top of it.' }).createEl('br');
-        // dupEntryDesc.createEl('br');
-        dupEntryDesc.createEl('strong', { text: 'Append:' });
-        dupEntryDesc.createEl('span', { text: " Append all entries to the end of the note." })
+        dupEntryDesc.createEl('strong', { text: "Last entry:" });
+        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' });
 
         let dupEntry = 'append' as DupEntry;
         const dupEntrySetting = new Setting(this.contentEl)
