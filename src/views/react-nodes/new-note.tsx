@@ -177,7 +177,7 @@ export class NewDailyNote extends Modal {
                     await addTemplate(index);
             }
 
-            writeNote(noteDate, content, format, folder, true, plugin, app);
+            writeNote(noteDate, content, format, folder, true, plugin);
             modal.close();
         }
 

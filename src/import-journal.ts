@@ -440,7 +440,7 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
     await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder);
 }
 
-export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean, plugin?: Diarian, app?: App) {
+export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean, plugin?: Diarian) {
 
     const noteFormat = date.format(format);
 
@@ -459,9 +459,9 @@ export async function writeNote(date: any, content: string, format: string, alte
     //create new file
     if (fileExists) {
         if (openNote) {
-            if (plugin && app)
-                openDailyNote(fileExists, plugin, app);
-            else printToConsole(logLevel.warn, `Cannot open ${fileExists.name}!\nEither plugin or app is not defined!`);
+            if (plugin)
+                openDailyNote(fileExists, plugin, this.app);
+            else printToConsole(logLevel.warn, `Cannot open ${fileExists.name}:\nPlugin is not defined!`);
         }
         else return;
     }
@@ -469,9 +469,9 @@ export async function writeNote(date: any, content: string, format: string, alte
         await this.app.vault.create(newPath, content, { ctime: Number.parseInt(date.format('x')) });
         if (openNote) {
             const note = this.app.vault.getFileByPath(newPath);
-            if (plugin && app)
-                openDailyNote(note, plugin, app);
-            else printToConsole(logLevel.warn, `Cannot open ${note.name}!\nEither plugin or app is not defined!`);
+            if (plugin)
+                openDailyNote(note, plugin, this.app);
+            else printToConsole(logLevel.warn, `Cannot open ${note.name}:\nPlugin is not defined!`);
         }
 
     }
