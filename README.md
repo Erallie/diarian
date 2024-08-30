@@ -6,8 +6,7 @@ This plugin adds functionality from the [Diarium](https://diariumapp.com/) journ
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Table of Contents
 1. [Features](#features)
-	1. [Included features](#included-features)<!--
-	2. [Planned features](#planned-features) -->
+	1. [Included features](#included-features)
 	2. [Excluded features](#excluded-features)
 2. [Instructions](#instructions)
 	1. [Calendar](#calendar)
