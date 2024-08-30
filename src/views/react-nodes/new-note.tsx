@@ -87,7 +87,7 @@ export class NewDailyNote extends Modal {
                 // printToConsole(logLevel.log, defaultTemplate);
                 const template = app.vault.getFileByPath(normalizePath(defaultTemplate + '.md'));
                 if (template instanceof TFile) {
-                    printToConsole(logLevel.log, template.name);
+                    // printToConsole(logLevel.log, template.name);
                     setTemplate(template);
                     hasDefault = true;
                 }
