@@ -6,6 +6,18 @@ import moment from 'moment';
 import { getModifiedFolderAndFormat } from './get-daily-notes';
 import { openDailyNote } from './views/react-nodes/note-preview';
 
+export enum DupEntry {
+    lastEntry = 'Last entry',
+    firstEntry = 'First entry',
+    append = 'Append'
+};
+
+
+const dupEntryMap: { [key: string]: DupEntry } = {
+    lastEntry: DupEntry.lastEntry,
+    firstEntry: DupEntry.firstEntry,
+    append: DupEntry.append
+};
 
 export class ImportView extends Modal {
     plugin: Diarian;
@@ -87,6 +99,38 @@ export class ImportView extends Modal {
                 accept: ".zip, .json"
             }
         });
+
+        // #region duplicate entry
+
+        const dupEntryDesc = new DocumentFragment;
+        dupEntryDesc.textContent = "What to do when multiple entries share the same note path."
+        dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('span', { text: "This also applies when an entry being imported has the path of a note that already exists." }).createEl('br');
+        dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('strong', { text: "Last entry:" });
+        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }).createEl('br');
+        // dupEntryDesc.createEl('span', { text: 'Any existing notes with this name will be replaced.' }).createEl('br');
+        // dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('strong', { text: "First entry:" });
+        dupEntryDesc.createEl('span', { text: " Only import the first entry/Do not touch the pre-existing note." }).createEl('br');
+        // dupEntryDesc.createEl('span', { text: "Any existing notes with this name will " }).createEl('em', "not");
+        // dupEntryDesc.createEl('span', { text: ' be overwritten, and nothing will be imported on top of it.' }).createEl('br');
+        // dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('strong', { text: 'Append:' });
+        dupEntryDesc.createEl('span', { text: " Append all entries to the end of the note." })
+
+        let dupEntry = 'append' as DupEntry;
+        const dupEntrySetting = new Setting(this.contentEl)
+            .setName('How to handle duplicate notes')
+            .setDesc(dupEntryDesc)
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(DupEntry)
+                    .setValue(dupEntry)
+                    .onChange((value) => {
+                        dupEntry = value as DupEntry;
+                    }));
+        //#endregion
 
         /* const locationSetting = new Setting(this.contentEl)
             .setName('Location for attachments')
@@ -241,7 +285,7 @@ export class ImportView extends Modal {
                         progressMax = datafiles.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -250,7 +294,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
                         }
                     }
                     continue;
@@ -294,7 +338,7 @@ export class ImportView extends Modal {
                         progressMax = entries.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -303,7 +347,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
                         }
                         break;
                     }
@@ -438,12 +482,12 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 
 
-async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian) {
+async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian, dupEntry: DupEntry) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder);
+    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry);
 }
 
-export async function writeNote(date: any, content: string, format: string, alteredFolder: string, openNote?: boolean, plugin?: Diarian) {
+export async function writeNote(date: any, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, openNote?: boolean, plugin?: Diarian) {
 
     const noteFormat = date.format(format);
 
@@ -466,10 +510,39 @@ export async function writeNote(date: any, content: string, format: string, alte
                 openDailyNote(fileExists, plugin, this.app);
             else printToConsole(logLevel.warn, `Cannot open ${fileExists.name}:\nPlugin is not defined!`);
         }
-        else return;
+        else {
+            const dupEntryMapped = dupEntryMap[dupEntry as DupEntry];
+            switch (dupEntryMapped) {
+                case DupEntry.lastEntry:
+                    this.app.vault.process(fileExists, () => {
+                        if (content.frontmatter && content.frontmatter != '')
+                            return content.frontmatter + '\n' + content.body;
+                        else
+                            return content.body;
+                    })
+                    break;
+                case DupEntry.firstEntry:
+                    // printToConsole(logLevel.info, `Note creation skipped:\n${fileExists.path} already exists!`)
+                    break;
+                case DupEntry.append:
+                    this.app.vault.process(fileExists, (data: string) => {
+                        if (content.frontmatter && content.frontmatter != '')
+                            return data + '\n\n---\n\n' + '```\n' + content.frontmatter + '\n```' + '\n\n' + content.body;
+                        else return data + '\n\n---\n\n' + content.body;
+                    })
+                    break;
+                default:
+                    printToConsole(logLevel.warn, `Cannot create new note:\n${dupEntry} is not an appropriate setting for duplicate entries!`);
+            }
+        };
     }
     else {
-        await this.app.vault.create(newPath, content, { ctime: Number.parseInt(date.format('x')) });
+        let newContent;
+        if (content.frontmatter && content.frontmatter != '')
+            newContent = content.frontmatter + '\n' + content.body;
+        else
+            newContent = content.body;
+        await this.app.vault.create(newPath, newContent, { ctime: Number.parseInt(date.format('x')) });
         if (openNote) {
             const note = this.app.vault.getFileByPath(newPath);
             if (plugin)
@@ -525,13 +598,16 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
 
     let body = '';
     if (array.heading != '') {
-        body += `\n# ${htmlToMarkdown(array.heading)}`;
+        body += `# ${htmlToMarkdown(array.heading)}\n`;
     }
     if (array.html && array.html != '') {
-        body += `\n${htmlToMarkdown(array.html)}`;
+        body += `${htmlToMarkdown(array.html)}`;
     }
 
-    return frontmatter + body;
+    return {
+        frontmatter: frontmatter,
+        body: body
+    };
 }
 
 
