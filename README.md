@@ -28,25 +28,25 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 4. [Credits](#credits)
 # Features
 ## Key features
-- A **Calendar** view that displays which days have daily notes on them.
+- A [**Calendar**](#calendar) view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
-	- Commands to navigate between daily notes.
+	- Commands to [navigate between daily notes](#editor-navigation).
 	- Display attached images on the tiles of days that include them.
-- An **On this day** review pane in the sidebar.
+- An [**On this day**](#on-this-day) review pane in the sidebar.
 	- Specify in the settings:
 		- The interval between days to review (eg. every 3 months)
 		- How long ago to start including notes (eg. 6 months ago or earlier)
-	- Get notified when there are daily notes to review.
-- Import a pre-existing journal from [Diarium](https://diariumapp.com/).
-- A rating for each daily note that displays in the status bar.
-	- Customize the Unicode characters or emojis used for the rating.
-- Insert a timestamp into the active note.
+	- [Get notified](#notifications) when there are daily notes to review.
+- [Import a pre-existing journal](#importer) from [Diarium](https://diariumapp.com/).
+- A [rating](#rating) for each daily note that displays in the status bar.
+	- [Customize](#customization) the Unicode characters or emojis used for the rating.
+- Insert a [timestamp](#timestamp) into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
-- Supports multiple notes per day.
+- Supports [multiple notes per day](#multiplenested-daily-notes).
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
-	- Allows for nested daily notes sorted in folders by year, month, or day (etc).
+	- Allows for [nested daily notes](#multiplenested-daily-notes) sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 ## Planned features
 Being in early development, there are some important features I have yet to add:
