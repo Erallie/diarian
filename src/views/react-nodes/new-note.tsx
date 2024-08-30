@@ -108,6 +108,7 @@ export class NewDailyNote extends Modal {
                                 <option key={option.id} value={option.id}>
                                     {option.value}
                                 </option>)}
+                            <option value="none">None</option>
                         </>
                     )
                 }
