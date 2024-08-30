@@ -187,8 +187,8 @@ export class ImportView extends Modal {
         function setText(msg: string, cls?: string) {
             importTextEl.empty();
             let text = new DocumentFragment;
+            const textArray = msg.split('\n');
             if (cls) {
-                const textArray = msg.split('\n');
                 for (let i = 0; i < textArray.length; i++) {
                     text.createEl('span', { text: textArray[i], cls: cls })
                     if (i != textArray.length - 1)
@@ -196,7 +196,6 @@ export class ImportView extends Modal {
                 }
             }
             else {
-                const textArray = msg.split('\n');
                 for (let i = 0; i < textArray.length; i++) {
                     text.createEl('span', { text: textArray[i] })
                     if (i != textArray.length - 1)
@@ -207,7 +206,7 @@ export class ImportView extends Modal {
                 .setName(text);
         }
 
-        importButton.onclick = async () => {
+        importButton.onclick = async () => { //functions for the import process
             // const { files: datafiles } = jsonFile;
             const { files: datafiles } = zipFile;
             if (datafiles === null || !datafiles.length) {
@@ -481,6 +480,7 @@ export async function writeNote(date: any, content: string, format: string, alte
 
 // Transformation functions
 function formatContent(array: any, moment: moment.Moment, mapViewProperty: string, plugin: Diarian) {
+
     let frontmatter = '---';
     if (array.location) {
         frontmatter += `\n${mapViewProperty}: ${array.location}`;
@@ -518,6 +518,7 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
         }
     }
     frontmatter += '\n---';
+
     let body = '';
     if (array.heading != '') {
         body += `\n# ${htmlToMarkdown(array.heading)}`;
