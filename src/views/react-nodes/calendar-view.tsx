@@ -327,6 +327,9 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     const [hasImage, setHasImage] = useState(false);
     useEffect(() => {
         const imagePath = async () => {
+            filteredDates.sort(function (momentA, momentB) {
+                return momentB.diff(momentA);
+            });
             for (let date of filteredDates) {
                 const thisNote = getNoteByMoment(date, folder, format);
                 await app.vault.cachedRead(thisNote)
