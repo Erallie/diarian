@@ -117,7 +117,7 @@ export class ImportView extends Modal {
         dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }); */
 
         let dupEntry = 'append' as DupEntry;
-        const dupEntrySetting = new Setting(this.contentEl)
+        new Setting(this.contentEl)
             .setName('How to handle duplicate notes')
             .setDesc('What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.')
             .addDropdown((dropdown) =>
