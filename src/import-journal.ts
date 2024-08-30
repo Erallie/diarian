@@ -492,7 +492,7 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
     await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry);
 }
 
-export async function writeNote(date: any, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, openNote?: boolean, plugin?: Diarian) {
+export async function writeNote(date: moment.Moment, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, openNote?: boolean, plugin?: Diarian) {
 
     const noteFormat = date.format(format);
 
