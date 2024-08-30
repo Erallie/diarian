@@ -150,7 +150,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 - Attachments will be uploaded to the location specified under **Settings → Files and links → Default location for new attachments**.
 - Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
 	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
-	- If [Map View](obsidian://show-plugin?id=obsidian-map-view) ([github](https://github.com/esm7/obsidian-map-view)) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
+	- If [Map View](https://obsidian.md/plugins?id=obsidian-map-view) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
 	- Each tracker exported from [Diarium](https://diariumapp.com/) will be imported as an individual property.
 ## Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
