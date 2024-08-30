@@ -166,6 +166,12 @@ body.is-android .new-note-input.dropdown {
     padding-inline-start: var(--size-4-6);
 }
 
+body.is-ios .new-note-input:not(.dropdown),
+body.is-android .new-note-input:not(.dropdown) {
+    padding-inline-start: calc(var(--size-4-6) / 2);
+    padding-inline-end: calc(var(--size-4-6) / 2);
+}
+
 /* body.is-ios .new-note-input.dropdown,
 body.is-android .new-note-input.dropdown {
     text-align: center;
@@ -208,9 +214,18 @@ div.modal:has(.new-note-div) {
     /* font-family: var(--font-interface); */
 }
 
-.new-note-input {
+body:not(.is-ios):not(.is-android) .new-note-input {
     flex: 2;
-    /* #region copied stuff */
+}
+
+body.is-ios .new-note-input,
+body.is-android .new-note-input {
+    flex: 2.5;
+    padding-inline-start: calc(var(--size-4-6) / 2);
+    padding-inline-end: calc(var(--size-4-6) / 2);
+}
+
+.new-note-input {
     font-size: var(--font-ui-small);
     padding: var(--size-4-1) var(--size-4-2);
     font-variant-numeric: tabular-nums;
