@@ -108,7 +108,7 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any)
             if (!leaf) {
                 for (let i = 0; i < leaves.length; i++) {
                     const file = (leaves[i].view as MarkdownView).file;
-                    if (file == workspace.getActiveFile() && !leaves[i].getViewState().pinned) {
+                    if (file == workspace.getActiveFile() && !leaves[i].getViewState().pinned && leaves[i].getRoot() === workspace.rootSplit) {
                         leaf = leaves[i];
                         workspace.revealLeaf(leaf);
                         leaf.openFile(note);
@@ -121,7 +121,7 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any)
                 const { folder, format } = getModifiedFolderAndFormat();
                 for (let i = 0; i < leaves.length; i++) {
                     const file = (leaves[i].view as MarkdownView).file;
-                    if (file && isDailyNote(file, folder, format) && !leaves[i].getViewState().pinned) {
+                    if (file && isDailyNote(file, folder, format) && !leaves[i].getViewState().pinned && leaves[i].getRoot() === workspace.rootSplit) {
                         leaf = leaves[i];
                         workspace.revealLeaf(leaf);
                         leaf.openFile(note);
@@ -134,7 +134,7 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any)
             if (!leaf) {
                 for (let i = 0; i < leaves.length; i++) {
                     const file = (leaves[i].view as MarkdownView).file;
-                    if (file && !leaves[i].getViewState().pinned) {
+                    if (file && !leaves[i].getViewState().pinned && leaves[i].getRoot() === workspace.rootSplit) {
                         leaf = leaves[i];
                         workspace.revealLeaf(leaf);
                         leaf.openFile(note);
