@@ -480,7 +480,7 @@ export default class Diarian extends Plugin {
                     if (checking) return true;
                     const noteMoment = getMoment(file, folder, format);
                     this.refreshViews(true, false, noteMoment);
-                    this.openLeaf(ViewType.calendarView, LeafType.tab);
+                    this.openLeaf(ViewType.calendarView, this.settings.calLocation);
                     break;
                 case 'insert-rating':
                     if (checking) return true;
@@ -510,12 +510,12 @@ export default class Diarian extends Plugin {
                             break;
                     }
             }
-            if (commandID == 'show-in-calendar') {
+            /* if (commandID == 'show-in-calendar') {
                 if (checking) return true;
                 const noteMoment = getMoment(file, folder, format);
                 this.refreshViews(true, false, noteMoment);
-                this.openLeaf(ViewType.calendarView, LeafType.tab);
-            }
+                this.openLeaf(ViewType.calendarView, this.settings.calLocation);
+            } */
 
         }
         else if (checking) return false;
