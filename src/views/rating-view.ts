@@ -1,7 +1,6 @@
 import { App, MarkdownView, Modal, Setting, TFile } from 'obsidian';
 import { isDailyNote, getModifiedFolderAndFormat } from '../get-daily-notes';
 import type Diarian from 'main';
-import type { EnhancedApp } from 'main';
 
 export class RatingView extends Modal {
     plugin: Diarian;

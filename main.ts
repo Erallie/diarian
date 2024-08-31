@@ -11,11 +11,6 @@ import { SelectView } from 'src/views/select-view';
 import { Notification } from 'src/views/react-nodes/notification';
 
 
-export type EnhancedApp = App & {
-    commands: { executeCommandById: Function };
-};
-
-
 export default class Diarian extends Plugin {
     settings: DiarianSettings;
     view: View;
@@ -89,12 +84,10 @@ export default class Diarian extends Plugin {
             //#endregion
 
 
-            const enhancedApp = this.app as EnhancedApp;
-
             if (this.settings.onThisDayStartup)
-                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
             if (this.settings.calStartup)
-                enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+                this.openLeaf(ViewType.calendarView, this.settings.calLocation);
 
             this.openNotif();
         });
@@ -130,67 +123,7 @@ export default class Diarian extends Plugin {
             name: 'Insert timestamp',
             icon: 'lucide-alarm-clock',
             editorCallback: (editor: Editor, view: MarkdownView) => {
-                if (view.file) {
-                    let dateString = '';
-                    const now = moment();
-
-                    const { folder, format }: any = getModifiedFolderAndFormat();
-                    const noteDate = getMoment(view.file, folder, format);
-
-                    if (!isSameDay(noteDate, now))
-                        dateString = now.format(this.settings.dateStampFormat) + ' ';
-
-                    let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
-
-                    const cursor = editor.getCursor();
-                    // if (editor.getLine(cursor.line) == '' && editor.getLine(cursor.line + 1) == '' && editor.getLine(cursor.line + 2) == '')
-                    const cursorLine = editor.getLine(cursor.line);
-                    const textBeforeCursor = cursorLine.slice(0, cursor.ch);
-
-                    let newCursorLine = cursor.line;
-
-                    if (textBeforeCursor != '') {
-                        fullString = '\n\n' + fullString/*  + '\n\n' */;
-                        // newCursorLine += 4;
-                        newCursorLine += 2;
-                    }
-                    //if text before cursor is empty but line before cursor is not
-                    else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') {
-                        fullString = '\n' + fullString /* + '\n\n' */;
-                        // newCursorLine += 3;
-                        newCursorLine += 1;
-                    }
-                    /* else {
-                        fullString += '\n\n';
-                        newCursorLine += 2;
-                    } */
-
-
-                    //if text after cursor is empty
-                    const textAfterCursor = cursorLine.slice(cursor.ch);
-                    if (textAfterCursor != '' || cursor.line == editor.lastLine() /* || cursor.line + 1 == editor.lastLine() */) {
-                        fullString += '\n\n';
-                        newCursorLine += 2;
-                    }
-                    //if the next line is not empty
-                    else if (cursor.line + 1 <= editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
-                        fullString += '\n';
-                        newCursorLine += 2;
-                    }
-                    // if the next line is empty but the following line is not
-                    else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
-                        newCursorLine += 2;
-                    }
-
-
-
-                    editor.replaceRange(
-                        fullString,
-                        editor.getCursor()
-                    );
-                    editor.setCursor(newCursorLine, 0);
-                }
-
+                this.insertTimestamp(editor, view);
             }
         });
 
@@ -331,18 +264,19 @@ export default class Diarian extends Plugin {
 
         this.registerEvent( //on editor menu
             this.app.workspace.on("editor-menu", (menu, editor, info) => {
-                const enhancedApp = this.app as EnhancedApp;
-
                 menu.addSeparator();
 
-                menu.addItem(item => {
-                    item
-                        .setTitle('Insert timestamp')
-                        .setIcon('lucide-alarm-clock')
-                        .onClick(() => {
-                            enhancedApp.commands.executeCommandById(`${this.manifest.id}:insert-timestamp`);
-                        })
-                });
+                const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+                if (view) {
+                    menu.addItem(item => {
+                        item
+                            .setTitle('Insert timestamp')
+                            .setIcon('lucide-alarm-clock')
+                            .onClick(() => {
+                                this.insertTimestamp(editor, view)
+                            })
+                    });
+                }
                 this.addMenuItem(menu, 'insert-rating', 'Insert rating', 'lucide-star');
 
                 menu.addSeparator();
@@ -434,14 +368,13 @@ export default class Diarian extends Plugin {
     }
 
     selectViewMenu() {
-        const enhancedApp = this.app as EnhancedApp;
         const menu = new Menu();
         menu.addItem((item) => // New daily note
             item
                 .setTitle('New daily note')
                 .setIcon('lucide-file-plus')
                 .onClick(() => {
-                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:new-note`);
+                    new NewDailyNote(this.app, this).open();
                 }));
 
         menu.addItem((item) => // Open calendar
@@ -449,7 +382,7 @@ export default class Diarian extends Plugin {
                 .setTitle('Open calendar')
                 .setIcon('lucide-calendar')
                 .onClick(() => {
-                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-calendar`);
+                    this.openLeaf(ViewType.calendarView, this.settings.calLocation);
                 }));
 
         menu.addItem((item) => // Open on this day
@@ -457,7 +390,7 @@ export default class Diarian extends Plugin {
                 .setTitle('Open on this day')
                 .setIcon('lucide-history')
                 .onClick(() => {
-                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                    this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
                 }));
 
         menu.addItem((item) => // Open importer
@@ -465,7 +398,7 @@ export default class Diarian extends Plugin {
                 .setTitle('Open importer')
                 .setIcon('lucide-import')
                 .onClick(() => {
-                    enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-importer`);
+                    new ImportView(this.app, this).open();
                 }));
 
         return menu;
@@ -696,8 +629,7 @@ export default class Diarian extends Plugin {
                         // noticeSpan.createEl('span', { text: 'Tap elsewhere to dismiss.' });
                     }
                     noticeClick!.onClickEvent((ev) => {
-                        const enhancedApp = this.app as EnhancedApp;
-                        enhancedApp.commands.executeCommandById(`${this.manifest.id}:open-on-this-day`);
+                        this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
                     });
                     new Notice(notice, 0);
                 }
@@ -721,5 +653,70 @@ export default class Diarian extends Plugin {
             new Notification(this.app, this).open();
             clearInterval(this.reminderIntervalID);
         }
+    }
+
+    insertTimestamp(editor: Editor, view: MarkdownView) {
+
+        if (view.file) {
+            let dateString = '';
+            const now = moment();
+
+            const { folder, format }: any = getModifiedFolderAndFormat();
+            const noteDate = getMoment(view.file, folder, format);
+
+            if (!isSameDay(noteDate, now))
+                dateString = now.format(this.settings.dateStampFormat) + ' ';
+
+            let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
+
+            const cursor = editor.getCursor();
+            // if (editor.getLine(cursor.line) == '' && editor.getLine(cursor.line + 1) == '' && editor.getLine(cursor.line + 2) == '')
+            const cursorLine = editor.getLine(cursor.line);
+            const textBeforeCursor = cursorLine.slice(0, cursor.ch);
+
+            let newCursorLine = cursor.line;
+
+            if (textBeforeCursor != '') {
+                fullString = '\n\n' + fullString/*  + '\n\n' */;
+                // newCursorLine += 4;
+                newCursorLine += 2;
+            }
+            //if text before cursor is empty but line before cursor is not
+            else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') {
+                fullString = '\n' + fullString /* + '\n\n' */;
+                // newCursorLine += 3;
+                newCursorLine += 1;
+            }
+            /* else {
+                fullString += '\n\n';
+                newCursorLine += 2;
+            } */
+
+
+            //if text after cursor is empty
+            const textAfterCursor = cursorLine.slice(cursor.ch);
+            if (textAfterCursor != '' || cursor.line == editor.lastLine() /* || cursor.line + 1 == editor.lastLine() */) {
+                fullString += '\n\n';
+                newCursorLine += 2;
+            }
+            //if the next line is not empty
+            else if (cursor.line + 1 <= editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
+                fullString += '\n';
+                newCursorLine += 2;
+            }
+            // if the next line is empty but the following line is not
+            else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
+                newCursorLine += 2;
+            }
+
+
+
+            editor.replaceRange(
+                fullString,
+                editor.getCursor()
+            );
+            editor.setCursor(newCursorLine, 0);
+        }
+
     }
 }//

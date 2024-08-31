@@ -2,9 +2,8 @@ import { App, Modal } from 'obsidian';
 import { StrictMode } from "react";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'main';
-import type { EnhancedApp } from 'main';
 import { ReminderDelay, reminderDelayMap } from 'src/settings';
-import { printToConsole, logLevel } from 'src/constants';
+import { ViewType, printToConsole, logLevel } from 'src/constants';
 import moment from 'moment';
 
 export class Notification extends Modal {
@@ -19,7 +18,6 @@ export class Notification extends Modal {
     onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
         const plugin = this.plugin;
-        const app = this.app;
         const thisComp = this;
 
         const ReminderChoices = () => {
@@ -54,8 +52,7 @@ export class Notification extends Modal {
         }
 
         function openOnThisDay() {
-            const enhancedApp = app as EnhancedApp;
-            enhancedApp.commands.executeCommandById(`${plugin.manifest.id}:open-on-this-day`);
+            plugin.openLeaf(ViewType.onThisDayView, plugin.settings.onThisDayLoc);
             endReminder();
         }
 

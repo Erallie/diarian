@@ -1,6 +1,8 @@
 import { App, Modal, Setting, ButtonComponent } from 'obsidian';
 import type Diarian from 'main';
-import type { EnhancedApp } from 'main';
+import { NewDailyNote } from 'src/views/react-nodes/new-note';
+import { ViewType, printToConsole, logLevel } from 'src/constants';
+import { ImportView } from 'src/import-journal';
 
 export class SelectView extends Modal {
     plugin: Diarian;
@@ -14,14 +16,13 @@ export class SelectView extends Modal {
         const { contentEl } = this;
         new Setting(contentEl).setName('Select Diarian view').setHeading();
 
-        const enhancedApp = this.app as EnhancedApp;
 
         new ButtonComponent(contentEl)
             .setClass('select-view-button')
             .setIcon('lucide-file-plus')
             .setButtonText('New daily note')
             .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:new-note`);
+                new NewDailyNote(this.app, this.plugin).open();
                 this.close();
             });
 
@@ -30,7 +31,7 @@ export class SelectView extends Modal {
             .setIcon('lucide-calendar')
             .setButtonText('Open calendar')
             .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-calendar`);
+                this.plugin.openLeaf(ViewType.calendarView, this.plugin.settings.calLocation);
                 this.close();
             });
 
@@ -39,7 +40,7 @@ export class SelectView extends Modal {
             .setIcon('lucide-history')
             .setButtonText('Open on this day')
             .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-on-this-day`);
+                this.plugin.openLeaf(ViewType.onThisDayView, this.plugin.settings.onThisDayLoc);
                 this.close();
             });
 
@@ -48,7 +49,7 @@ export class SelectView extends Modal {
             .setIcon('lucide-import')
             .setButtonText('Open importer')
             .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-importer`);
+                new ImportView(this.app, this.plugin).open();
                 this.close();
             });
 
