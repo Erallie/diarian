@@ -699,12 +699,17 @@ export default class Diarian extends Plugin {
                 fullString += '\n\n';
                 newCursorLine += 2;
             }
-            //if the next line is not empty
-            else if (cursor.line + 1 <= editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
+            //if the next line is the last line
+            else if (cursor.line + 1 == editor.lastLine()) {
                 fullString += '\n';
                 newCursorLine += 2;
             }
-            // if the next line is empty but the following line is not
+            //if the next line is not empty
+            else if (cursor.line + 1 < editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
+                fullString += '\n';
+                newCursorLine += 2;
+            }
+            // if the next line is empty and there's a line after that.
             else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
                 newCursorLine += 2;
             }
