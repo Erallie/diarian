@@ -119,7 +119,6 @@ export default class Diarian extends Plugin {
         // This creates an icon in the left ribbon.
         this.addRibbonIcon('lucide-book-heart', 'Select Diarian view', (evt: MouseEvent) => {
             // Called when the user clicks the icon.
-            // this.openCalendar();
             this.openSelectView(evt);
         });
 
@@ -313,9 +312,6 @@ export default class Diarian extends Plugin {
             name: 'Open on this day',
             icon: 'lucide-history',
             callback: () => {
-                // this.openOnThisDay();
-                // this.openCalendar();
-                // new SampleModal(this.app).open();
                 this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
             }
         });
@@ -325,7 +321,6 @@ export default class Diarian extends Plugin {
             name: 'Open importer',
             icon: 'lucide-import',
             callback: () => {
-                // this.openCalendar();
                 new ImportView(this.app, this).open();
             }
         });

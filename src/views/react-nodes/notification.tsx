@@ -1,5 +1,5 @@
-import { App, Modal, Setting, ButtonComponent } from 'obsidian';
-import { StrictMode, ReactElement } from "react";
+import { App, Modal } from 'obsidian';
+import { StrictMode } from "react";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'main';
 import type { EnhancedApp } from 'main';
@@ -21,41 +21,6 @@ export class Notification extends Modal {
         const plugin = this.plugin;
         const app = this.app;
         const thisComp = this;
-
-
-        /* const { contentEl } = this;
-
-        const enhancedApp = this.app as EnhancedApp; */
-        /* 
-                const settingName = new DocumentFragment;
-                settingName.createEl('span', { text: this.msg, cls: 'notification-text' }); */
-        /* const settingName = new DocumentFragment;
-        const settingDiv = settingName.createDiv({ cls: 'notification-text' })
-        settingDiv.append(this.msg);
-
-        new Setting(contentEl).setName(settingName);
-
-        const buttonsDiv = contentEl.createDiv();
-
-        new ButtonComponent(buttonsDiv)
-            .setClass('notification-button')
-            .setIcon('lucide-history')
-            .setButtonText('Open on this day')
-            // .setTooltip('Open on this day')
-            .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-on-this-day`);
-                this.close();
-            });
-
-        new ButtonComponent(buttonsDiv)
-            .setClass('notification-button')
-            .setIcon('lucide-history')
-            .setButtonText('Open on this day')
-            // .setTooltip('Open on this day')
-            .onClick(() => {
-                enhancedApp.commands.executeCommandById(`${this.plugin.manifest.id}:open-on-this-day`);
-                this.close();
-            }); */
 
         const ReminderChoices = () => {
             let options = [];
