@@ -115,6 +115,7 @@ export class Notification extends Modal {
                     break;
                 case ReminderDelay.fourHr:
                     reminderTime = moment().add(4, 'hours');
+                    break;
                 default:
                     printToConsole(logLevel.error, `Cannot set reminder:\n"${event.target.value}" is not a valid reminder delay!`);
                     return;
