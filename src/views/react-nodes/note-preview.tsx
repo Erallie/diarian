@@ -87,6 +87,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
             );
         default:
             printToConsole(logLevel.log, `Cannot create NotePreview:\n${plugin.settings.notePrevDisplay} is not a valid value!`);
+            return (<></>);
     }
 
 };
