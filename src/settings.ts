@@ -691,9 +691,15 @@ export class DiarianSettingTab extends PluginSettingTab {
         const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
         timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' });
 
+        const timeStampPrevDesc = new DocumentFragment();
+
+        timeStampPrevDesc.textContent = 'If the active note is from the current day, only the time will be inserted.';
+        timeStampPrevDesc.createEl('br');
+        timeStampPrevDesc.createEl('span', { text: 'Otherwise, both the date and the time will be inserted.' })
+
         new Setting(containerEl)
             .setName(timeStampPreview)
-        // .setDesc(timeStampPreview);
+            .setDesc(timeStampPrevDesc);
 
         //#endregion
 
