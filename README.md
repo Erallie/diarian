@@ -85,7 +85,7 @@ The **Calendar** view displays all your daily notes in a calendar layout.
 - The number of **dots** ( • ) on a tile represents how many daily notes you have written that day.
 - If you have images attached, the first image you attached that day will show up on the tile of that day.
 
-Select the **plus button** ( ![plus button](Attachments/icons/lucide-plus.svg#icon) ) to create a new note on that day.
+Select the **plus button** ( <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg> ) to create a new note on that day.
 
 ![new-note-calendar](Attachments/new-note-calendar.png#interface)
 
