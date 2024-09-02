@@ -3,7 +3,7 @@ import { Ref, useRef } from "react";
 import type Diarian from 'main';
 import { isDailyNote, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import { printToConsole, logLevel } from "src/constants";
-import { NotePrevDisplay, notePrevDisplayMap } from "src/settings";
+import { NotePrevDisplay, notePrevDisplayMap, newNoteModeMap, NewNoteMode } from "src/settings";
 
 interface Props {
     note: TFile;
@@ -48,7 +48,7 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
 
     const onClick = (evt: any) => {
-        openDailyNote(note, plugin, app, evt);
+        openDailyNote(note, plugin, app, false, evt);
     };
 
     const notePrevDisplayMapped = notePrevDisplayMap[plugin.settings.notePrevDisplay as NotePrevDisplay];
@@ -93,15 +93,15 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
 
 export default NotePreview;
 
-export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any) {
+export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: boolean, evt?: any) {
 
     let isMiddleButton = false;
     if (evt)
         isMiddleButton = evt.button === 1;
     const { workspace } = app;
+    let leaf: WorkspaceLeaf | null = null;
     if (!plugin.settings.openInNewPane && !isMiddleButton) {
 
-        let leaf: WorkspaceLeaf | null = null;
         const leaves = workspace.getLeavesOfType('markdown');
 
         if (leaves.length > 0) {
@@ -163,10 +163,33 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, evt?: any)
         }
         else {
             // Our view could not be found in the workspace, create a new leaf
-            void workspace.getLeaf(false).openFile(note);
+            leaf = workspace.getLeaf(false);
+            leaf.openFile(note);
         }
     }
     else {
-        void app.workspace.getLeaf(true).openFile(note);
+        leaf = app.workspace.getLeaf(true);
+        leaf.openFile(note);
+    }
+
+    if (newNote) {
+
+        const newNoteModeMapped = newNoteModeMap[plugin.settings.newNoteMode as NewNoteMode];
+        switch (newNoteModeMapped) {
+            case NewNoteMode.live:
+                leaf.setViewState({ type: 'markdown', state: { mode: 'source', source: false } });
+                break;
+            case NewNoteMode.reading:
+                leaf.setViewState({ type: 'markdown', state: { mode: 'preview', source: false } });
+                // console.log('got here')
+                break;
+            case NewNoteMode.source:
+                leaf.setViewState({ type: 'markdown', state: { mode: 'source', source: true } });
+                break;
+            default:
+                printToConsole(logLevel.warn, `Cannot set view mode:\n${plugin.settings.newNoteMode} is not a valid view mode!`);
+        }
+        // console.log(leaf.getViewState().state);
+
     }
 }

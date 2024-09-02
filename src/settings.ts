@@ -122,10 +122,24 @@ export const notePrevDisplayMap: { [key: string]: NotePrevDisplay } = {
     quote: NotePrevDisplay.quote,
     text: NotePrevDisplay.text
 };
+
+export enum NewNoteMode {
+    reading = "Reading",
+    source = "Source mode",
+    live = "Live preview"
+}
+
+export const newNoteModeMap: { [key: string]: NewNoteMode } = {
+    reading: NewNoteMode.reading,
+    source: NewNoteMode.source,
+    live: NewNoteMode.live
+};
 //#endregion
 
 //#region Setting defaults
 export interface DiarianSettings {
+    newNoteMode: NewNoteMode;
+
     calendarType: CalType;
     disableFuture: boolean;
     headingFormat: string;
@@ -160,6 +174,8 @@ export interface DiarianSettings {
 }
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
+    newNoteMode: 'live' as NewNoteMode,
+
     calendarType: 'iso8601' as CalType,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
@@ -210,6 +226,18 @@ export class DiarianSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         // new Setting(containerEl).setName('On startup').setHeading();
+
+        new Setting(containerEl).setName('Open new daily notes in')
+            .setDesc('The mode new daily notes created by Diarian will open in.')
+            .addDropdown((dropdown) => {
+                dropdown
+                    .addOptions(NewNoteMode)
+                    .setValue(this.plugin.settings.newNoteMode)
+                    .onChange((value) => {
+                        this.plugin.settings.newNoteMode = value as NewNoteMode;
+                        void this.plugin.saveSettings();
+                    })
+            })
 
         //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
