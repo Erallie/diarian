@@ -181,7 +181,6 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: b
                 break;
             case NewNoteMode.reading:
                 leaf.setViewState({ type: 'markdown', state: { mode: 'preview', source: false } });
-                // console.log('got here')
                 break;
             case NewNoteMode.source:
                 leaf.setViewState({ type: 'markdown', state: { mode: 'source', source: true } });
@@ -189,7 +188,6 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: b
             default:
                 printToConsole(logLevel.warn, `Cannot set view mode:\n${plugin.settings.newNoteMode} is not a valid view mode!`);
         }
-        // console.log(leaf.getViewState().state);
 
     }
 }
