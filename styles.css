@@ -386,16 +386,24 @@ div.dot-container {
     border-top-left-radius: var(--radius-s);
 }
 
-.react-calendar button:last-child {
+.react-calendar button:last-child,
+.react-calendar__decade-view button.react-calendar__tile:nth-last-of-type(2),
+.react-calendar__century-view button.react-calendar__tile:nth-last-of-type(2) {
     border-bottom-right-radius: var(--radius-s);
 }
 
 .react-calendar__navigation button:first-child,
-.react-calendar button.react-calendar__tile:nth-last-of-type(7) {
+.react-calendar__month-view button.react-calendar__tile:nth-last-of-type(7),
+.react-calendar__year-view button.react-calendar__tile:nth-last-of-type(3),
+.react-calendar__decade-view button.react-calendar__tile:last-child,
+.react-calendar__century-view button.react-calendar__tile:last-child {
     border-bottom-left-radius: var(--radius-s);
 }
 
-.react-calendar button.react-calendar__tile:nth-of-type(7) {
+.react-calendar__month-view button.react-calendar__tile:nth-of-type(7),
+.react-calendar__year-view button.react-calendar__tile:nth-of-type(3),
+.react-calendar__decade-view button.react-calendar__tile:nth-of-type(3),
+.react-calendar__century-view button.react-calendar__tile:nth-of-type(3) {
     border-top-right-radius: var(--radius-s);
 }
 
