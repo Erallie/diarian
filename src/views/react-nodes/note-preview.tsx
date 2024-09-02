@@ -3,6 +3,7 @@ import { Ref, useRef } from "react";
 import type Diarian from 'main';
 import { isDailyNote, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import { printToConsole, logLevel } from "src/constants";
+import { NotePrevDisplay, notePrevDisplayMap } from "src/settings";
 
 interface Props {
     note: TFile;
@@ -50,34 +51,44 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
         openDailyNote(note, plugin, app, evt);
     };
 
+    const notePrevDisplayMapped = notePrevDisplayMap[plugin.settings.notePrevDisplay as NotePrevDisplay];
+    switch (notePrevDisplayMapped) {
+        case NotePrevDisplay.callout:
+            return (
+                <div className="callout note-preview" onMouseUp={onClick} aria-label="Open note" >
+                    {plugin.settings.showNoteTitle && (
+                        <div className="callout-title">
+                            <div className="callout-title-inner">{note.basename}</div>
+                        </div>
+                    )}
 
-    if (plugin.settings.useCallout) {
-        return (
-            <div className="callout note-preview" onMouseUp={onClick} aria-label="Open note" >
-                {plugin.settings.showNoteTitle && (
-                    <div className="callout-title">
-                        <div className="callout-title-inner">{note.basename}</div>
-                    </div>
-                )}
+                    <div className="callout-content" ref={ref as Ref<HTMLDivElement>} />
+                </div>
+            );
+        case NotePrevDisplay.quote:
+            return (
+                <div onMouseUp={onClick} className="note-preview" aria-label="Open note">
+                    {plugin.settings.showNoteTitle && <h4>{note.basename}</h4>}
 
-                <div className="callout-content" ref={ref as Ref<HTMLDivElement>} />
-            </div>
-        );
+                    <small className="markdown-rendered">
+                        <blockquote ref={ref as Ref<HTMLQuoteElement>} />
+                    </small>
+                </div>
+            );
+        case NotePrevDisplay.text:
+            return (
+                <div onMouseUp={onClick} className="note-preview" aria-label="Open note">
+                    {plugin.settings.showNoteTitle && <h4>{note.basename}</h4>}
+
+                    <small className="markdown-rendered">
+                        <div ref={ref as Ref<HTMLDivElement>} />
+                    </small>
+                </div>
+            );
+        default:
+            printToConsole(logLevel.log, `Cannot create NotePreview:\n${plugin.settings.notePrevDisplay} is not a valid value!`);
     }
 
-    return (
-        <div onMouseUp={onClick} className="note-preview" aria-label="Open note">
-            {plugin.settings.showNoteTitle && <h4>{note.basename}</h4>}
-
-            <small className="markdown-rendered">
-                {plugin.settings.useQuote ? (
-                    <blockquote ref={ref as Ref<HTMLQuoteElement>} />
-                ) : (
-                    <div ref={ref as Ref<HTMLDivElement>} />
-                )}
-            </small>
-        </div>
-    );
 };
 
 export default NotePreview;

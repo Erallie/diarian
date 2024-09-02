@@ -110,6 +110,18 @@ export const reminderDelayMap: { [key: string]: ReminderDelay } = {
     twoHr: ReminderDelay.twoHr,
     fourHr: ReminderDelay.fourHr
 };
+
+export enum NotePrevDisplay {
+    callout = 'Callouts',
+    quote = 'Blockquotes',
+    text = 'Regular text'
+}
+
+export const notePrevDisplayMap: { [key: string]: NotePrevDisplay } = {
+    callout: NotePrevDisplay.callout,
+    quote: NotePrevDisplay.quote,
+    text: NotePrevDisplay.text
+};
 //#endregion
 
 //#region Setting defaults
@@ -122,9 +134,10 @@ export interface DiarianSettings {
 
     previewLength: number;
     openInNewPane: boolean;
-    useCallout: boolean;
+    notePrevDisplay: NotePrevDisplay;
+    // useCallout: boolean;
     showNoteTitle: boolean;
-    useQuote: boolean;
+    // useQuote: boolean;
 
     reviewInterval: number;
     reviewIntervalUnit: Unit;
@@ -155,9 +168,10 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
 
     previewLength: 250,
     openInNewPane: false,
-    useCallout: true,
+    notePrevDisplay: 'callout' as NotePrevDisplay,
+    // useCallout: true,
     showNoteTitle: true,
-    useQuote: true,
+    // useQuote: true,
 
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
@@ -547,45 +561,38 @@ export class DiarianSettingTab extends PluginSettingTab {
                 })
             )
 
-        //#region Callouts
-        const calloutsDescription = new DocumentFragment();
-        /* calloutsDescription.textContent =
-            "Use callouts to render note previews, using their styles based on the current theme. ";
-        calloutsDescription.createEl("a", {
-            text: "More info",
-            attr: {
-                href: "https://help.obsidian.md/Editing+and+formatting/Callouts",
-            },
-        }); */
+        //#region display
+        const notePrevDispDesc = new DocumentFragment();
 
-
-        calloutsDescription.textContent =
-            "Use ";
-        calloutsDescription.createEl("a", {
+        notePrevDispDesc.textContent =
+            "Whether to use ";
+        notePrevDispDesc.createEl("a", {
             text: "callouts",
             attr: {
                 href: "https://help.obsidian.md/Editing+and+formatting/Callouts",
             },
         });
-        calloutsDescription.createEl("span", {
-            text: " to render note previews, using their styles based on the current theme."
+        notePrevDispDesc.createEl("span", {
+            text: ", blockquotes, or regular text to render note previews."
         })
 
         new Setting(containerEl)
-            .setName("Use callouts to display content")
-            .setDesc(calloutsDescription)
-            .addToggle((toggle) =>
-                toggle.setValue(this.plugin.settings.useCallout).onChange((value) => {
-                    this.plugin.settings.useCallout = value;
-                    void this.plugin.saveSettings();
-                    this.plugin.refreshViews(true, true);
-                    this.display();
-                }),
-            );
+            .setName("How to display content")
+            .setDesc(notePrevDispDesc)
+            .addDropdown((dropdown) => {
+                dropdown
+                    .addOptions(NotePrevDisplay)
+                    .setValue(this.plugin.settings.notePrevDisplay)
+                    .onChange((value) => {
+                        this.plugin.settings.notePrevDisplay = value as NotePrevDisplay;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
+                    })
+            })
 
         //#endregion
 
-        if (!this.plugin.settings.useCallout) {
+        /* if (!this.plugin.settings.useCallout) {
             new Setting(containerEl)
                 .setName("Use quote elements to display content")
                 .setDesc("Format note previews using the HTML quote element.")
@@ -596,7 +603,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                         this.plugin.refreshViews(true, true);
                     }),
                 );
-        }
+        } */
 
         //#region New Tab
         let notePaneTitle = 'Open in a new tab';
