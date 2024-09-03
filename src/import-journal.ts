@@ -454,20 +454,12 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
         }
     }
 
-    /* const exists = await this.app.vault.getFileByPath(filePath);
-    //create new file
-    if (this.app.vault.getFileByPath(filePath)) {
-        // add code here for if the file already exists
-    }
-    else { */
-    // this is incorrect. it does not write the file correctly.
     this.app.vault.createBinary(filePath, content, { ctime: Number.parseInt(fileMoment.format('x')) });
-    /* } */
+    //attach to file
     this.app.vault.process(note, (data: string) => {
         data += `\n\n![[${filePath}]]`;
         return data;
     }, { ctime: Number.parseInt(fileMoment.format('x')) })
-    //attach to file
 }
 
 
