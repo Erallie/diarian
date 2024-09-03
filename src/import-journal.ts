@@ -19,6 +19,18 @@ const dupEntryMap: { [key: string]: DupEntry } = {
     lastEntry: DupEntry.lastEntry,
 };
 
+export enum DupProps {
+    codeblock = 'Insert codeblock before entry',
+    firstEntry = "Keep first entry (don't overwrite)",
+    lastEntry = 'Keep last entry (overwrite)'
+};
+
+const dupPropsMap: { [key: string]: DupProps } = {
+    codeblock: DupProps.codeblock,
+    firstEntry: DupProps.firstEntry,
+    lastEntry: DupProps.lastEntry,
+};
+
 let skippedMoments: moment.Moment[] = [];
 
 export class ImportView extends Modal {
@@ -130,20 +142,45 @@ export class ImportView extends Modal {
         dupEntryDesc.createEl('span', { text: '.' });
 
         let dupEntry = 'append' as DupEntry;
-        new Setting(this.contentEl)
+        const dupEntrySetting = new Setting(this.contentEl)
             .setName('How to handle duplicate notes')
-            .setDesc(dupEntryDesc)
-            .addDropdown((dropdown) =>
-                dropdown
-                    .addOptions(DupEntry)
-                    .setValue(dupEntry)
-                    .onChange((value) => {
-                        dupEntry = value as DupEntry;
-                    }));
-        //#endregion
+            .setDesc(dupEntryDesc);
 
+        // #region Duplicate Properties
+        const propsDiv = this.contentEl.createDiv();
 
+        let dupProps = 'codeblock' as DupProps;
+
+        function addPropsSetting() {
+            const dupEntryMapped = dupEntryMap[dupEntry as DupEntry];
+            if (dupEntryMapped == DupEntry.append) {
+                propsDiv.createSpan();
+                new Setting(propsDiv)
+                    .setName('How to handle appended properties')
+                    .setDesc('What to do with imported properties when appending multiple entries to the same note.')
+                    .addDropdown((dropdown) =>
+                        dropdown
+                            .addOptions(DupProps)
+                            .setValue(dupProps)
+                            .onChange((value) => {
+                                dupProps = value as DupProps;
+                            })
+                    )
             }
+            else propsDiv.empty();
+        }
+        addPropsSetting();
+        // #endregion
+
+        dupEntrySetting.addDropdown((dropdown) =>
+            dropdown
+                .addOptions(DupEntry)
+                .setValue(dupEntry)
+                .onChange((value) => {
+                    dupEntry = value as DupEntry;
+                    addPropsSetting();
+                }));
+        //#endregion
 
         //#region import button
         const importDesc = new DocumentFragment;
