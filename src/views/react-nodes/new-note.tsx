@@ -177,7 +177,7 @@ export class NewDailyNote extends Modal {
                     await addTemplate(index);
             }
 
-            writeNote(noteDate, { frontmatter: '', body: content }, format, folder, 'firstEntry' as DupEntry, 'firstEntry' as DupProps, true, plugin);
+            writeNote(noteDate, { frontmatter: '', frontmatterObj: {}, body: content }, format, folder, 'firstEntry' as DupEntry, 'firstEntry' as DupProps, true, plugin);
             modal.close();
         }
 

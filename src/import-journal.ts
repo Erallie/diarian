@@ -278,7 +278,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
                         }
                     }
                     continue;
@@ -477,7 +477,7 @@ async function createEntry(data: any, format: string, folder: string, mapViewPro
     await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry, dupProps);
 }
 
-export async function writeNote(date: moment.Moment, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, dupProps: DupProps, newNote?: boolean, plugin?: Diarian) {
+export async function writeNote(date: moment.Moment, content: { frontmatter: string, frontmatterObj: any, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, dupProps: DupProps, newNote?: boolean, plugin?: Diarian) {
 
     const noteFormat = date.format(format);
 
@@ -533,6 +533,11 @@ export async function writeNote(date: moment.Moment, content: { frontmatter: str
                             this.app.vault.process(fileExists, (data: string) => {
                                 return data + '\n\n---\n\n' + content.body;
                             })
+                            this.app.fileManager.processFrontMatter(fileExists, (frontmatter: any) => {
+                                for (let [key, value] of Object.entries(content.frontmatterObj)) {
+                                    frontmatter[key] = value;
+                                }
+                            });
                             break;
                         default:
                             printToConsole(logLevel.warn, `Cannot append properties:\n${dupProps} is not an appropriate setting for duplicate properties!`);
@@ -588,7 +593,7 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
         frontmatter += `\nweather: ${array.weather}`
     }
     if (array.sun && array.sun != '') {
-        frontmatter += parseSun(moment, array.sun);
+        frontmatter += parseSun(moment, array.sun).text;
     }
     if (array.lunar && array.lunar != '') {
         frontmatter += `\nlunar phase: ${array.lunar}`
@@ -611,8 +616,43 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
         body += `${htmlToMarkdown(array.html)}`;
     }
 
+    let frontmatterObj: any = {};
+    if (array.location)
+        frontmatterObj[mapViewProperty] = array.location.toString();
+    if (array.rating)
+        frontmatterObj[plugin.settings.ratingProp] = `${array.rating}/5`;
+    if (array.tags.length != 0) {
+        frontmatterObj['tags'] = [];
+        for (let i in array.tags) {
+            frontmatterObj['tags'][i] = array.tags[i];
+        }
+    }
+    if (array.people.length != 0) {
+        frontmatterObj['people'] = [];
+        for (let i in array.people) {
+            frontmatterObj['people'][i] = array.people[i];
+        }
+    }
+    if (array.weather)
+        frontmatterObj['weather'] = array.weather;
+    if (array.sun && array.sun != '') {
+        const { sunrise, sunset } = parseSun(moment, array.sun)
+        frontmatterObj['sunrise'] = sunrise;
+        frontmatterObj['sunset'] = sunset;
+    }
+    if (array.lunar && array.lunar != '')
+        frontmatterObj['lunar phase'] = array.lunar;
+    if (array.tracker.length != 0)
+        for (let string of array.tracker) {
+            const markdownString = htmlToMarkdown(string);
+            const key = markdownString.slice(0, markdownString.lastIndexOf(':'));
+            const value = markdownString.slice(markdownString.lastIndexOf(':')).trim();
+            frontmatterObj[key] = value;
+        }
+
     return {
         frontmatter: frontmatter,
+        frontmatterObj: frontmatterObj,
         body: body
     };
 }
@@ -637,9 +677,15 @@ function parseSun(noteMoment: moment.Moment, sun: string) {
     const newRiseText = start + riseMoment.format('HH:mm:[00]');
     const newSetText = start + setMoment.format('HH:mm:[00]');
 
+    return {
+        sunrise: newRiseText,
+        sunset: newSetText,
+        text: "\nsunrise: " + newRiseText
+            + "\nsunset: " + newSetText
+    }
 
-    return "\nsunrise: " + newRiseText
-        + "\nsunset: " + newSetText;
+    /* return "\nsunrise: " + newRiseText
+        + "\nsunset: " + newSetText; */
 
 }
 
