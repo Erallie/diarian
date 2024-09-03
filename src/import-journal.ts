@@ -269,7 +269,7 @@ export class ImportView extends Modal {
                         progressMax = datafiles.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -322,7 +322,7 @@ export class ImportView extends Modal {
                         progressMax = entries.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -331,7 +331,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
                         }
                         break;
                     }
@@ -472,12 +472,12 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 
 
-async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian, dupEntry: DupEntry) {
+async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian, dupEntry: DupEntry, dupProps: DupProps) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry);
+    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry, dupProps);
 }
 
-export async function writeNote(date: moment.Moment, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, newNote?: boolean, plugin?: Diarian) {
+export async function writeNote(date: moment.Moment, content: { frontmatter: string, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, dupProps: DupProps, newNote?: boolean, plugin?: Diarian) {
 
     const noteFormat = date.format(format);
 
@@ -515,11 +515,28 @@ export async function writeNote(date: moment.Moment, content: { frontmatter: str
                     skippedMoments[skippedMoments.length] = date;
                     break;
                 case DupEntry.append:
-                    this.app.vault.process(fileExists, (data: string) => {
-                        if (content.frontmatter && content.frontmatter != '')
-                            return data + '\n\n---\n\n' + '```\n' + content.frontmatter + '\n```' + '\n\n' + content.body;
-                        else return data + '\n\n---\n\n' + content.body;
-                    })
+                    const dupPropsMapped = dupPropsMap[dupProps as DupProps];
+                    switch (dupPropsMapped) {
+                        case DupProps.codeblock:
+                            this.app.vault.process(fileExists, (data: string) => {
+                                if (content.frontmatter && content.frontmatter != '')
+                                    return data + '\n\n---\n\n' + '```\n' + content.frontmatter + '\n```' + '\n\n' + content.body;
+                                else return data + '\n\n---\n\n' + content.body;
+                            })
+                            break;
+                        case DupProps.firstEntry:
+                            this.app.vault.process(fileExists, (data: string) => {
+                                return data + '\n\n---\n\n' + content.body;
+                            })
+                            break;
+                        case DupProps.lastEntry:
+                            this.app.vault.process(fileExists, (data: string) => {
+                                return data + '\n\n---\n\n' + content.body;
+                            })
+                            break;
+                        default:
+                            printToConsole(logLevel.warn, `Cannot append properties:\n${dupProps} is not an appropriate setting for duplicate properties!`);
+                    }
                     break;
                 default:
                     printToConsole(logLevel.warn, `Cannot create new note:\n${dupEntry} is not an appropriate setting for duplicate entries!`);

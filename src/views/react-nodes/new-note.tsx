@@ -3,7 +3,7 @@ import { Root, createRoot } from "react-dom/client";
 import { App, Modal, TFile, TFolder, normalizePath } from "obsidian";
 import type Diarian from 'main';
 import moment from 'moment';
-import { writeNote, DupEntry } from 'src/import-journal';
+import { writeNote, DupEntry, DupProps } from 'src/import-journal';
 import { getDailyNoteSettings, getModifiedFolderAndFormat } from 'src/get-daily-notes';
 import { printToConsole, logLevel } from "src/constants";
 
@@ -177,7 +177,7 @@ export class NewDailyNote extends Modal {
                     await addTemplate(index);
             }
 
-            writeNote(noteDate, { frontmatter: '', body: content }, format, folder, 'firstEntry' as DupEntry, true, plugin);
+            writeNote(noteDate, { frontmatter: '', body: content }, format, folder, 'firstEntry' as DupEntry, 'firstEntry' as DupProps, true, plugin);
             modal.close();
         }
 
