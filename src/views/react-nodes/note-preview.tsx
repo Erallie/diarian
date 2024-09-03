@@ -169,12 +169,11 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: b
         }
     }
     else {
-        leaf = app.workspace.getLeaf(true);
+        leaf = workspace.getLeaf(true);
         leaf.openFile(note);
     }
 
     if (newNote) {
-
         const newNoteModeMapped = newNoteModeMap[plugin.settings.newNoteMode as NewNoteMode];
         switch (newNoteModeMapped) {
             case NewNoteMode.live:
@@ -189,6 +188,5 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: b
             default:
                 printToConsole(logLevel.warn, `Cannot set view mode:\n${plugin.settings.newNoteMode} is not a valid view mode!`);
         }
-
     }
 }
