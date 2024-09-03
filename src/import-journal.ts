@@ -116,10 +116,23 @@ export class ImportView extends Modal {
         dupEntryDesc.createEl('strong', { text: "Last entry:" });
         dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }); */
 
+        const dupEntryDesc = new DocumentFragment;
+        dupEntryDesc.textContent = 'What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.';
+        dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('br');
+        dupEntryDesc.createEl('span', { text: 'For multiple notes per day, follow ' })
+            .createEl('a', {
+                text: 'these instructions',
+                attr: {
+                    href: "https://github.com/Erallie/diarian?tab=readme-ov-file#multiplenested-daily-notes",
+                },
+            });
+        dupEntryDesc.createEl('span', { text: '.' });
+
         let dupEntry = 'append' as DupEntry;
         new Setting(this.contentEl)
             .setName('How to handle duplicate notes')
-            .setDesc('What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.')
+            .setDesc(dupEntryDesc)
             .addDropdown((dropdown) =>
                 dropdown
                     .addOptions(DupEntry)
