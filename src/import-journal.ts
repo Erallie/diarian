@@ -173,7 +173,7 @@ export class ImportView extends Modal {
 
         //#endregion
 
-        const importTextEl = contentEl.createEl('div');
+        const importTextEl = contentEl.createDiv();
         importTextEl.empty();
 
         function setText(msg: string, cls?: string) {
@@ -194,6 +194,7 @@ export class ImportView extends Modal {
                         text.createEl('br');
                 }
             }
+            importTextEl.createSpan();
             new Setting(importTextEl)
                 .setName(text);
         }
