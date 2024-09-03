@@ -142,74 +142,8 @@ export class ImportView extends Modal {
                     }));
         //#endregion
 
-        /* const locationSetting = new Setting(this.contentEl)
-            .setName('Location for attachments')
-            .setDesc('Where imported attachments are placed.')
-            .addDropdown((dropdown) =>
-                dropdown
-                    .addOptions(attachDirs)
-                    .setValue(this.attachDir)
-                    .onChange((value) => {
-                        this.attachDir = value as attachDirs;
-                        printToConsole(logLevel.log, this.attachDir.toString());
-                        let chosenFolder;
 
-                        if (this.attachDir == 'dailyNotesSubDir') {
-                            chosenFolder = 'the Daily notes folder';
-                        }
-                        else if (this.attachDir == 'noteSubdir') {
-                            chosenFolder = 'the note\'s folder';
-                        }
-
-                        if (this.attachDir == 'dailyNotesSubDir' || this.attachDir == 'noteSubdir') {
-                            toggleDir(true, 'Subfolder name', `If ${chosenFolder} is \"vault/folder\", and you set the subfolder name to \"attachments\", attachments will be saved to \"vault/folder/attachments\".`);
-                        }
-                        else if (this.attachDir == 'customDir') {
-                            toggleDir(true, 'Folder path', 'Imported attachments will be placed in this folder.');
-                        }
-                        else {
-                            printToConsole(logLevel.log, 'notCustomDir');
-                            toggleDir(false);
-                        };
-                    }),
-        );
-
-        const dirDiv = this.contentEl.createDiv(); */
-
-        // use https://docs.obsidian.md/Reference/TypeScript+API/SuggestModal
-
-        /* const attachFolder = new Setting(this.contentEl).setName('Folder path').addSearch((cb) => {
-            new FolderSuggest(this.app, cb.inputEl, this.plugin);
-            cb.setPlaceholder('Example: folder1/')
-                .setValue(this.plugin.settings.folderName)
-                .onChange((newFolder) => {
-                    this.plugin.settings.folderName = newFolder;
-                    this.plugin.saveSettings();
-                    this.getFilesByFolder();
-                }); */
-
-        /* function toggleDir(show: boolean, name?: string, desc?: string) {
-            switch (show) {
-                case true:
-                    if (name && desc) {
-                        dirDiv.empty();
-                        new Setting(dirDiv)
-                            .setName(name)
-                            .setDesc(desc)
-                            .addText((text) =>
-                                text.setValue(this.subDir)
-                                    .onChange((value) => {
-                                        this.subDir = value;
-                                    }),
-                            );
-                    }
-                    else printToConsole(logLevel.warn, 'toggleDirSetting() cannot be invoked!\nname and/or desc are undefined!');
-                    break;
-                case false:
-                    dirDiv.empty();
-                    break;
             }
-        } */
 
         //#region import button
         const importDesc = new DocumentFragment;
