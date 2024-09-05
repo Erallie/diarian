@@ -27,7 +27,7 @@ export const enum logLevel {
 } */
 export const DEFAULT_FORMAT = 'YYYY-MM-DD';
 
-export function printToConsole(level: logLevel, message: any) { // level = {log, info, warn, error}
+export function printToConsole(level: logLevel, message: any, noNotice?: boolean) { // level = {log, info, warn, error}
     try { throw new Error() }
     catch (e) {
         let levelText = "";
@@ -62,7 +62,8 @@ export function printToConsole(level: logLevel, message: any) { // level = {log,
         if (!skipPrint) {
             print(`[${pluginName}]${levelText}: ${message}`);
         }
-        new Notice(message);
+        if (!noNotice)
+            new Notice(message);
     }
 }
 /* ^^^ COPY AND PASTE THE ABOVE TO EVERY COMPILE STEP THAT PRINTS TO THE CONSOLE. ^^^ */

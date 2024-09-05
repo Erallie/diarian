@@ -324,32 +324,59 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');
 
     const [imgPath, setImgPath] = useState('');
-    const [hasImage, setHasImage] = useState(false);
+    // const [hasImage, setHasImage] = useState(false);
+    const imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+    // let imgPath = "";
     useEffect(() => {
+        let hasImage = false;
         const imagePath = async () => {
             filteredDates.sort(function (momentA, momentB) {
                 return momentB.diff(momentA);
             });
+            function findResourcePath(value: string, thisNote: TFile) {
+                const match = imgRegex.exec(value);
+                if (match) {
+                    const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
+                    if (imgFile && !hasImage) {
+                        const resourcePath = app.vault.getResourcePath(imgFile);
+                        // setHasImage(true);
+                        hasImage = true;
+                        setImgPath(resourcePath);
+                        // imgPath = resourcePath;
+                    }
+                }
+            }
             for (let date of filteredDates) {
-                const thisNote = getNoteByMoment(date, folder, format);
-                await app.vault.cachedRead(thisNote)
-                    .then((content) => {
-                        const match = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i.exec(content);
-                        if (match) {
-                            const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
-                            if (imgFile && !hasImage) {
-                                const resourcePath = app.vault.getResourcePath(imgFile);
-                                setHasImage(true);
-                                setImgPath(resourcePath);
-                                /* const newMatch = /^app:\/\/[A-z0-9]+\/(.+(\.(avif|bmp|gif|jpeg|jpg|png|svg|webp)))(\?[0-9]+)?$/m.exec(resourcePath);
-                                if (newMatch) {
-                                    setImgPath(newMatch[1]);
-                                } */
-                            }
-                        }
-
+                let bannerKey = getBannerProperty();
+                // printToConsole(logLevel.log, bannerKey);
+                if (bannerKey && bannerKey != '') {
+                    let thisNote = getNoteByMoment(date, folder, format);
+                    let bannerValue;
+                    await app.fileManager.processFrontMatter(thisNote, (frontmatter) => {
+                        bannerValue = frontmatter[bannerKey];
                     });
-                if (imgPath != '')
+                    if (bannerValue) {
+                        findResourcePath(bannerValue, thisNote);
+                        if (!hasImage && (!imgPath || imgPath == "")) {
+                            // setHasImage(true);
+                            hasImage = true;
+                            setImgPath(bannerValue);
+                            // imgPath = bannerValue;
+                            // printToConsole(logLevel.log, bannerValue);
+                        }
+                    }
+                }
+                if (hasImage)
+                    break;
+                else {
+                    // printToConsole(logLevel.log, "replacing image")
+                    const thisNote = getNoteByMoment(date, folder, format);
+                    await app.vault.cachedRead(thisNote)
+                        .then((content) => {
+                            findResourcePath(content, thisNote);
+                        });
+                }
+                if (hasImage)
                     break;
             }
         }
@@ -360,4 +387,25 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
             <img src={imgPath} className='calendar-attachment' />
         )
     return (<></>)
+}
+
+export function getBannerProperty() {
+    /* from: https://github.com/liamcain/obsidian-daily-notes-interface/blob/123969e461b7b0927c91fe164a77da05f43aba6a/src/settings.ts#L22 */
+    try {
+        const pluginManager = (this.app).plugins;
+
+        const settings =
+            pluginManager.getPlugin("obsidian-banners")?.settings || {};
+
+        if (!settings.frontmatterField || settings.frontmatterField === undefined || settings.frontmatterField == '') {
+            printToConsole(logLevel.warn, 'No frontmatter field name found in any custom Banner settings!', true);
+            return 'banner';
+        }
+
+        return settings.frontmatterField as string;
+    } catch (err) {
+        const errorText = "No custom Banner settings found!"
+        printToConsole(logLevel.info, `${errorText}\n${err}`, true);
+        return '';
+    }
 }
