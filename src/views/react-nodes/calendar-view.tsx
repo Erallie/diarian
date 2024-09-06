@@ -337,7 +337,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                 const match = imgRegex.exec(value);
                 if (match) {
                     const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
-                    if (imgFile && !hasImage) {
+                    if (imgFile && !hasImage && (!imgPath || imgPath == "")) {
                         const resourcePath = app.vault.getResourcePath(imgFile);
                         // setHasImage(true);
                         hasImage = true;
@@ -358,25 +358,21 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     if (bannerValue) {
                         findResourcePath(bannerValue, thisNote);
                         if (!hasImage && (!imgPath || imgPath == "")) {
-                            // setHasImage(true);
                             hasImage = true;
                             setImgPath(bannerValue);
-                            // imgPath = bannerValue;
-                            // printToConsole(logLevel.log, bannerValue);
                         }
                     }
                 }
-                if (hasImage)
+                if (hasImage || imgPath != "")
                     break;
                 else {
-                    // printToConsole(logLevel.log, "replacing image")
                     const thisNote = getNoteByMoment(date, folder, format);
                     await app.vault.cachedRead(thisNote)
                         .then((content) => {
                             findResourcePath(content, thisNote);
                         });
                 }
-                if (hasImage)
+                if (hasImage || imgPath != "")
                     break;
             }
         }
