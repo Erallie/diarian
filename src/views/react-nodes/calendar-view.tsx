@@ -398,7 +398,7 @@ export function getBannerProperty() {
             pluginManager.getPlugin("obsidian-banners")?.settings || {};
 
         if (!settings.frontmatterField || settings.frontmatterField === undefined || settings.frontmatterField == '') {
-            printToConsole(logLevel.warn, 'No frontmatter field name found in any custom Banner settings!', true);
+            printToConsole(logLevel.info, 'No frontmatter field name found in any custom Banner settings!', true);
             return 'banner';
         }
 
