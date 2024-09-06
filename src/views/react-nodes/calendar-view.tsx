@@ -351,10 +351,11 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                 // printToConsole(logLevel.log, bannerKey);
                 if (bannerKey && bannerKey != '') {
                     let thisNote = getNoteByMoment(date, folder, format);
-                    let bannerValue;
-                    await app.fileManager.processFrontMatter(thisNote, (frontmatter) => {
+                    // let bannerValue;
+                    const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
+                    /* await app.fileManager.processFrontMatter(thisNote, (frontmatter) => {
                         bannerValue = frontmatter[bannerKey];
-                    });
+                    }); */
                     if (bannerValue) {
                         const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
                         findResourcePath(bannerValue, thisNote, imgRegex);

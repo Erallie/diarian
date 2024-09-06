@@ -327,11 +327,18 @@ export default class Diarian extends Plugin {
         // printToConsole(logLevel.log, 'settings saved');
     }
 
-    onFileOpen(ratingStatBar: HTMLElement, file: TFile | null) {
+    async onFileOpen(ratingStatBar: HTMLElement, file: TFile | null) {
         const { folder, format }: any = getModifiedFolderAndFormat();
         if (file instanceof TFile && isDailyNote(file, folder, format)) {
             this.refreshViews(true, false, getMoment(file, folder, format));
-            this.app.fileManager.processFrontMatter(
+            const rating = await this.app.metadataCache.getCache(file.path)?.frontmatter?.[this.settings.ratingProp];
+            if (rating === undefined || rating == '') {
+                this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
+            }
+            else {
+                this.setStatBarText(ratingStatBar, rating);
+            }
+            /* this.app.fileManager.processFrontMatter(
                 file,
                 (frontmatter) => {
                     const rating: string = frontmatter[this.settings.ratingProp];
@@ -346,7 +353,7 @@ export default class Diarian extends Plugin {
                         this.setStatBarText(ratingStatBar, rating);
                     }
                 }
-            );
+            ); */
 
         }
         else ratingStatBar.setText('');
