@@ -333,7 +333,7 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
             filteredDates.sort(function (momentA, momentB) {
                 return momentB.diff(momentA);
             });
-            function findResourcePath(value: string, thisNote: TFile) {
+            function findResourcePath(value: string, thisNote: TFile, imgRegex: RegExp) {
                 const match = imgRegex.exec(value);
                 if (match) {
                     const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
@@ -356,7 +356,8 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                         bannerValue = frontmatter[bannerKey];
                     });
                     if (bannerValue) {
-                        findResourcePath(bannerValue, thisNote);
+                        const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                        findResourcePath(bannerValue, thisNote, imgRegex);
                         if (!hasImage && (!imgPath || imgPath == "")) {
                             hasImage = true;
                             setImgPath(bannerValue);
@@ -369,7 +370,8 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     const thisNote = getNoteByMoment(date, folder, format);
                     await app.vault.cachedRead(thisNote)
                         .then((content) => {
-                            findResourcePath(content, thisNote);
+                            const imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                            findResourcePath(content, thisNote, imgRegex);
                         });
                 }
                 if (hasImage || imgPath != "")
