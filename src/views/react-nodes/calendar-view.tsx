@@ -330,9 +330,6 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     useEffect(() => {
         let hasImage = false;
         const imagePath = async () => {
-            filteredDates.sort(function (momentA, momentB) {
-                return momentB.diff(momentA);
-            });
             function findResourcePath(value: string, thisNote: TFile, imgRegex: RegExp) {
                 const match = imgRegex.exec(value);
                 if (match) {
