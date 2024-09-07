@@ -338,22 +338,6 @@ export default class Diarian extends Plugin {
             else {
                 this.setStatBarText(ratingStatBar, rating);
             }
-            /* this.app.fileManager.processFrontMatter(
-                file,
-                (frontmatter) => {
-                    const rating: string = frontmatter[this.settings.ratingProp];
-
-                    if (rating === undefined || rating == '') {
-                        // printToConsole(logLevel.log, 'Rating is blank!');
-                        //Add functionality to insert rating here.
-                        this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
-                        //Add functionality to insert rating here.
-                    }
-                    else {
-                        this.setStatBarText(ratingStatBar, rating);
-                    }
-                }
-            ); */
 
         }
         else ratingStatBar.setText('');
