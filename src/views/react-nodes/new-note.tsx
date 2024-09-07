@@ -99,7 +99,7 @@ export class NewDailyNote extends Modal {
                     getTemplates(folder);
             }
 
-            if (templates) {
+            if (templates.length != 0) {
                 if (hasDefault) {
                     templateValue = "0";
                     return (
@@ -123,7 +123,7 @@ export class NewDailyNote extends Modal {
                 )
             }
             else return (<>
-                <option hidden={true} value="none">No templates found</option>
+                <option /* hidden={true} */ value="none">No templates found</option>
             </>
             )
         }
