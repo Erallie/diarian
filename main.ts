@@ -332,7 +332,7 @@ export default class Diarian extends Plugin {
         if (file instanceof TFile && isDailyNote(file, folder, format)) {
             this.refreshViews(true, false, getMoment(file, folder, format));
             const rating = await this.app.metadataCache.getCache(file.path)?.frontmatter?.[this.settings.ratingProp];
-            if (rating === undefined || rating == '') {
+            if (!rating || rating === undefined || rating == '') {
                 this.setStatBarText(ratingStatBar, `0/${this.settings.defaultMaxRating}`);
             }
             else {
