@@ -7,15 +7,3 @@ url: https://erallie.github.io/diarian
 
 aux_links:
   About Diarian: https://erallie.github.io/diarian
-
-# Things that cannot be changed
-lsi: false
-safe: true
-source: . #[your repo's top level directory]
-incremental: false
-highlighter: rouge
-gist:
-  noscript: false
-kramdown:
-  math_engine: mathjax
-  syntax_highlighter: rouge
