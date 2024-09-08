@@ -35,9 +35,9 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - A **[Calendar](./Instructions/Calendar.md#calendar)** view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
-	- Commands to [navigate between daily notes](./Instructions/Calendar.md#editor-navigation).
+	- Commands to [navigate between daily notes](https://erallie.github.io/diarian/Instructions/Calendar.html#editor-navigation).
 	- Display attached images on the tiles of days that include them.
-- An **[On this day](./Instructions/On%20this%20day.md#on-this-day)** review pane in the sidebar.
+- An **[On this day](https://erallie.github.io/diarian/Instructions/On%20this%20day.html#on-this-day)** review pane in the sidebar.
 	- Specify in the settings:
 		- The interval between days to review (eg. every 3 months)
 		- How long ago to start including notes (eg. 6 months ago or earlier)
@@ -50,10 +50,10 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Defaults to the template defined under **Settings → Daily notes → Template file location**
 - Insert a [timestamp](./Instructions/Timestamp.md#timestamp) into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
-- Supports [multiple notes per day](./Instructions/Multiple%20or%20nested%20daily%20notes.md#multiple-or-nested-daily-notes).
+- Supports [multiple notes per day](https://erallie.github.io/diarian/Instructions/Multiple%20or%20nested%20daily%20notes.html#multiple-or-nested-daily-notes).
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
-	- Allows for [nested daily notes](./Instructions/Multiple%20or%20nested%20daily%20notes.md#multiple-or-nested-daily-notes) sorted in folders by year, month, or day (etc).
+	- Allows for [nested daily notes](https://erallie.github.io/diarian/Instructions/Multiple%20or%20nested%20daily%20notes.html#multiple-or-nested-daily-notes) sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 
 ### Excluded features
