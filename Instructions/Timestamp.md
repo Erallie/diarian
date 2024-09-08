@@ -1,7 +1,8 @@
 ---
 share: true
 ---
-![Heading 2](../Heading%202.md)
+# Table of Contents
+
 # Timestamp
 To insert a timestamp, do one of the following:
 - Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
