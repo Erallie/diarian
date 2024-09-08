@@ -1,6 +1,6 @@
 # GitHub settings
 theme: jekyll-theme-cayman
-remote_theme: pages-themes/cayman@v0.2.0
+#remote_theme: pages-themes/cayman@v0.2.0
 title: Diarian
 description: The official Diarian wiki
 
@@ -47,8 +47,8 @@ unpublished         : false
 
 # Plugins
 whitelist           : []
-plugins:
-  - jekyll-remote-theme
+plugins: []
+#  - jekyll-remote-theme
 
 # Conversion
 markdown            : kramdown
