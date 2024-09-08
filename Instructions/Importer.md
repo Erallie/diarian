@@ -4,7 +4,7 @@ share: true
 # Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
-![open-importer](../../../Attachments/open-importer.png)
+![open-importer](../Attachments/open-importer.png)
 
 The **Importer** allows you to import a pre-existing journal from [Diarium](https://diariumapp.com/):
 1. Follow the instructions onscreen to export your [Diarium](https://diariumapp.com/) journal to your local files.
