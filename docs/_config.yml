@@ -8,7 +8,7 @@ url: https://erallie.github.io/diarian
 # Things that cannot be changed
 lsi: false
 safe: true
-source: ./docs #[your repo's top level directory]
+source: . #[your repo's top level directory]
 incremental: false
 highlighter: rouge
 gist:
