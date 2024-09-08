@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+![Heading 2](./Heading%202.md)
 # About Diarian
 Diarian is your all-in-one journaling plugin for [Obsidian](https://obsidian.md).
 
