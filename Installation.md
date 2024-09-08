@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+![Heading 2](./Heading%202.md)
 # Installation
 ## Use BRAT
 Install this plugin using [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) by doing the following:
