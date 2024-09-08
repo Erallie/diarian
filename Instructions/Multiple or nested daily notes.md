@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+![Heading 2](../Heading%202.md)
 # Multiple or nested daily notes
 This plugin reads your settings under **Settings → Daily notes** to create new daily notes.
 - To create **multiple notes per day**, you must change the **Date format** to include the time within the note name.
