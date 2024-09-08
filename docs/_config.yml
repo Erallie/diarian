@@ -3,6 +3,7 @@
 theme: jekyll-theme-minimal
 title: Diarian
 description: The official Diarian wiki
+url: https://erallie.github.io/diarian
 
 # Things that cannot be changed
 lsi: false
