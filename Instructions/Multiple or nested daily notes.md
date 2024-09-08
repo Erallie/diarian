@@ -29,7 +29,7 @@ This plugin reads your settings under **Settings → Daily notes** to create new
 - To create **multiple notes per day**, you must change the **Date format** to include the time within the note name.
 - To create **nested daily notes**, change the **Date format** to include **slashes** ( / ) to indicate folders and subfolders.
 
-> [!example] Format example
+> #### Format example
 > If you create a new daily note when
 > - The **Date format** is set to `YYYY/M-MMMM/dddd, Do [at] h.mm A`
 > - The current date is August 23, 2024
