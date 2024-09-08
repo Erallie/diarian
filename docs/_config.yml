@@ -1,9 +1,12 @@
 # GitHub settings
-#theme: just-the-docs
 theme: just-the-docs
 title: Diarian
 description: The official Diarian wiki
+
 url: https://erallie.github.io/diarian
+
+aux_links:
+  About Diarian: https://erallie.github.io/diarian
 
 # Things that cannot be changed
 lsi: false
