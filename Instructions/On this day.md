@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+![Heading 2](../Heading%202.md)
 # On this day
 Access the **On this day** view from the context menu that opens after clicking the **ribbon icon**.
 
