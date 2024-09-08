@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+# Calendar
 Access the **Calendar** view from the context menu that opens after clicking the **ribbon icon**.
 
 ![open-calendar](../Attachments/open-calendar.png)
@@ -20,7 +21,7 @@ Select a note preview to open it.
 
 ![note-preview-calendar](../Attachments/note-preview-calendar.png)
 
-### Editor navigation
+## Editor navigation
 You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
 - **Diarian: Show daily note in calendar**
 - **Diarian: Go to previous daily note**
