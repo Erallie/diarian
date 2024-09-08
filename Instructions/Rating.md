@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+# Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
 
 ![rating-status-bar](../Attachments/rating-status-bar.png)
@@ -16,7 +17,7 @@ To set a rating, do one of the following things:
 A modal will then open that will allow you to set the rating as you like.
 
 ![rating-modal](../Attachments/rating-modal.png)
-### Customization
+## Customization
 Under **Settings → Diarian → Rating**, you can set the **Filled rating item** and the **Empty rating item** to any Unicode character or emoji you like.
 
 For example, here are some hearts:
