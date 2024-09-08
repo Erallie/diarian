@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+# Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
 ![open-importer](../Attachments/open-importer.png)
@@ -8,7 +9,7 @@ Access the **Importer** from the context menu that opens after clicking the **ri
 The **Importer** allows you to import a pre-existing journal from [Diarium](https://diariumapp.com/):
 1. Follow the instructions onscreen to export your [Diarium](https://diariumapp.com/) journal to your local files.
 2. After they've been exported, choose the exported zip file, and then select **Import**.
-### Importer notes
+## Importer notes
 - Entries will be imported to the location specified under **Settings → Daily notes**.
 	- If you have multiple entries per day, follow the instructions under [Multiple/nested daily notes](Importer.md##multiplenested-daily-notes) before importing your journal.
 - Attachments will be uploaded to the location specified under **Settings → Files and links → Default location for new attachments**.
