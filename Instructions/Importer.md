@@ -1,7 +1,8 @@
 ---
 share: true
 ---
-![Heading 2](../Heading%202.md)
+# Table of Contents
+
 # Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
