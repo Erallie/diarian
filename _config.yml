@@ -7,7 +7,7 @@ description: The official Diarian wiki
 # Things that cannot be changed
 lsi: false
 safe: true
-source: . #[your repo's top level directory]
+source: ./docs #[your repo's top level directory]
 incremental: false
 highlighter: rouge
 gist:
