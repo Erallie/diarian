@@ -1,6 +1,6 @@
 # GitHub settings
 #theme: just-the-docs
-theme: jekyll-theme-minimal
+theme: just-the-docs
 title: Diarian
 description: The official Diarian wiki
 url: https://erallie.github.io/diarian
