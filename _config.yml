@@ -1,5 +1,5 @@
 # GitHub settings
-theme: jekyll-theme-cayman
+theme: just-the-docs
 #remote_theme: pages-themes/cayman@v0.2.0
 title: Diarian
 description: The official Diarian wiki
