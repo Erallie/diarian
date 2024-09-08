@@ -1,7 +1,8 @@
 ---
 share: true
 ---
-![Heading 2](../Heading%202.md)
+# Table of Contents
+
 # Calendar
 Access the **Calendar** view from the context menu that opens after clicking the **ribbon icon**.
 
