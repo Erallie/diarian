@@ -1,6 +1,7 @@
 ---
 share: true
 ---
+![Heading 2](../Heading%202.md)
 # Importer
 Access the **Importer** from the context menu that opens after clicking the **ribbon icon**.
 
