@@ -1,7 +1,8 @@
 ---
 share: true
 ---
-![Heading 2](../Heading%202.md)
+# Table of Contents
+
 # Rating
 A rating will appear in the status bar whenever you're viewing a daily note.
 
