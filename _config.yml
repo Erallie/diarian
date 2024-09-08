@@ -1,6 +1,6 @@
 # GitHub settings
 #theme: just-the-docs
-remote_theme: pages-themes/just-the-docs
+theme: jekyll-theme-minimal
 title: Diarian
 description: The official Diarian wiki
 
