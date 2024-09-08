@@ -41,7 +41,7 @@ Since this plugin started as a project for my own personal use, there are featur
 	- The **Timeline** view
 	- The **Map** view
 		- I recommend using the [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin for this feature. Diarian will automatically use your settings for it.
-- Any embedded feeds & events not mentioned in [Included features](README.md#Included%20features).
+- Any embedded feeds & events not mentioned in [Included features](index.md#Included%20features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.
 	- The [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
