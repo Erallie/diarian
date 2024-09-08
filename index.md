@@ -9,28 +9,28 @@ This plugin adds functionality from the [Diarium](https://diariumapp.com/) journ
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 # Features
 ## Included features
-- A **[[./Instructions/Calendar|Calendar]]** view that displays which days have daily notes on them.
+- A **[Calendar](./Instructions/Calendar.md)** view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
-	- Commands to [[./Instructions/Calendar#Editor navigation|navigate between daily notes]].
+	- Commands to [navigate between daily notes](./Instructions/Calendar.md#Editor%20navigation).
 	- Display attached images on the tiles of days that include them.
-- An **[[./Instructions/On this day|On this day]]** review pane in the sidebar.
+- An **[On this day](./Instructions/On%20this%20day.md)** review pane in the sidebar.
 	- Specify in the settings:
 		- The interval between days to review (eg. every 3 months)
 		- How long ago to start including notes (eg. 6 months ago or earlier)
-	- [[./Instructions/On this day#Notifications|Get notified]] when there are daily notes to review.
-- [[./Instructions/Importer|Import a pre-existing journal]] from [Diarium](https://diariumapp.com/).
-- A [[./Instructions/Rating|rating]] for each daily note that displays in the status bar.
-	- [[./Instructions/Rating#Customization|Customize]] the Unicode characters or emojis used for the rating.
+	- [Get notified](./Instructions/On%20this%20day.md#Notifications) when there are daily notes to review.
+- [Import a pre-existing journal](./Instructions/Importer.md) from [Diarium](https://diariumapp.com/).
+- A [rating](./Instructions/Rating.md) for each daily note that displays in the status bar.
+	- [Customize](./Instructions/Rating.md#Customization) the Unicode characters or emojis used for the rating.
 - Select a template to be automatically inserted when creating a new daily note.
 	- Includes all markdown files in the folder specified under **Settings → Templates → Template folder location**.
 	- Defaults to the template defined under **Settings → Daily notes → Template file location**
-- Insert a [[./Instructions/Timestamp|timestamp]] into the active note.
+- Insert a [timestamp](./Instructions/Timestamp.md) into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
-- Supports [[./Instructions/Multiple or nested daily notes|multiple notes per day]].
+- Supports [multiple notes per day](./Instructions/Multiple%20or%20nested%20daily%20notes.md).
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
-	- Allows for [[./Instructions/Multiple or nested daily notes|nested daily notes]] sorted in folders by year, month, or day (etc).
+	- Allows for [nested daily notes](./Instructions/Multiple%20or%20nested%20daily%20notes.md) sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
 <!-- ## Planned features
 Being in early development, there are some important features I have yet to add:
@@ -41,7 +41,7 @@ Since this plugin started as a project for my own personal use, there are featur
 	- The **Timeline** view
 	- The **Map** view
 		- I recommend using the [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin for this feature. Diarian will automatically use your settings for it.
-- Any embedded feeds & events not mentioned in [[index#Included features|Included features]].
+- Any embedded feeds & events not mentioned in [Included features](index.md#Included%20features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.
 	- The [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
