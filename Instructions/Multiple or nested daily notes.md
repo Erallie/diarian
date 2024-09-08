@@ -23,6 +23,7 @@ share: true
     5. [Rating](https://erallie.github.io/diarian/Instructions/Rating.html "https://erallie.github.io/diarian/Instructions/Rating.html")
         1. [Customization](https://erallie.github.io/diarian/Instructions/Rating.html#customization "https://erallie.github.io/diarian/Instructions/Rating.html#customization")
     6. [Timestamp](https://erallie.github.io/diarian/Instructions/Timestamp.html "https://erallie.github.io/diarian/Instructions/Timestamp.html")
+
 # Multiple or nested daily notes
 This plugin reads your settings under **Settings → Daily notes** to create new daily notes.
 - To create **multiple notes per day**, you must change the **Date format** to include the time within the note name.

@@ -23,6 +23,7 @@ share: true
     5. [Rating](https://erallie.github.io/diarian/Instructions/Rating.html "https://erallie.github.io/diarian/Instructions/Rating.html")
         1. [Customization](https://erallie.github.io/diarian/Instructions/Rating.html#customization "https://erallie.github.io/diarian/Instructions/Rating.html#customization")
     6. [Timestamp](https://erallie.github.io/diarian/Instructions/Timestamp.html "https://erallie.github.io/diarian/Instructions/Timestamp.html")
+
 # On this day
 Access the **On this day** view from the context menu that opens after clicking the **ribbon icon**.
 

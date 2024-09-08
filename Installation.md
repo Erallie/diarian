@@ -23,6 +23,7 @@ share: true
     5. [Rating](https://erallie.github.io/diarian/Instructions/Rating.html "https://erallie.github.io/diarian/Instructions/Rating.html")
         1. [Customization](https://erallie.github.io/diarian/Instructions/Rating.html#customization "https://erallie.github.io/diarian/Instructions/Rating.html#customization")
     6. [Timestamp](https://erallie.github.io/diarian/Instructions/Timestamp.html "https://erallie.github.io/diarian/Instructions/Timestamp.html")
+
 # Installation
 ## Use BRAT
 Install this plugin using [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) by doing the following:
