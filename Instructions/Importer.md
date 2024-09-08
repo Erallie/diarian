@@ -35,7 +35,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 
 ## Importer notes
 - Entries will be imported to the location specified under **Settings → Daily notes**.
-	- If you have multiple entries per day, follow the instructions under [Multiple or nested daily notes](./Multiple%20or%20nested%20daily%20notes.md) before importing your journal.
+	- If you have multiple entries per day, follow the instructions under [Multiple or nested daily notes](./Multiple%20or%20nested%20daily%20notes.md#Multiple%20or%20nested%20daily%20notes) before importing your journal.
 - Attachments will be uploaded to the location specified under **Settings → Files and links → Default location for new attachments**.
 - Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
 	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
