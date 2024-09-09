@@ -198,7 +198,8 @@ img {
     --background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l));
 }
 
-.theme-dark header {
+.theme-dark header,
+.theme-dark header * {
     --bg-l: 30%;
     --bg-l-alt: 32%;
 }
@@ -212,7 +213,8 @@ body.theme-dark {
 }
 
 
-.theme-light header {
+.theme-light header,
+.theme-light header * {
     --bg-l: 65%;
     --bg-l-alt: 60%;
 }
