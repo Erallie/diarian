@@ -11,7 +11,7 @@ This plugin adds functionality from the [Diarium](https://diariumapp.com/) journ
 This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Features
 ### Included features
-- A **[Calendar](./Instructions/Calendar.md#calendar)** view that displays which days have daily notes on them.
+- A **[Calendar](https://erallie.github.io/diarian/Instructions/Calendar.html)** view that displays which days have daily notes on them.
 	- Open daily notes directly from the calendar.
 	- Create daily notes on any day from the calendar.
 	- Commands to [navigate between daily notes](https://erallie.github.io/diarian/Instructions/Calendar.html#editor-navigation).
@@ -21,13 +21,13 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 		- The interval between days to review (eg. every 3 months)
 		- How long ago to start including notes (eg. 6 months ago or earlier)
 	- [Get notified](https://erallie.github.io/diarian/Instructions/On%20this%20day.html#notifications) when there are daily notes to review.
-- [Import a pre-existing journal](./Instructions/Importer.md#importer) from [Diarium](https://diariumapp.com/).
-- A [rating](./Instructions/Rating.md#rating) for each daily note that displays in the status bar.
-	- [Customize](./Instructions/Rating.md#customization) the Unicode characters or emojis used for the rating.
+- [Import a pre-existing journal](https://erallie.github.io/diarian/Instructions/Importer.html) from [Diarium](https://diariumapp.com/).
+- A [rating](https://erallie.github.io/diarian/Instructions/Rating.html) for each daily note that displays in the status bar.
+	- [Customize](https://erallie.github.io/diarian/Instructions/Rating.html#customization) the Unicode characters or emojis used for the rating.
 - Select a template to be automatically inserted when creating a new daily note.
 	- Includes all markdown files in the folder specified under **Settings → Templates → Template folder location**.
 	- Defaults to the template defined under **Settings → Daily notes → Template file location**
-- Insert a [timestamp](./Instructions/Timestamp.md#timestamp) into the active note.
+- Insert a [timestamp](https://erallie.github.io/diarian/Instructions/Timestamp.html) into the active note.
 - Optionally open the **Calendar** view and/or the **On this day** view on startup.
 - Supports [multiple notes per day](https://erallie.github.io/diarian/Instructions/Multiple%20or%20nested%20daily%20notes.html#multiple-or-nested-daily-notes).
 	- The number of dots on each calendar tile is the number of notes that exist on that day.
