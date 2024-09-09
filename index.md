@@ -41,7 +41,7 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	- Specify in the settings:
 		- The interval between days to review (eg. every 3 months)
 		- How long ago to start including notes (eg. 6 months ago or earlier)
-	- [Get notified](./Instructions/On%20this%20day.md#notifications) when there are daily notes to review.
+	- [Get notified](https://erallie.github.io/diarian/Instructions/On%20this%20day.html#notifications) when there are daily notes to review.
 - [Import a pre-existing journal](./Instructions/Importer.md#importer) from [Diarium](https://diariumapp.com/).
 - A [rating](./Instructions/Rating.md#rating) for each daily note that displays in the status bar.
 	- [Customize](./Instructions/Rating.md#customization) the Unicode characters or emojis used for the rating.
