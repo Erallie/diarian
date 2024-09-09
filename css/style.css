@@ -111,10 +111,23 @@ header {
     bottom: 0;
     top: 0;
     left: 0;
-    width: 100px;
-    min-width: 30%;
-    height: 100%;
+    max-width: 100%;
+    width: 300px;
     background-color: white;
+    padding: 10px;
+}
+
+header ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+header>ol {
+    margin: 0;
+}
+
+header ol>li>ol {
+    margin-left: 10px;
 }
 
 body {
