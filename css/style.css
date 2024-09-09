@@ -165,17 +165,18 @@ a {
 }
 
 header a {
-    color: var(--text-normal);
+    color: var(--text-muted);
+
 }
 
 header li {
-    color: var(--text-muted);
+    color: var(--text-faint);
 }
 
 h1:first-child {
     position: sticky;
     top: 0;
-    background-color: hsl(var(--accent-h), calc(var(--bg-s) + 3%), calc(var(--bg-l) - 5%));
+    background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l-alt));
 }
 
 img {
@@ -193,15 +194,18 @@ img {
     --accent-s-pastel: min(var(--accent-s), 50%);
 
     --bg-s: 35%;
+    --bg-l-alt: 70%;
     --background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l));
 }
 
 .theme-dark header {
     --bg-l: 30%;
+    --bg-l-alt: 32%;
 }
 
 body.theme-dark {
     --bg-l: 25%;
+    --bg-l-alt: 27%;
     --text-normal: hsl(0, 0%, 85%);
     --text-muted: hsl(var(--accent-h), 15%, 68%);
     --text-faint: hsl(var(--accent-h), 20%, 51%);
@@ -210,11 +214,24 @@ body.theme-dark {
 
 .theme-light header {
     --bg-l: 65%;
+    --bg-l-alt: 60%;
 }
 
 body.theme-light {
     --bg-l: 75%;
+    --bg-l-alt: 70%;
     --text-normal: hsl(0, 0%, 13%);
     --text-muted: hsl(var(--accent-h), 15%, 33%);
     --text-faint: hsl(var(--accent-h), 20%, 47%);
+}
+
+code {
+    display: inline-block;
+    font-size: 1rem;
+    border-radius: 20px;
+    padding: 4px 6px;
+    overflow: visible;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-color: hsl(var(--accent-h), 35%, var(--bg-l-alt));
 }
