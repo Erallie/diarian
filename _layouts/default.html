@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>{% page_title %}</title>
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
 </head>
 
 <body>
     <header>
-        {% include Templates/heading %}
+        {% include Templates/heading.md %}
     </header>
 
 
     <main>
-        {% content %}
+        {{ content }}
     </main>
 
     <footer>
