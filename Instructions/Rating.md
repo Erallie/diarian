@@ -1,4 +1,5 @@
 ---
+title: Rating
 layout: default
 share: true
 ---

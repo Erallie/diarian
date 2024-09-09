@@ -1,4 +1,5 @@
 ---
+title: Installation
 layout: default
 share: true
 ---

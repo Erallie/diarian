@@ -1,4 +1,5 @@
 ---
+title: Calendar
 layout: default
 share: true
 ---

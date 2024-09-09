@@ -1,4 +1,5 @@
 ---
+title: About Diarian
 layout: default
 share: true
 ---
