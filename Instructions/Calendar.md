@@ -24,7 +24,7 @@ Select a note preview to open it.
 ![note-preview-calendar](/diarian/Attachments/note-preview-calendar.png)
 
 ## Editor navigation
-You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.html/Plugins/Command+palette)):
+You can navigate between daily notes from the editor by using the following commands (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)):
 - **Diarian: Show daily note in calendar**
 - **Diarian: Go to previous daily note**
 - **Diarian: Go to next daily note**
