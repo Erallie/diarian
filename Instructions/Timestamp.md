@@ -5,7 +5,7 @@ share: true
 ---
 # Timestamp
 To insert a timestamp, do one of the following:
-- Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.html/Plugins/Command+palette)).
+- Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
 - Select **Insert timestamp** from the editor context menu.
     ![timestamp-context-menu](/diarian/Attachments/timestamp-context-menu.png)
 
