@@ -1,4 +1,5 @@
 ---
+title: Credits
 layout: default
 share: true
 ---
