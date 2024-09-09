@@ -106,12 +106,15 @@
     font-style: italic;
 }
 
-#navigation {
+header {
     position: fixed;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    width: 100px;
+    min-width: 30%;
     height: 100%;
-    left: 0px;
-    min-width: 100px;
-    width: 20%;
+    background-color: white;
 }
 
 body {
