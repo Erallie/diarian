@@ -175,3 +175,8 @@ h1:first-child {
     top: 0;
     background-color: var(--background-color);
 }
+
+img {
+    max-width: 100%;
+    object-fit: scale-down;
+}
