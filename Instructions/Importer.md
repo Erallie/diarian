@@ -18,7 +18,7 @@ The **Importer** allows you to import a pre-existing journal from [Diarium](http
 - Attachments will be uploaded to the location specified under **Settings → Files and links → Default location for new attachments**.
 - Properties will be populated according to the data exported from [Diarium](https://diariumapp.com/).
 	- The **rating** property name can be set under **Settings → Diarian → Rating → Property name**.
-	- If [Map View](https://obsidian.html/plugins?id=obsidian-map-view) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
+	- If [Map View](https://obsidian.md/plugins?id=obsidian-map-view) is installed, the **location** property will use the name set under **Settings → Map View → Settings for the map view plugin. → Key for front matter location**.
 	- Each tracker exported from [Diarium](https://diariumapp.com/) will be imported as an individual property.
 	- If **How to handle duplicate notes** is set to **Append all new entries**, any existing properties from the new entry will be inserted inside a code block at the beginning of the appended content.
 		- I am currently planning to add options to change this behavior in the near future.
