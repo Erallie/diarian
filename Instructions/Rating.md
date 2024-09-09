@@ -13,8 +13,7 @@ The status bar reads the note properties to determine the rating. If no rating h
 To set a rating, do one of the following things:
 - Click the rating in the status bar (on desktop).
 - Perform the **Diarian: Insert rating** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
-- Select **Insert rating** from the file context menu or the editor context menu.
-    ![rating-context-menu](/diarian/Attachments/rating-context-menu.png)
+- Select **Insert rating** from the file context menu or the editor context menu.<br>![rating-context-menu](/diarian/Attachments/rating-context-menu.png)
 
 A modal will then open that will allow you to set the rating as you like.
 
