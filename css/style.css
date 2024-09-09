@@ -142,6 +142,7 @@ header {
     max-width: 100%;
     flex-basis: 300px;
     background-color: var(--background-color);
+    border-right: 1.5px solid var(--hr-color);
 }
 
 main {
@@ -211,6 +212,7 @@ body.theme-dark {
     --text-normal: hsl(0, 0%, 85%);
     --text-muted: hsl(var(--accent-h), 15%, 68%);
     --text-faint: hsl(var(--accent-h), 20%, 51%);
+    --hr-color: hsl(var(--accent-h), 25%, 15%);
 }
 
 
@@ -226,6 +228,7 @@ body.theme-light {
     --text-normal: hsl(0, 0%, 13%);
     --text-muted: hsl(var(--accent-h), 15%, 33%);
     --text-faint: hsl(var(--accent-h), 20%, 47%);
+    --hr-color: hsl(var(--accent-h), 25%, 90%);
 }
 
 code {
@@ -236,5 +239,17 @@ code {
     overflow: visible;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
-    background-color: hsl(var(--accent-h), 35%, var(--bg-l-alt));
+    background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l-alt));
+}
+
+*:has(>li[id^="fn"]) {
+    font-size: 0.8em;
+    color: var(--text-faint);
+}
+
+*:has(>li[id^="fn"]):before {
+    content: "";
+    display: block;
+    border-top: 1.5px solid var(--hr-color);
+    margin-bottom: 10px;
 }
