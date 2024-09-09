@@ -5,8 +5,8 @@ share: true
 ---
 # Installation
 ## Use BRAT
-Install this plugin using [BRAT](https://obsidian.html/plugins?id=obsidian42-brat) by doing the following:
-1. Make sure the [BRAT](https://obsidian.html/plugins?id=obsidian42-brat) plugin is installed in your vault.
+Install this plugin using [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) by doing the following:
+1. Make sure the [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) plugin is installed in your vault.
 2. Go to **Settings → BRAT → Beta Plugin List → Add Beta Plugin**
 3. Enter `https://github.com/Erallie/diarian` into the input field and select **Add Plugin**.
 
