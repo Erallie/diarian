@@ -545,3 +545,17 @@ ol:has(>li[id^="fn"]):before {
     margin-bottom: 10px;
     margin-left: -20px;
 }
+
+:target {
+    scroll-margin-top: 90px;
+}
+
+blockquote {
+    border-left: 4px solid hsl(var(--accent-plus-60), var(--accent-s-pastel), var(--accent-l-closer));
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+::selection {
+    background-color: hsla(var(--accent-minus-60), 50%, var(--accent-l-closer), 0.25);
+}
