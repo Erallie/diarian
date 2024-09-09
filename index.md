@@ -4,11 +4,11 @@ layout: default
 share: true
 ---
 # About Diarian
-Diarian is your all-in-one journaling plugin for [Obsidian](https://obsidian.html).
+Diarian is your all-in-one journaling plugin for [Obsidian](https://obsidian.md).
 
 This plugin adds functionality from the [Diarium](https://diariumapp.com/) journal app to the note-taking app we all know and love.
 
-This plugin is *unofficial* to both [Obsidian](https://obsidian.html/) and [Diarium](https://diariumapp.com/).
+This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diarium](https://diariumapp.com/).
 ## Features
 ### Included features
 - A **[Calendar](./Instructions/Calendar.html)** view that displays which days have daily notes on them.
@@ -40,17 +40,17 @@ Since this plugin started as a project for my own personal use, there are featur
 - The following views from [Diarium](https://diariumapp.com/):
 	- The **Timeline** view
 	- The **Map** view
-		- I recommend using the [Map View](https://obsidian.html/plugins?id=obsidian-map-view) plugin for this feature. Diarian will automatically use your settings for it.
+		- I recommend using the [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin for this feature. Diarian will automatically use your settings for it.
 - Any embedded feeds & events not mentioned in [Included features](index.html#included-features).
 - I *may* exclude the ability to insert a location based on your device's current location data.
 	- It depends on the feasibility of implementation.
-	- The [Map View](https://obsidian.html/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
+	- The [Map View](https://obsidian.md/plugins?id=obsidian-map-view) plugin can also be used as an alternative for this.
 - The ability to lock and encrypt your vault.
-	- For those features, I suggest [password](https://obsidian.html/plugins?search=password) or [encryption plugins](https://obsidian.html/plugins?search=encrypt) from the Obsidian Marketplace like [Protected Note](https://obsidian.html/plugins?id=protected-note), [Password Protection](https://obsidian.html/plugins?id=password-protection),[^1] or [Lock Screen](https://obsidian.html/plugins?id=obsidian-lock-screen-plugin).[^1]
-	- If you sync your vault, [Remotely Save](https://obsidian.html/plugins?id=remotely-save) has an option to encrypt your files on the remote location. The files on your local computer will not be encrypted though.
+	- For those features, I suggest [password](https://obsidian.md/plugins?search=password) or [encryption plugins](https://obsidian.md/plugins?search=encrypt) from the Obsidian Marketplace like [Protected Note](https://obsidian.md/plugins?id=protected-note), [Password Protection](https://obsidian.md/plugins?id=password-protection),[^1] or [Lock Screen](https://obsidian.md/plugins?id=obsidian-lock-screen-plugin).[^1]
+	- If you sync your vault, [Remotely Save](https://obsidian.md/plugins?id=remotely-save) has an option to encrypt your files on the remote location. The files on your local computer will not be encrypted though.
 
-[^1]: [Password Protection](https://obsidian.html/plugins?id=password-protection) and [Lock Screen](https://obsidian.html/plugins?id=obsidian-lock-screen-plugin) *only* put a password on your vault or a folder in your vault; they do *not* encrypt or decrypt it.
+[^1]: [Password Protection](https://obsidian.md/plugins?id=password-protection) and [Lock Screen](https://obsidian.md/plugins?id=obsidian-lock-screen-plugin) *only* put a password on your vault or a folder in your vault; they do *not* encrypt or decrypt it.
 	
-	If you require an encryption feature, browse the Obsidian Marketplace for [plugins with encryption](https://obsidian.html/plugins?search=encrypt).
+	If you require an encryption feature, browse the Obsidian Marketplace for [plugins with encryption](https://obsidian.md/plugins?search=encrypt).
 
 Feel free to create an [issue](https://github.com/Erallie/diarian/issues) if you'd like me to include any of these features!
