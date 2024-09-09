@@ -1,4 +1,5 @@
 ---
+title: Multiple or nested daily notes
 layout: default
 share: true
 ---
