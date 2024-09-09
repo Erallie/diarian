@@ -155,19 +155,27 @@ main {
 body {
     font-family: "Poppins";
     margin: 0;
-    color: white;
+    color: var(--text-normal);
     background-color: var(--background-color);
     height: 100vh
 }
 
 a {
-    color: #6d9fb2;
+    color: hsl(var(--accent-minus-60), 50%, 50%);
+}
+
+header a {
+    color: var(--text-normal);
+}
+
+header li {
+    color: var(--text-muted);
 }
 
 h1:first-child {
     position: sticky;
     top: 0;
-    background-color: hsl(var(--bg-h), calc(var(--bg-s) + 3%), calc(var(--bg-l) - 5%));
+    background-color: hsl(var(--accent-h), calc(var(--bg-s) + 3%), calc(var(--bg-l) - 5%));
 }
 
 img {
@@ -177,19 +185,28 @@ img {
 }
 
 * {
-    --bg-h: 258;
+    --accent-h: 258;
+    --accent-plus-60: calc(var(--accent-h) + 60);
+    --accent-plus-120: calc(var(--accent-h) + 120);
+    --accent-minus-60: calc(var(--accent-h) - 60);
+    --accent-minus-120: calc(var(--accent-h) - 120);
+    --accent-s-pastel: min(var(--accent-s), 50%);
+
     --bg-s: 35%;
-    --background-color: hsl(var(--bg-h), var(--bg-s), var(--bg-l));
+    --background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l));
 }
 
 .theme-dark header {
     --bg-l: 30%;
 }
 
-
 body.theme-dark {
     --bg-l: 25%;
+    --text-normal: hsl(0, 0%, 85%);
+    --text-muted: hsl(var(--accent-h), 15%, 68%);
+    --text-faint: hsl(var(--accent-h), 20%, 51%);
 }
+
 
 .theme-light header {
     --bg-l: 65%;
@@ -197,4 +214,7 @@ body.theme-dark {
 
 body.theme-light {
     --bg-l: 75%;
+    --text-normal: hsl(0, 0%, 13%);
+    --text-muted: hsl(var(--accent-h), 15%, 33%);
+    --text-faint: hsl(var(--accent-h), 20%, 47%);
 }
