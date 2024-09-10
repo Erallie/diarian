@@ -924,8 +924,6 @@ export class DiarianSettingTab extends PluginSettingTab {
                             break;
                     }
                     break;
-                /* case RatingType.icon:
-                    break; */
                 default:
                     printToConsole(logLevel.error, `Cannot set rating setting:\n${value} is not a valid RatingType!`);
             }
@@ -960,23 +958,6 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         setRatingPrev();
 
-        /* filledStroke.addText(text => text
-            .setPlaceholder('★')
-            .setValue(this.plugin.settings.filledText)
-            .onChange(async (value) => {
-                this.plugin.settings.filledText = value;
-                await this.plugin.saveSettings();
-                setRatingPrev();
-            }));
-        
-        emptyStroke.addText(text => text
-            .setPlaceholder('☆')
-            .setValue(this.plugin.settings.emptyText)
-            .onChange(async (value) => {
-                this.plugin.settings.emptyText = value;
-                await this.plugin.saveSettings();
-                setRatingPrev();
-            })); */
         //#endregion
 
         //#region Danger zone
@@ -1064,9 +1045,18 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         return item;
     }
 
+    /* function setText(value: number, text: string, className: string, combinedFrag?: DocumentFragment) {
+        filledCombined.createEl('span', { text: text.repeat(value), cls: className });
+
+        const item = new DocumentFragment();
+        item.createEl('span', { text: text, cls: className });
+        return item;
+    } */
+
     const filledTypeMapped = ratingTypeMap[settings.filledType as RatingType];
     switch (filledTypeMapped) {
         case RatingType.text:
+            // filledItem = setText(value, settings.filledText, 'text-accent', filledCombined);
             filledItem = settings.filledText;
             filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
             break;
@@ -1080,6 +1070,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     const emptyTypeMapped = ratingTypeMap[settings.emptyType as RatingType];
     switch (emptyTypeMapped) {
         case RatingType.text:
+            // emptyItem = setText(maxValue - value, settings.emptyText, 'text-faint', emptyCombined);
             emptyItem = settings.emptyText;
             emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
@@ -1095,6 +1086,10 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         combinedFrag.append(emptyCombined);
     }
 
+    /* return {
+        filled: filledItem || new DocumentFragment,
+        empty: emptyItem || new DocumentFragment
+    } */
     return {
         filled: filledItem || '',
         empty: emptyItem || ''

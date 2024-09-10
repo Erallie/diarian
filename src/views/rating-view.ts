@@ -57,21 +57,25 @@ export class RatingView extends Modal {
 
         for (let i = 0; i < this.maxValue; i++) {
             ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
+            // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
                 for (let ii = 0; ii < this.maxValue; ii++) {
                     if (ii <= i) {
+                        /* ratingStrokes[ii].empty();
+                        ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
                         ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled);
                         ratingStrokes[ii].className = 'text-accent';
                     }
                     else {
+                        /* ratingStrokes[ii].empty();
+                        ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
                         ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty);
                         ratingStrokes[ii].className = 'text-faint';
                     }
                 }
             });
             ratingStrokes[i].onClickEvent((ev) => {
-                // console.log('got here');
                 let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
                 const file = markdownView?.file;
                 const { folder, format }: any = getModifiedFolderAndFormat();
@@ -83,10 +87,25 @@ export class RatingView extends Modal {
                     this.close();
                 }
             });
+            /* (ratingStrokes[i].firstChild as HTMLElement)?.onClickEvent((ev) => {
+                console.log('got here');
+                let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                const file = markdownView?.file;
+                const { folder, format }: any = getModifiedFolderAndFormat();
+                if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
+                    this.app.fileManager.processFrontMatter(file, (frontmatter) => {
+                        frontmatter[this.plugin.settings.ratingProp] = `${i + 1}/${this.maxValue}`;
+                    });
+                    this.plugin.setStatBarText(this.statBar, `${i + 1}/${this.maxValue}`);
+                    this.close();
+                }
+            }); */
         }
 
         rating.addEventListener('mouseleave', (ev) => {
             for (let i = 0; i < this.maxValue; i++) {
+                /* ratingStrokes[i].empty();
+                ratingStrokes[i].append(setDefaultStroke(i)); */
                 ratingStrokes[i].setText(setDefaultStroke(i));
                 ratingStrokes[i].className = setDefaultClass(i);
             }
