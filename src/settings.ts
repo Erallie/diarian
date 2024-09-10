@@ -843,10 +843,8 @@ export class DiarianSettingTab extends PluginSettingTab {
             .setName('Empty rating item')
             .setDesc('Enter the unicode character or emoji you\'d like to represent an empty rating item.');
 
-        // const ratingPreview = containerEl.createEl('p');
         const ratingPreviewSetting = new Setting(containerEl);
 
-        // const ratingPreview = new DocumentFragment();
 
         function setRatingPrev() {
             const ratingPreview = new DocumentFragment();
@@ -869,16 +867,6 @@ export class DiarianSettingTab extends PluginSettingTab {
             .onChange(async (value) => {
                 this.plugin.settings.filledText = value;
                 await this.plugin.saveSettings();
-
-                /* const ratingPreview = new DocumentFragment();
-
-                ratingPreview.textContent = 'Ratings will appear as:';
-                ratingPreview.createEl('br');
-                // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
-                ratingPreview.createEl('span', { text: this.plugin.settings.filledText.repeat(3), cls: 'text-accent' });
-                ratingPreview.createEl('span', { text: this.plugin.settings.emptyText.repeat(2), cls: 'text-faint' });
-
-                ratingPreviewSetting.setName(ratingPreview); */
                 setRatingPrev();
             }));
 
@@ -888,16 +876,6 @@ export class DiarianSettingTab extends PluginSettingTab {
             .onChange(async (value) => {
                 this.plugin.settings.emptyText = value;
                 await this.plugin.saveSettings();
-
-                /* const ratingPreview = new DocumentFragment();
-
-                ratingPreview.textContent = 'Ratings will appear as:';
-                ratingPreview.createEl('br');
-                // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
-                ratingPreview.createEl('span', { text: this.plugin.settings.filledText.repeat(3), cls: 'text-accent' });
-                ratingPreview.createEl('span', { text: this.plugin.settings.emptyText.repeat(2), cls: 'text-faint' });
-
-                ratingPreviewSetting.setName(ratingPreview); */
                 setRatingPrev();
             }));
         //#endregion
