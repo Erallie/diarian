@@ -152,6 +152,22 @@ export const newNoteModeMap: { [key: string]: NewNoteMode } = {
 };
 //#endregion
 
+//#region Rating type
+export enum RatingType {
+    text = "Unicode character or emoji",
+    image = "Image"//,
+    //icon = "Lucide icon"//,
+    // svg = "Custom svg"
+}
+
+export const ratingTypeMap: { [key: string]: RatingType } = {
+    text: RatingType.text,
+    image: RatingType.image//,
+    //icon: RatingType.icon//,
+    //svg: RatingType.svg
+};
+//#endregion
+
 //#endregion
 
 //#region Setting defaults
@@ -186,8 +202,14 @@ export interface DiarianSettings {
 
     defaultMaxRating: number;
     ratingProp: string;
-    filledStroke: string;
-    emptyStroke: string;
+    filledType: RatingType;
+    emptyType: RatingType;
+    filledText: string;
+    emptyText: string;
+    filledImage: string;
+    emptyImage: string;
+    /* filledIcon: string;
+    emptyIcon: string; */
 
 }
 
@@ -222,8 +244,12 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
 
     defaultMaxRating: 5,
     ratingProp: 'daily rating',
-    filledStroke: '★',
-    emptyStroke: '☆'
+    filledType: 'text' as RatingType,
+    emptyType: 'text' as RatingType,
+    filledText: '★',
+    emptyText: '☆',
+    filledImage: '',
+    emptyImage: '',
 
 }
 //#endregion
@@ -240,6 +266,7 @@ export class DiarianSettingTab extends PluginSettingTab {
 
     display(): void {
         const { containerEl } = this;
+        const plugin = this.plugin;
 
         containerEl.empty();
 
@@ -795,62 +822,83 @@ export class DiarianSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
+        new Setting(containerEl)
+            .setName('Filled rating type')
+            .setDesc('Whether to use a text character, and image, or a lucide icon for the filled rating item.')
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(RatingType)
+                    .setValue(this.plugin.settings.filledType)
+                    .onChange((value) => {
+                        this.plugin.settings.filledType = value as RatingType;
+                        void this.plugin.saveSettings();
+                        this.display();
+                    }));
+
         const filledStroke = new Setting(containerEl)
-            .setName('Filled Rating Item')
+            .setName('Filled rating item')
             .setDesc('Enter the unicode character or emoji you\'d like to represent a filled rating item.');
 
         const emptyStroke = new Setting(containerEl)
-            .setName('Empty Rating Item')
+            .setName('Empty rating item')
             .setDesc('Enter the unicode character or emoji you\'d like to represent an empty rating item.');
 
         // const ratingPreview = containerEl.createEl('p');
         const ratingPreviewSetting = new Setting(containerEl);
 
-        const ratingPreview = new DocumentFragment();
+        // const ratingPreview = new DocumentFragment();
 
-        ratingPreview.textContent = 'Ratings will apear as:';
-        ratingPreview.createEl('br');
-        // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
-        ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
-        ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+        function setRatingPrev() {
+            const ratingPreview = new DocumentFragment();
 
-        ratingPreviewSetting.setName(ratingPreview);
+            ratingPreview.textContent = 'Ratings will appear as:';
+            ratingPreview.createEl('br');
+            const ratingPrevDisplay = new DocumentFragment();
+            displayRating(3, 5, plugin.settings, ratingPrevDisplay);
+            ratingPreview.append(ratingPrevDisplay);
+
+            ratingPreviewSetting.setName(ratingPreview);
+        }
+
+        setRatingPrev();
 
 
         filledStroke.addText(text => text
             .setPlaceholder('★')
-            .setValue(this.plugin.settings.filledStroke)
+            .setValue(this.plugin.settings.filledText)
             .onChange(async (value) => {
-                this.plugin.settings.filledStroke = value;
+                this.plugin.settings.filledText = value;
                 await this.plugin.saveSettings();
 
-                const ratingPreview = new DocumentFragment();
+                /* const ratingPreview = new DocumentFragment();
 
-                ratingPreview.textContent = 'Ratings will apear as:';
+                ratingPreview.textContent = 'Ratings will appear as:';
                 ratingPreview.createEl('br');
                 // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
-                ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
-                ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.filledText.repeat(3), cls: 'text-accent' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.emptyText.repeat(2), cls: 'text-faint' });
 
-                ratingPreviewSetting.setName(ratingPreview);
+                ratingPreviewSetting.setName(ratingPreview); */
+                setRatingPrev();
             }));
 
         emptyStroke.addText(text => text
             .setPlaceholder('☆')
-            .setValue(this.plugin.settings.emptyStroke)
+            .setValue(this.plugin.settings.emptyText)
             .onChange(async (value) => {
-                this.plugin.settings.emptyStroke = value;
+                this.plugin.settings.emptyText = value;
                 await this.plugin.saveSettings();
 
-                const ratingPreview = new DocumentFragment();
+                /* const ratingPreview = new DocumentFragment();
 
-                ratingPreview.textContent = 'Ratings will apear as:';
+                ratingPreview.textContent = 'Ratings will appear as:';
                 ratingPreview.createEl('br');
                 // ratingPreview.createEl('span', { text: 'Ratings will apear as:' }).createEl('br');
-                ratingPreview.createEl('span', { text: this.plugin.settings.filledStroke.repeat(3), cls: 'text-accent' });
-                ratingPreview.createEl('span', { text: this.plugin.settings.emptyStroke.repeat(2), cls: 'text-faint' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.filledText.repeat(3), cls: 'text-accent' });
+                ratingPreview.createEl('span', { text: this.plugin.settings.emptyText.repeat(2), cls: 'text-faint' });
 
-                ratingPreviewSetting.setName(ratingPreview);
+                ratingPreviewSetting.setName(ratingPreview); */
+                setRatingPrev();
             }));
         //#endregion
 
@@ -906,5 +954,79 @@ export class DiarianSettingTab extends PluginSettingTab {
                 printToConsole(logLevel.info, 'Daily notes refreshed!');
             }) */
         //#endregion
+    }
+}
+
+export function displayRating(value: number, maxValue: number, settings: DiarianSettings, combinedFrag?: DocumentFragment) {
+    let filledItem;
+    let emptyItem;
+
+    // const combined = new DocumentFragment();
+
+    const filledCombined = new DocumentFragment();
+    const emptyCombined = new DocumentFragment();
+
+    function setImage(path: string, value: number, className: string, combinedFrag?: DocumentFragment) {
+        let source: string;
+        const imgFile = this.app.vault.getFileByPath(path);
+        if (imgFile)
+            source = this.app.vault.getResourcePath(imgFile);
+        else
+            source = path;
+
+        function appendImg(docFrag: DocumentFragment) {
+            docFrag.createEl('img', { cls: className, attr: { src: source } });
+        }
+
+        const item = new DocumentFragment();
+        appendImg(item);
+
+        if (combinedFrag)
+            for (let i = 0; i < value; i++) {
+                appendImg(combinedFrag);
+            }
+
+        return item;
+    }
+
+    const filledTypeMapped = ratingTypeMap[settings.filledType as RatingType];
+    switch (filledTypeMapped) {
+        case RatingType.text:
+            filledItem = settings.filledText;
+            filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
+            break;
+        case RatingType.image:
+            filledItem = setImage(settings.filledImage, value, 'rating-filled', filledCombined);
+            break;
+        /* case RatingType.icon:
+            break; */
+        default:
+            printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
+    }
+
+    const emptyTypeMapped = ratingTypeMap[settings.emptyType as RatingType];
+    switch (emptyTypeMapped) {
+        case RatingType.text:
+            emptyItem = settings.emptyText;
+            // emptyCombined.textContent = emptyItem.repeat(maxValue - value);
+            emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
+            break;
+        case RatingType.image:
+            emptyItem = setImage(settings.emptyImage, (maxValue - value), 'rating-empty', emptyCombined);
+            break;
+        /* case RatingType.icon:
+            break; */
+        default:
+            printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);
+    }
+
+    if (combinedFrag) {
+        combinedFrag.append(filledCombined);
+        combinedFrag.append(emptyCombined);
+    }
+
+    return {
+        filled: filledItem,
+        empty: emptyItem
     }
 }
