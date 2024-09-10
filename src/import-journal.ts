@@ -1,6 +1,6 @@
 import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown, ProgressBarComponent } from 'obsidian';
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
-import Diarian from 'main';
+import Diarian from 'src/main';
 import { logLevel, printToConsole } from './constants';
 import moment from 'moment';
 import { getModifiedFolderAndFormat } from './get-daily-notes';

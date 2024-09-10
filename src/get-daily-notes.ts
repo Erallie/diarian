@@ -1,5 +1,5 @@
 import { normalizePath, TFile } from 'obsidian';
-import Diarian from 'main';
+import Diarian from 'src/main';
 import moment from 'moment';
 import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
 

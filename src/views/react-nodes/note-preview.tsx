@@ -1,6 +1,6 @@
 import { App, MarkdownRenderer, MarkdownView, TFile, View, WorkspaceLeaf } from "obsidian";
 import { Ref, useRef } from "react";
-import type Diarian from 'main';
+import type Diarian from 'src/main';
 import { isDailyNote, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import { printToConsole, logLevel } from "src/constants";
 import { NotePrevDisplay, notePrevDisplayMap, newNoteModeMap, NewNoteMode } from "src/settings";
