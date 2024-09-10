@@ -7,6 +7,8 @@ import moment from 'moment';
 
 //#region constants
 //#region enums & values
+
+//#region Calendar type
 export enum CalType {
     /* gregory = 'gregory',
     hebrew = 'hebrew',
@@ -29,7 +31,6 @@ export enum CalendarType {
     iso8601 = 'iso8601'
 }
 
-
 export const calendarTypeMap: { [key: string]: CalType } = {
     gregory: CalType.gregory,
     hebrew: CalType.hebrew,
@@ -43,19 +44,21 @@ export const convertCalType: { [key: string]: CalendarType } = {
     islamic: CalendarType.islamic,
     iso8601: CalendarType.iso8601
 };
+//#endregion
 
+//#region Leaf type
 export enum LeafType {
     tab = 'Tab',
     right = 'Right sidebar',
     left = 'Left sidebar'
 };
 
-
 export const leafTypeMap: { [key: string]: LeafType } = {
     tab: LeafType.tab,
     right: LeafType.right,
     left: LeafType.left
 };
+//#endregion
 
 const getMaxTimeSpan = (unit: Unit) => {
     switch (unit) {
@@ -70,6 +73,9 @@ const getMaxTimeSpan = (unit: Unit) => {
     }
 };
 
+//#region Notifications
+
+//#region Notification type
 export enum NotifType {
     none = 'None',
     modal = 'Pop-up modal',
@@ -81,7 +87,9 @@ export const notifTypeMap: { [key: string]: NotifType } = {
     modal: NotifType.modal,
     notice: NotifType.notice
 };
+//#endregion
 
+//#region Notification info
 export interface NotifInfo {
     lastNotified: moment.Moment;
     needToRemind: boolean;
@@ -92,7 +100,9 @@ export const DEFAULT_NOTIF_INFO: NotifInfo = {
     lastNotified: moment().subtract(1, 'day'),
     needToRemind: false,
 }
+//#endregion
 
+//#region Reminder delay
 export enum ReminderDelay {
     fiveMin = 'In 5 minutes',
     tenMin = 'In 10 minutes',
@@ -110,7 +120,11 @@ export const reminderDelayMap: { [key: string]: ReminderDelay } = {
     twoHr: ReminderDelay.twoHr,
     fourHr: ReminderDelay.fourHr
 };
+//#endregion
 
+//#endregion
+
+//#region Note preview display
 export enum NotePrevDisplay {
     callout = 'Callouts',
     quote = 'Blockquotes',
@@ -122,7 +136,9 @@ export const notePrevDisplayMap: { [key: string]: NotePrevDisplay } = {
     quote: NotePrevDisplay.quote,
     text: NotePrevDisplay.text
 };
+//#endregion
 
+//#region New note mode
 export enum NewNoteMode {
     reading = "Reading",
     source = "Source mode",
@@ -134,6 +150,8 @@ export const newNoteModeMap: { [key: string]: NewNoteMode } = {
     source: NewNoteMode.source,
     live: NewNoteMode.live
 };
+//#endregion
+
 //#endregion
 
 //#region Setting defaults
