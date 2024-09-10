@@ -1018,15 +1018,16 @@ export class DiarianSettingTab extends PluginSettingTab {
 export function displayRating(value: number, maxValue: number, settings: DiarianSettings, combinedFrag?: DocumentFragment) {
     let filledItem;
     let emptyItem;
+    const app: App = this.app;
 
     const filledCombined = new DocumentFragment();
     const emptyCombined = new DocumentFragment();
 
     function setImage(path: string, value: number, className: string, combinedFrag?: DocumentFragment) {
         let source: string;
-        const imgFile = this.app.vault.getFileByPath(normalizePath(path));
+        const imgFile = app.vault.getFileByPath(normalizePath(path));
         if (imgFile)
-            source = this.app.vault.getResourcePath(imgFile);
+            source = app.vault.getResourcePath(imgFile);
         else
             source = path;
 
