@@ -800,6 +800,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         //#region Rating
         new Setting(containerEl).setName('Rating').setHeading();
 
+        //#region settings
         new Setting(containerEl)
             .setName('Default maximum') //Default maximum
             .setDesc('The default maximum value a rating can have.')
@@ -825,7 +826,7 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         const filledType = new Setting(containerEl)
             .setName('Filled rating type')
-            .setDesc('Whether to use a text character or an image for the filled rating item.')
+            .setDesc('Whether to use a text character, an image, or a Lucide icon for the filled rating item.')
 
         const filledStroke = new Setting(containerEl)
             .setName('Filled rating item')
@@ -834,13 +835,15 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         const emptyType = new Setting(containerEl)
             .setName('Empty rating type')
-            .setDesc('Whether to use a text character or an image for the empty rating item.')
+            .setDesc('Whether to use a text character, an image, or a Lucide icon for the empty rating item.')
 
         const emptyStroke = new Setting(containerEl)
             .setName('Empty rating item')
             .setDesc('Enter the unicode character or emoji you\'d like to represent an empty rating item.');
 
         const ratingPreviewSetting = new Setting(containerEl);
+
+        //#endregion
 
 
         function setRatingPrev() {
@@ -860,24 +863,26 @@ export class DiarianSettingTab extends PluginSettingTab {
             setting.clear();
 
             let article = 'a';
-            let textPlaceholder = '★';
-            let iconPlaceholder = 'lucide-star';
+            let textPlaceholder = DEFAULT_SETTINGS.filledText;
+            let iconPlaceholder = DEFAULT_SETTINGS.filledIcon;
 
             if (which == 'empty') {
                 article = 'an';
-                textPlaceholder = '☆';
-                iconPlaceholder = 'lucide-star-off';
+                textPlaceholder = DEFAULT_SETTINGS.emptyText;
+                iconPlaceholder = DEFAULT_SETTINGS.emptyIcon;
             }
             else if (which != 'filled') {
                 printToConsole(logLevel.error, `Cannot set rating setting:\n${which} is not a valid rating stroke!`);
                 return;
             }
 
+            const desc = new DocumentFragment();
+
             const valueMapped = ratingTypeMap[value as RatingType];
             switch (valueMapped) {
                 case RatingType.text:
                     setting
-                        .setDesc(`Enter the path to the imagethe unicode character or emoji you'd like to represent ${article} ${which} rating item.`)
+                        .setDesc(`Enter the unicode character or emoji you'd like to represent ${article} ${which} rating item.`)
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
@@ -902,8 +907,11 @@ export class DiarianSettingTab extends PluginSettingTab {
                     }
                     break;
                 case RatingType.image:
+                    desc.textContent = `Enter the path to the image you'd like to represent ${article} ${which} rating item.`
+                    desc.createEl('br');
+                    desc.createEl('span', { text: 'Can be a local path to an image in your vault or a url to an image online.' });
                     setting
-                        .setDesc(`Enter the path to the image you'd like to represent ${article} ${which} rating item.`)
+                        .setDesc(desc)
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
@@ -928,8 +936,11 @@ export class DiarianSettingTab extends PluginSettingTab {
                     }
                     break;
                 case RatingType.icon:
+                    desc.textContent = `Enter the name of the `;
+                    desc.createEl('a', { text: 'Lucide', attr: { href: 'https://lucide.dev/' } });
+                    desc.createEl('span', { text: ` icon you'd like to represent ${article} ${which} rating item.` })
                     setting
-                        .setDesc(`Enter the name of the lucide icon you'd like to represent ${article} ${which} rating item.`)
+                        .setDesc(desc)
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
