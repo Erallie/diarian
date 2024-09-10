@@ -1038,8 +1038,6 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     let filledItem;
     let emptyItem;
 
-    // const combined = new DocumentFragment();
-
     const filledCombined = new DocumentFragment();
     const emptyCombined = new DocumentFragment();
 
@@ -1075,8 +1073,6 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         case RatingType.image:
             filledItem = setImage(settings.filledImage, value, 'rating-stroke', filledCombined);
             break;
-        /* case RatingType.icon:
-            break; */
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
     }
@@ -1085,14 +1081,11 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     switch (emptyTypeMapped) {
         case RatingType.text:
             emptyItem = settings.emptyText;
-            // emptyCombined.textContent = emptyItem.repeat(maxValue - value);
             emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
         case RatingType.image:
             emptyItem = setImage(settings.emptyImage, (maxValue - value), 'rating-stroke', emptyCombined);
             break;
-        /* case RatingType.icon:
-            break; */
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);
     }
@@ -1104,6 +1097,6 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
 
     return {
         filled: filledItem || '',
-        empty: emptyItem || '',
+        empty: emptyItem || ''
     }
 }

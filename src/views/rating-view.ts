@@ -33,21 +33,21 @@ export class RatingView extends Modal {
         rating.id = 'rating';
 
         let ratingStrokes: HTMLSpanElement[] = [];
-        const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
+        // const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
 
         const setDefaultStroke = (currentVal: number) => {
             // console.log(filled);
             // If filled stroke
-            if (currentVal <= this.defaultVal)
-                return filled;
+            if (currentVal < this.defaultVal)
+                return displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled;
             // If empty stroke
             else
-                return empty;
+                return displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty;
         }
 
         const setDefaultClass = (currentVal: number) => {
             // If filled stroke
-            if (currentVal <= this.defaultVal)
+            if (currentVal < this.defaultVal)
                 return '';
             // If empty stroke
             else
@@ -56,22 +56,23 @@ export class RatingView extends Modal {
 
 
         for (let i = 0; i < this.maxValue; i++) {
-            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i + 1), cls: setDefaultClass(i + 1) });
+            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
                 for (let ii = 0; ii < this.maxValue; ii++) {
                     if (ii <= i) {
-                        ratingStrokes[ii].setText(filled);
+                        ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled);
                         ratingStrokes[ii].className = 'text-accent';
                     }
                     else {
-                        ratingStrokes[ii].setText(empty);
+                        ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty);
                         ratingStrokes[ii].className = 'text-faint';
                     }
                 }
             });
             ratingStrokes[i].onClickEvent((ev) => {
-                const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
+                // console.log('got here');
+                let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
                 const file = markdownView?.file;
                 const { folder, format }: any = getModifiedFolderAndFormat();
                 if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
@@ -86,8 +87,8 @@ export class RatingView extends Modal {
 
         rating.addEventListener('mouseleave', (ev) => {
             for (let i = 0; i < this.maxValue; i++) {
-                ratingStrokes[i].setText(setDefaultStroke(i + 1));
-                ratingStrokes[i].className = setDefaultClass(i + 1);
+                ratingStrokes[i].setText(setDefaultStroke(i));
+                ratingStrokes[i].className = setDefaultClass(i);
             }
         })
 

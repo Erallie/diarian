@@ -92,8 +92,9 @@ button.notification-select-button {
 } */
 
 img.rating-stroke {
-    max-width: 1em;
-    max-height: 1em;
+    vertical-align: middle;
+    /* max-width: 1em; */
+    height: 1em;
     object-fit: contain;
 }
 

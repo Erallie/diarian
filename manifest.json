@@ -3,7 +3,7 @@
     "name": "Diarian",
     "version": "1.1.40",
     "minAppVersion": "1.6.7",
-    "description": "All-in-one journaling plugin.",
+    "description": "All-in-one journaling toolkit.",
     "author": "Erika Gozar",
     "isDesktopOnly": false
 }
