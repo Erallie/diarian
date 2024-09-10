@@ -1,5 +1,6 @@
 import { App, MarkdownView, Modal, Setting, TFile } from 'obsidian';
 import { isDailyNote, getModifiedFolderAndFormat } from '../get-daily-notes';
+import { displayRating } from 'src/settings';
 import type Diarian from 'main';
 
 export class RatingView extends Modal {
@@ -32,14 +33,16 @@ export class RatingView extends Modal {
         rating.id = 'rating';
 
         let ratingStrokes: HTMLSpanElement[] = [];
+        const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
 
         const setDefaultStroke = (currentVal: number) => {
+            // console.log(filled);
             // If filled stroke
             if (currentVal <= this.defaultVal)
-                return this.plugin.settings.filledStroke;
+                return filled;
             // If empty stroke
             else
-                return this.plugin.settings.emptyStroke;
+                return empty;
         }
 
         const setDefaultClass = (currentVal: number) => {
@@ -58,11 +61,11 @@ export class RatingView extends Modal {
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
                 for (let ii = 0; ii < this.maxValue; ii++) {
                     if (ii <= i) {
-                        ratingStrokes[ii].setText(this.plugin.settings.filledStroke);
+                        ratingStrokes[ii].setText(filled);
                         ratingStrokes[ii].className = 'text-accent';
                     }
                     else {
-                        ratingStrokes[ii].setText(this.plugin.settings.emptyStroke);
+                        ratingStrokes[ii].setText(empty);
                         ratingStrokes[ii].className = 'text-faint';
                     }
                 }

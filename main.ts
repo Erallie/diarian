@@ -3,7 +3,7 @@ import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
-import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType } from 'src/settings';
+import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType, displayRating } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat, getPriorNotes } from 'src/get-daily-notes';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { RatingView } from 'src/views/rating-view';
@@ -414,12 +414,13 @@ export default class Diarian extends Plugin {
                 printToConsole(logLevel.warn, 'The rating cannot be larger than the maximum!');
             }
             else {
-                const fullRating = new DocumentFragment;
+                const fullRating = new DocumentFragment;/* 
                 const filledText = this.settings.filledStroke.repeat(value);
                 const emptyText = this.settings.emptyStroke.repeat(max - value);
                 // fullRating.textContent = filledText;
                 fullRating.createEl('span', { text: filledText, cls: 'text-accent' });
-                fullRating.createEl('span', { text: emptyText, cls: 'text-faint' });
+                fullRating.createEl('span', { text: emptyText, cls: 'text-faint' }); */
+                displayRating(value, max, this.settings, fullRating);
                 statBar.setText(fullRating);
 
             }

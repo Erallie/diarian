@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Platform } from 'obsidian';
+import { App, PluginSettingTab, Setting, Platform, normalizePath } from 'obsidian';
 import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
@@ -822,22 +822,18 @@ export class DiarianSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
-        new Setting(containerEl)
+        const filledType = new Setting(containerEl)
             .setName('Filled rating type')
-            .setDesc('Whether to use a text character, and image, or a lucide icon for the filled rating item.')
-            .addDropdown((dropdown) =>
-                dropdown
-                    .addOptions(RatingType)
-                    .setValue(this.plugin.settings.filledType)
-                    .onChange((value) => {
-                        this.plugin.settings.filledType = value as RatingType;
-                        void this.plugin.saveSettings();
-                        this.display();
-                    }));
+            .setDesc('Whether to use a text character or an image for the filled rating item.')
 
         const filledStroke = new Setting(containerEl)
             .setName('Filled rating item')
             .setDesc('Enter the unicode character or emoji you\'d like to represent a filled rating item.');
+
+
+        const emptyType = new Setting(containerEl)
+            .setName('Empty rating type')
+            .setDesc('Whether to use a text character or an image for the empty rating item.')
 
         const emptyStroke = new Setting(containerEl)
             .setName('Empty rating item')
@@ -858,10 +854,113 @@ export class DiarianSettingTab extends PluginSettingTab {
             ratingPreviewSetting.setName(ratingPreview);
         }
 
+        function setRatingSetting(setting: Setting, value: RatingType, which: string) {
+
+            setting.clear();
+
+            let article = 'a';
+            let textPlaceholder = '★';
+
+            if (which == 'empty') {
+                article = 'an';
+                textPlaceholder = '☆';
+            }
+            else if (which != 'filled') {
+                printToConsole(logLevel.error, `Cannot set rating setting:\n${which} is not a valid rating stroke!`);
+                return;
+            }
+
+            const valueMapped = ratingTypeMap[value as RatingType];
+            switch (valueMapped) {
+                case RatingType.text:
+                    setting
+                        .setDesc(`Enter the path to the imagethe unicode character or emoji you'd like to represent ${article} ${which} rating item.`)
+                    switch (which) {
+                        case 'filled':
+                            setting.addText(text => text
+                                .setPlaceholder(textPlaceholder)
+                                .setValue(plugin.settings.filledText)
+                                .onChange(async (value) => {
+                                    plugin.settings.filledText = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                        case 'empty':
+                            setting.addText(text => text
+                                .setPlaceholder(textPlaceholder)
+                                .setValue(plugin.settings.emptyText)
+                                .onChange(async (value) => {
+                                    plugin.settings.emptyText = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                    }
+                    break;
+                case RatingType.image:
+                    setting
+                        .setDesc(`Enter the path to the image you'd like to represent ${article} ${which} rating item.`)
+                    switch (which) {
+                        case 'filled':
+                            setting.addText(text => text
+                                .setPlaceholder('')
+                                .setValue(plugin.settings.filledImage)
+                                .onChange(async (value) => {
+                                    plugin.settings.filledImage = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                        case 'empty':
+                            setting.addText(text => text
+                                .setPlaceholder('')
+                                .setValue(plugin.settings.emptyImage)
+                                .onChange(async (value) => {
+                                    plugin.settings.emptyImage = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                    }
+                    break;
+                /* case RatingType.icon:
+                    break; */
+                default:
+                    printToConsole(logLevel.error, `Cannot set rating setting:\n${value} is not a valid RatingType!`);
+            }
+
+            setRatingPrev();
+        }
+
+        filledType
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(RatingType)
+                    .setValue(this.plugin.settings.filledType)
+                    .onChange(async (value) => {
+                        this.plugin.settings.filledType = value as RatingType;
+                        void this.plugin.saveSettings();
+                        setRatingSetting(filledStroke, value as RatingType, 'filled');
+                    }));
+
+        emptyType
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(RatingType)
+                    .setValue(this.plugin.settings.emptyType)
+                    .onChange(async (value) => {
+                        this.plugin.settings.emptyType = value as RatingType;
+                        void this.plugin.saveSettings();
+                        setRatingSetting(emptyStroke, value as RatingType, 'empty');
+                    }));
+
+        setRatingSetting(filledStroke, this.plugin.settings.filledType as RatingType, 'filled');
+        setRatingSetting(emptyStroke, this.plugin.settings.emptyType as RatingType, 'empty');
+
         setRatingPrev();
 
-
-        filledStroke.addText(text => text
+        /* filledStroke.addText(text => text
             .setPlaceholder('★')
             .setValue(this.plugin.settings.filledText)
             .onChange(async (value) => {
@@ -869,7 +968,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 await this.plugin.saveSettings();
                 setRatingPrev();
             }));
-
+        
         emptyStroke.addText(text => text
             .setPlaceholder('☆')
             .setValue(this.plugin.settings.emptyText)
@@ -877,7 +976,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 this.plugin.settings.emptyText = value;
                 await this.plugin.saveSettings();
                 setRatingPrev();
-            }));
+            })); */
         //#endregion
 
         //#region Danger zone
@@ -946,7 +1045,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
 
     function setImage(path: string, value: number, className: string, combinedFrag?: DocumentFragment) {
         let source: string;
-        const imgFile = this.app.vault.getFileByPath(path);
+        const imgFile = this.app.vault.getFileByPath(normalizePath(path));
         if (imgFile)
             source = this.app.vault.getResourcePath(imgFile);
         else
@@ -974,7 +1073,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
             filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
             break;
         case RatingType.image:
-            filledItem = setImage(settings.filledImage, value, 'rating-filled', filledCombined);
+            filledItem = setImage(settings.filledImage, value, 'rating-stroke', filledCombined);
             break;
         /* case RatingType.icon:
             break; */
@@ -990,7 +1089,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
             emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
         case RatingType.image:
-            emptyItem = setImage(settings.emptyImage, (maxValue - value), 'rating-empty', emptyCombined);
+            emptyItem = setImage(settings.emptyImage, (maxValue - value), 'rating-stroke', emptyCombined);
             break;
         /* case RatingType.icon:
             break; */
@@ -1004,7 +1103,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     }
 
     return {
-        filled: filledItem,
-        empty: emptyItem
+        filled: filledItem || '',
+        empty: emptyItem || '',
     }
 }

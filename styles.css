@@ -91,6 +91,12 @@ button.notification-select-button {
     align-content: baseline;
 } */
 
+img.rating-stroke {
+    max-width: 1em;
+    max-height: 1em;
+    object-fit: contain;
+}
+
 .rating-show-settings-text {
     font-size: var(--font-ui-smaller);
     color: var(--text-faint);
