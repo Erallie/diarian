@@ -113,6 +113,12 @@ img.rating-stroke {
     width: 1em;
 }
 
+.rating-strike {
+    font-size: 1em;
+}
+
+/* .rating-stroke>svg */
+
 /* .rating span img.rating-stroke {
     vertical-align: bottom;
 } */
@@ -181,11 +187,11 @@ img.rating-stroke {
 
 /* #endregion */
 
-.rating span {
+.rating>span {
     font-size: 2.5em;
 }
 
-.rating span:hover {
+.rating>span:hover {
     cursor: pointer;
 }
 

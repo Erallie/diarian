@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, Platform, normalizePath, moment } from 'obsidian';
+import { App, PluginSettingTab, Setting, Platform, normalizePath, moment, setIcon } from 'obsidian';
 import type Diarian from 'src/main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
@@ -154,15 +154,15 @@ export const newNoteModeMap: { [key: string]: NewNoteMode } = {
 //#region Rating type
 export enum RatingType {
     text = "Unicode character or emoji",
-    image = "Image"//,
-    //icon = "Lucide icon"//,
+    image = "Image",
+    icon = "Lucide icon"//,
     // svg = "Custom svg"
 }
 
 export const ratingTypeMap: { [key: string]: RatingType } = {
     text: RatingType.text,
-    image: RatingType.image//,
-    //icon: RatingType.icon//,
+    image: RatingType.image,
+    icon: RatingType.icon//,
     //svg: RatingType.svg
 };
 //#endregion
@@ -207,8 +207,8 @@ export interface DiarianSettings {
     emptyText: string;
     filledImage: string;
     emptyImage: string;
-    /* filledIcon: string;
-    emptyIcon: string; */
+    filledIcon: string;
+    emptyIcon: string;
 
 }
 
@@ -249,6 +249,8 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     emptyText: '☆',
     filledImage: '',
     emptyImage: '',
+    filledIcon: 'lucide-star',
+    emptyIcon: 'lucide-star-off'
 
 }
 //#endregion
@@ -859,10 +861,12 @@ export class DiarianSettingTab extends PluginSettingTab {
 
             let article = 'a';
             let textPlaceholder = '★';
+            let iconPlaceholder = 'lucide-star';
 
             if (which == 'empty') {
                 article = 'an';
                 textPlaceholder = '☆';
+                iconPlaceholder = 'lucide-star-off';
             }
             else if (which != 'filled') {
                 printToConsole(logLevel.error, `Cannot set rating setting:\n${which} is not a valid rating stroke!`);
@@ -917,6 +921,32 @@ export class DiarianSettingTab extends PluginSettingTab {
                                 .setValue(plugin.settings.emptyImage)
                                 .onChange(async (value) => {
                                     plugin.settings.emptyImage = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                    }
+                    break;
+                case RatingType.icon:
+                    setting
+                        .setDesc(`Enter the name of the lucide icon you'd like to represent ${article} ${which} rating item.`)
+                    switch (which) {
+                        case 'filled':
+                            setting.addText(text => text
+                                .setPlaceholder(iconPlaceholder)
+                                .setValue(plugin.settings.filledIcon)
+                                .onChange(async (value) => {
+                                    plugin.settings.filledIcon = value;
+                                    await plugin.saveSettings();
+                                    setRatingPrev();
+                                }));
+                            break;
+                        case 'empty':
+                            setting.addText(text => text
+                                .setPlaceholder(iconPlaceholder)
+                                .setValue(plugin.settings.emptyIcon)
+                                .onChange(async (value) => {
+                                    plugin.settings.emptyIcon = value;
                                     await plugin.saveSettings();
                                     setRatingPrev();
                                 }));
@@ -1022,7 +1052,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     const filledCombined = new DocumentFragment();
     const emptyCombined = new DocumentFragment();
 
-    function setImage(path: string, value: number, className: string, combinedFrag?: DocumentFragment) {
+    function setImage(path: string, value: number, combinedFrag?: DocumentFragment) {
         let source: string;
         const imgFile = app.vault.getFileByPath(normalizePath(path));
         if (imgFile)
@@ -1031,7 +1061,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
             source = path;
 
         function appendImg(docFrag: DocumentFragment) {
-            docFrag.createEl('img', { cls: className, attr: { src: source } });
+            docFrag.createEl('img', { cls: 'rating-stroke', attr: { src: source } });
         }
 
         const item = new DocumentFragment();
@@ -1040,6 +1070,26 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         if (combinedFrag)
             for (let i = 0; i < value; i++) {
                 appendImg(combinedFrag);
+            }
+
+        return item;
+    }
+
+    function setLucideIcon(icon: string, value: number, className: string, combinedFrag?: DocumentFragment) {
+        function appendIcon(docFrag: DocumentFragment, className?: string) {
+            let cls = 'rating-stroke'
+            if (className)
+                cls += ' ' + className;
+            const iconSpan = docFrag.createSpan({ cls: cls });
+            setIcon(iconSpan, icon);
+        }
+
+        const item = new DocumentFragment();
+        appendIcon(item);
+
+        if (combinedFrag)
+            for (let i = 0; i < value; i++) {
+                appendIcon(combinedFrag, className);
             }
 
         return item;
@@ -1061,7 +1111,10 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
             filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
             break;
         case RatingType.image:
-            filledItem = setImage(settings.filledImage, value, 'rating-stroke', filledCombined);
+            filledItem = setImage(settings.filledImage, value, filledCombined);
+            break;
+        case RatingType.icon:
+            filledItem = setLucideIcon(settings.filledIcon, value, 'text-accent', filledCombined);
             break;
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
@@ -1075,7 +1128,10 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
             emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
         case RatingType.image:
-            emptyItem = setImage(settings.emptyImage, (maxValue - value), 'rating-stroke', emptyCombined);
+            emptyItem = setImage(settings.emptyImage, (maxValue - value), emptyCombined);
+            break;
+        case RatingType.icon:
+            emptyItem = setLucideIcon(settings.emptyIcon, (maxValue - value), 'text-faint', filledCombined);
             break;
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);

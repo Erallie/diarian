@@ -32,11 +32,17 @@ export class RatingView extends Modal {
         const rating = contentEl.createEl('p', { cls: 'rating' });
         rating.id = 'rating';
 
+        const maxValue = this.maxValue;
+        const defaultVal = this.defaultVal;
+        const plugin = this.plugin;
+        const thisComp = this;
+        const statBar = this.statBar;
+        const app = this.app;
+
         let ratingStrokes: HTMLSpanElement[] = [];
         // const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
 
         const setDefaultStroke = (currentVal: number) => {
-            // console.log(filled);
             // If filled stroke
             if (currentVal < this.defaultVal)
                 return displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled;
@@ -54,38 +60,55 @@ export class RatingView extends Modal {
                 return 'text-faint';
         }
 
+        function strokeHover(i: number) {
+            for (let ii = 0; ii < maxValue; ii++) {
+                if (ii <= i) {
+                    /* ratingStrokes[ii].empty();
+                    ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
+                    ratingStrokes[ii].setText(displayRating(defaultVal, maxValue, plugin.settings).filled);
+                    ratingStrokes[ii].className = 'text-accent';
+                }
+                else {
+                    /* ratingStrokes[ii].empty();
+                    ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
+                    ratingStrokes[ii].setText(displayRating(defaultVal, maxValue, plugin.settings).empty);
+                    ratingStrokes[ii].className = 'text-faint';
+                }
+            }
+        }
+
+        function endClick(i: number) {
+            let markdownView = app.workspace.getActiveViewOfType(MarkdownView);
+            const file = markdownView?.file;
+            const { folder, format }: any = getModifiedFolderAndFormat();
+            if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
+                app.fileManager.processFrontMatter(file, (frontmatter) => {
+                    frontmatter[plugin.settings.ratingProp] = `${i + 1}/${maxValue}`;
+                });
+                plugin.setStatBarText(statBar, `${i + 1}/${maxValue}`);
+                thisComp.close();
+            }
+        }
 
         for (let i = 0; i < this.maxValue; i++) {
             ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
-                for (let ii = 0; ii < this.maxValue; ii++) {
-                    if (ii <= i) {
-                        /* ratingStrokes[ii].empty();
-                        ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
-                        ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled);
-                        ratingStrokes[ii].className = 'text-accent';
-                    }
-                    else {
-                        /* ratingStrokes[ii].empty();
-                        ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
-                        ratingStrokes[ii].setText(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty);
-                        ratingStrokes[ii].className = 'text-faint';
-                    }
-                }
+                strokeHover(i);
             });
-            ratingStrokes[i].onClickEvent((ev) => {
-                let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-                const file = markdownView?.file;
-                const { folder, format }: any = getModifiedFolderAndFormat();
-                if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
-                    this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-                        frontmatter[this.plugin.settings.ratingProp] = `${i + 1}/${this.maxValue}`;
-                    });
-                    this.plugin.setStatBarText(this.statBar, `${i + 1}/${this.maxValue}`);
-                    this.close();
-                }
+            ratingStrokes[i].addEventListener('touchstart', (ev) => {
+                strokeHover(i);
+            })
+            ratingStrokes[i].addEventListener('touchmove', (ev) => {
+                strokeHover(i);
+            })
+
+            ratingStrokes[i].addEventListener('mouseup', (ev) => {
+                endClick(i);
+            });
+            ratingStrokes[i].addEventListener('touchend', (ev) => {
+                endClick(i);
             });
             /* (ratingStrokes[i].firstChild as HTMLElement)?.onClickEvent((ev) => {
                 console.log('got here');
