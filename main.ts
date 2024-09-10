@@ -13,8 +13,6 @@ import { Notification } from 'src/views/react-nodes/notification';
 
 export default class Diarian extends Plugin {
     settings: DiarianSettings;
-    view: View;
-    app: App;
     dailyNotes: TFile[];
     defaultRating: number;
     defMaxRating: number;

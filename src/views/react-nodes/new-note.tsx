@@ -1,8 +1,7 @@
 import { StrictMode, useEffect, useState } from "react";
 import { Root, createRoot } from "react-dom/client";
-import { App, Modal, TFile, TFolder, normalizePath } from "obsidian";
+import { App, Modal, TFile, TFolder, normalizePath, moment } from "obsidian";
 import type Diarian from 'main';
-import moment from 'moment';
 import { writeNote, DupEntry, DupProps } from 'src/import-journal';
 import { getDailyNoteSettings, getModifiedFolderAndFormat } from 'src/get-daily-notes';
 import { printToConsole, logLevel } from "src/constants";

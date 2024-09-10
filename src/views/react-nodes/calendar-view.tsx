@@ -1,8 +1,7 @@
 import { StrictMode, useState, useEffect } from "react";
-import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
+import { App, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar, OnArgs } from 'react-calendar';
-import moment from 'moment';
 import type Diarian from 'main';
 import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "src/get-daily-notes";
 import NotePreview from './note-preview';

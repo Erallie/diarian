@@ -1,8 +1,7 @@
-import { App, PluginSettingTab, Setting, Platform, normalizePath } from 'obsidian';
+import { App, PluginSettingTab, Setting, Platform, normalizePath, moment } from 'obsidian';
 import type Diarian from 'main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
-import moment from 'moment';
 
 
 //#region constants
@@ -800,7 +799,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         new Setting(containerEl).setName('Rating').setHeading();
 
         new Setting(containerEl)
-            .setName('Default Maximum')
+            .setName('Default maximum') //Default maximum
             .setDesc('The default maximum value a rating can have.')
             .addSlider(slider => slider
                 .setLimits(1, 10, 1)
@@ -811,7 +810,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
-        new Setting(containerEl)
+        new Setting(containerEl) //Property name
             .setName('Property name')
             .setDesc('The name of the property ratings will be stored in.')
             .addText(text => text

@@ -1,10 +1,9 @@
-import { App, Modal } from 'obsidian';
+import { App, Modal, moment } from 'obsidian';
 import { StrictMode } from "react";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'main';
 import { ReminderDelay, reminderDelayMap } from 'src/settings';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
-import moment from 'moment';
 
 export class Notification extends Modal {
     root: Root | null = null;
