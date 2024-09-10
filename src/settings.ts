@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting, Platform, normalizePath, moment } from 'obsidian';
-import type Diarian from 'main';
+import type Diarian from 'src/main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
 

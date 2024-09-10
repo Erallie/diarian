@@ -1,7 +1,7 @@
 import { App, Modal, moment } from 'obsidian';
 import { StrictMode } from "react";
 import { Root, createRoot } from "react-dom/client";
-import type Diarian from 'main';
+import type Diarian from 'src/main';
 import { ReminderDelay, reminderDelayMap } from 'src/settings';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
 

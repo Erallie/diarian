@@ -5,7 +5,7 @@
         "inlineSourceMap": true,
         "inlineSources": true,
         "module": "ESNext",
-        "target": "ES6",
+        "target": "es2018",
         "allowJs": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
@@ -22,11 +22,7 @@
         ]
     },
     "include": [
-        "**/*.ts"
-,
-"main.tsx",
-"context.js",
-"context.tsx",
-"hooks.tsx"
-]
+        "src/**/*.ts",
+        "src/**/*.tsx",
+    ]
 }

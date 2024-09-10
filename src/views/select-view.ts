@@ -1,5 +1,5 @@
 import { App, Modal, Setting, ButtonComponent } from 'obsidian';
-import type Diarian from 'main';
+import type Diarian from 'src/main';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { ImportView } from 'src/import-journal';

@@ -1,6 +1,6 @@
 import { App, Modal, Setting, Platform, TFile, normalizePath, htmlToMarkdown, ProgressBarComponent, moment } from 'obsidian';
 import { ZipReader, BlobReader, TextWriter, BlobWriter } from '@zip.js/zip.js';
-import Diarian from 'main';
+import Diarian from 'src/main';
 import { logLevel, printToConsole } from './constants';
 import { getModifiedFolderAndFormat } from './get-daily-notes';
 import { openDailyNote } from './views/react-nodes/note-preview';

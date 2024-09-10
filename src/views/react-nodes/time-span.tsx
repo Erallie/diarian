@@ -1,7 +1,7 @@
 import { TFile, View, App, moment } from "obsidian";
 import NotePreview from "./note-preview";
 import { getTimeSpanTitle } from 'src/constants';
-import type Diarian from 'main';
+import type Diarian from 'src/main';
 
 interface Props {
     notes: TFile[];

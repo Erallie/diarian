@@ -1,5 +1,5 @@
 import { normalizePath, TFile, moment } from 'obsidian';
-import Diarian from 'main';
+import Diarian from 'src/main';
 import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
 
 // const vault: Vault = app.vault;

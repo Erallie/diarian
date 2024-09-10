@@ -647,71 +647,73 @@ export default class Diarian extends Plugin {
 
     insertTimestamp(editor: Editor, view: MarkdownView) {
 
-        if (view.file) {
-            let dateString = '';
-            const now = moment();
-
-            const { folder, format }: any = getModifiedFolderAndFormat();
-            const noteDate = getMoment(view.file, folder, format);
-
-            if (!isSameDay(noteDate, now))
-                dateString = now.format(this.settings.dateStampFormat) + ' ';
-
-            let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
-
-            const cursor = editor.getCursor();
-            // if (editor.getLine(cursor.line) == '' && editor.getLine(cursor.line + 1) == '' && editor.getLine(cursor.line + 2) == '')
-            const cursorLine = editor.getLine(cursor.line);
-            const textBeforeCursor = cursorLine.slice(0, cursor.ch);
-
-            let newCursorLine = cursor.line;
-
-            if (textBeforeCursor != '') {
-                fullString = '\n\n' + fullString/*  + '\n\n' */;
-                // newCursorLine += 4;
-                newCursorLine += 2;
-            }
-            //if text before cursor is empty but line before cursor is not
-            else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') {
-                fullString = '\n' + fullString /* + '\n\n' */;
-                // newCursorLine += 3;
-                newCursorLine += 1;
-            }
-            /* else {
-                fullString += '\n\n';
-                newCursorLine += 2;
-            } */
-
-
-            //if text after cursor is empty
-            const textAfterCursor = cursorLine.slice(cursor.ch);
-            if (textAfterCursor != '' || cursor.line == editor.lastLine() /* || cursor.line + 1 == editor.lastLine() */) {
-                fullString += '\n\n';
-                newCursorLine += 2;
-            }
-            //if the next line is the last line
-            else if (cursor.line + 1 == editor.lastLine()) {
-                fullString += '\n';
-                newCursorLine += 2;
-            }
-            //if the next line is not empty
-            else if (cursor.line + 1 < editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
-                fullString += '\n';
-                newCursorLine += 2;
-            }
-            // if the next line is empty and there's a line after that.
-            else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
-                newCursorLine += 2;
-            }
-
-
-
-            editor.replaceRange(
-                fullString,
-                editor.getCursor()
-            );
-            editor.setCursor(newCursorLine, 0);
+        if (!view.file) {
+            return;
         }
+
+        let dateString = '';
+        const now = moment();
+
+        const { folder, format }: any = getModifiedFolderAndFormat();
+        const noteDate = getMoment(view.file, folder, format);
+
+        if (!isSameDay(noteDate, now))
+            dateString = now.format(this.settings.dateStampFormat) + ' ';
+
+        let fullString = `— ${dateString}${now.format(this.settings.timeStampFormat)} —`;
+
+        const cursor = editor.getCursor();
+        // if (editor.getLine(cursor.line) == '' && editor.getLine(cursor.line + 1) == '' && editor.getLine(cursor.line + 2) == '')
+        const cursorLine = editor.getLine(cursor.line);
+        const textBeforeCursor = cursorLine.slice(0, cursor.ch);
+
+        let newCursorLine = cursor.line;
+
+        if (textBeforeCursor != '') {
+            fullString = '\n\n' + fullString/*  + '\n\n' */;
+            // newCursorLine += 4;
+            newCursorLine += 2;
+        }
+        //if text before cursor is empty but line before cursor is not
+        else if (cursor.line - 1 >= 0 && editor.getLine(cursor.line - 1) != '') {
+            fullString = '\n' + fullString /* + '\n\n' */;
+            // newCursorLine += 3;
+            newCursorLine += 1;
+        }
+        /* else {
+            fullString += '\n\n';
+            newCursorLine += 2;
+        } */
+
+
+        //if text after cursor is empty
+        const textAfterCursor = cursorLine.slice(cursor.ch);
+        if (textAfterCursor != '' || cursor.line == editor.lastLine() /* || cursor.line + 1 == editor.lastLine() */) {
+            fullString += '\n\n';
+            newCursorLine += 2;
+        }
+        //if the next line is the last line
+        else if (cursor.line + 1 == editor.lastLine()) {
+            fullString += '\n';
+            newCursorLine += 2;
+        }
+        //if the next line is not empty
+        else if (cursor.line + 1 < editor.lastLine() && editor.getLine(cursor.line + 1) != '') {
+            fullString += '\n';
+            newCursorLine += 2;
+        }
+        // if the next line is empty and there's a line after that.
+        else if (cursor.line + 2 <= editor.lastLine() && editor.getLine(cursor.line + 1) == '') {
+            newCursorLine += 2;
+        }
+
+
+
+        editor.replaceRange(
+            fullString,
+            editor.getCursor()
+        );
+        editor.setCursor(newCursorLine, 0);
 
     }
 }//
