@@ -29,6 +29,8 @@
     color: var(--text-faint);
 }
 
+/* #region notification */
+
 /* .notification-text span {
     font-size: var(--h3-size);
     line-height: var(--h3-line-height);
@@ -77,9 +79,26 @@ button.notification-select-button {
     vertical-align: middle;
 } */
 
+/* #endregion */
+
 /* .svg {
     align-content: baseline;
 } */
+
+.note-preview-container {
+    padding-bottom: var(--size-4-1);
+    /* background-color: black; */
+}
+
+.note-preview:hover,
+.rating-status-bar:hover,
+.rating-show-settings-text:hover {
+    cursor: pointer;
+}
+
+/* #region rating */
+
+/* #region rating stroke */
 
 img.rating-stroke {
     vertical-align: text-bottom;
@@ -89,6 +108,18 @@ img.rating-stroke {
     margin: 0.1em;
 }
 
+.rating-stroke>svg {
+    height: 1em;
+    width: 1em;
+}
+
+/* .rating span img.rating-stroke {
+    vertical-align: bottom;
+} */
+
+/* #endregion */
+
+/* #region rating settings */
 .rating-show-settings-text {
     font-size: var(--font-ui-smaller);
     color: var(--text-faint);
@@ -136,6 +167,10 @@ img.rating-stroke {
     vertical-align: middle;
 }
 
+/* #endregion */
+
+/* #region status bar */
+
 .rating-status-bar:hover {
     background-color: var(--interactive-hover);
 }
@@ -144,24 +179,11 @@ img.rating-stroke {
     color: var(--text-accent-hover);
 }
 
-.note-preview-container {
-    padding-bottom: var(--size-4-1);
-    /* background-color: black; */
-}
-
-.note-preview:hover,
-.rating-status-bar:hover,
-.rating-show-settings-text:hover {
-    cursor: pointer;
-}
+/* #endregion */
 
 .rating span {
     font-size: 2.5em;
 }
-
-/* .rating span img.rating-stroke {
-    vertical-align: bottom;
-} */
 
 .rating span:hover {
     cursor: pointer;
@@ -170,6 +192,10 @@ img.rating-stroke {
 .rating {
     text-align: center;
 }
+
+/* #endregion */
+
+/* #region select view */
 
 /* .bottom-modal-text.is-ios,
 .bottom-modal-text.is-android,
@@ -188,29 +214,14 @@ div.modal:has(.select-view-button) {
     margin-bottom: var(--size-2-3);
 }
 
+/* #endregion */
+
+/* #region new note stuff */
 .new-note-div {
     width: 100%;
     display: flex;
     margin-bottom: var(--size-4-2);
 }
-
-body:not(.is-ios):not(.is-android) .new-note-input,
-body.is-ios .new-note-input.dropdown,
-body.is-android .new-note-input.dropdown {
-    padding-inline-start: var(--size-4-6);
-}
-
-body.is-ios .new-note-input:not(.dropdown),
-body.is-android .new-note-input:not(.dropdown) {
-    padding-inline-start: calc(var(--size-4-6) / 2);
-    padding-inline-end: calc(var(--size-4-6) / 2);
-}
-
-/* body.is-ios .new-note-input.dropdown,
-body.is-android .new-note-input.dropdown {
-    text-align: center;
-} */
-
 
 div.modal:has(.new-note-div) {
     /* width: 50%; */
@@ -248,6 +259,24 @@ div.modal:has(.new-note-div) {
     /* font-family: var(--font-interface); */
 }
 
+/* #region new note input */
+body:not(.is-ios):not(.is-android) .new-note-input,
+body.is-ios .new-note-input.dropdown,
+body.is-android .new-note-input.dropdown {
+    padding-inline-start: var(--size-4-6);
+}
+
+body.is-ios .new-note-input:not(.dropdown),
+body.is-android .new-note-input:not(.dropdown) {
+    padding-inline-start: calc(var(--size-4-6) / 2);
+    padding-inline-end: calc(var(--size-4-6) / 2);
+}
+
+/* body.is-ios .new-note-input.dropdown,
+body.is-android .new-note-input.dropdown {
+    text-align: center;
+} */
+
 body:not(.is-ios):not(.is-android) .new-note-input {
     flex: 2;
 }
@@ -277,7 +306,6 @@ body.is-android .new-note-input {
     box-sizing: border-box;
     /* box-sizing: border-box; */
     /* user-select: var(--text-selection); */
-    /* #endregion */
 }
 
 /* .new-note-input::before {} */
@@ -307,10 +335,26 @@ svg.new-note-input {
     color: var(--icon-color);
 }
 
+/* #endregion */
 
-/* .instructions {} */
+/* #endregion */
 
-/* button */
+
+.calendar-container,
+.on-this-day-container {
+    width: 500px;
+    max-width: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    /* padding-left: min(50px, 5%);
+    padding-right: min(50px, 5%); */
+    /* background-color: var(--background-secondary); */
+}
+
+
+/* #region Calendar classes */
+
 .cal-new-note-button {
     /* display: inline; */
     /* flex: 1; */
@@ -331,18 +375,7 @@ div.cal-date-heading-container {
     align-items: center;
 }
 
-.calendar-container,
-.on-this-day-container {
-    width: 500px;
-    max-width: 100%;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    /* padding-left: min(50px, 5%);
-    padding-right: min(50px, 5%); */
-    /* background-color: var(--background-secondary); */
-}
-
+/* #region calendar dots */
 span.calendar-dot {
     padding: 0;
     letter-spacing: 0.1em;
@@ -363,7 +396,9 @@ div.dot-container {
     overflow-y: clip;
 }
 
-/* Calendar classes */
+/* #endregion */
+
+/* #region other calendar things */
 .react-calendar {
     width: 350px;
     max-width: 100%;
@@ -698,3 +733,7 @@ button.react-calendar__tile--active:enabled:focus:has(img) {
 button.filled-date:enabled:focus:has(img) {
     opacity: 0.35;
 } */
+
+/* #endregion */
+
+/* #endregion */
