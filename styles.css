@@ -82,21 +82,54 @@ button.notification-select-button {
 } */
 
 img.rating-stroke {
-    vertical-align: middle;
+    vertical-align: text-bottom;
     /* max-width: 1em; */
     height: 1em;
     object-fit: contain;
+    margin: 0.1em;
 }
 
 .rating-show-settings-text {
     font-size: var(--font-ui-smaller);
     color: var(--text-faint);
+    position: relative;
 }
 
-.rating-show-settings-text svg {
+.rating-settings-svg svg {
+    /* 
     display: inline-block;
     vertical-align: middle;
+    align-content: center;
+    height: 100%; */
+    /* position: absolute; */
+    vertical-align: center;
 }
+
+.rating-settings-svg {
+    position: relative;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    /* align-content: center; */
+    /* height: 100%; */
+}
+
+.rating-settings-svg>svg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+/* .rating-show-settings-text svg>path {
+    text-align: center;
+    vertical-align: middle;
+} */
+
+/* .rating-show-settings-text span {
+    display: inline-block;
+    vertical-align: middle;
+} */
 
 .rating-show-settings-text span {
     display: inline-block;
@@ -125,6 +158,10 @@ img.rating-stroke {
 .rating span {
     font-size: 2.5em;
 }
+
+/* .rating span img.rating-stroke {
+    vertical-align: bottom;
+} */
 
 .rating span:hover {
     cursor: pointer;
