@@ -1078,7 +1078,7 @@ export function displayRating(settings: DiarianSettings, value?: number, maxValu
         const item = new DocumentFragment();
         appendImg(item);
 
-        if (combinedFrag && newValue)
+        if (combinedFrag && typeof newValue == 'number')
             for (let i = 0; i < newValue; i++) {
                 appendImg(combinedFrag);
             }
@@ -1141,10 +1141,10 @@ export function displayRating(settings: DiarianSettings, value?: number, maxValu
                 emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
         case RatingType.image:
-            emptyItem = setImage(settings.emptyImage, ((maxValue && value) ? maxValue - value : undefined), emptyCombined);
+            emptyItem = setImage(settings.emptyImage, ((maxValue && typeof value == 'number') ? maxValue - value : undefined), emptyCombined);
             break;
         case RatingType.icon:
-            emptyItem = setLucideIcon(settings.emptyIcon, 'text-faint', ((maxValue && value) ? maxValue - value : undefined), filledCombined);
+            emptyItem = setLucideIcon(settings.emptyIcon, 'text-faint', ((maxValue && typeof value == 'number') ? maxValue - value : undefined), filledCombined);
             break;
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);
