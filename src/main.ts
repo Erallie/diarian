@@ -415,7 +415,6 @@ export default class Diarian extends Plugin {
                 const fullRating = new DocumentFragment;
                 displayRating(this.settings, value, max, fullRating);
                 statBar.setText(fullRating);
-
             }
         }
     }
