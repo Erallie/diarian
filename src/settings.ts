@@ -247,8 +247,8 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     emptyType: 'text' as RatingType,
     filledText: '★',
     emptyText: '☆',
-    filledImage: '',
-    emptyImage: '',
+    filledImage: 'https://i.ibb.co/4gvm0FT/Heart-cropped.png',
+    emptyImage: 'https://i.ibb.co/d59d4zH/Heart-cropped-empty.png',
     filledIcon: 'lucide-star',
     emptyIcon: 'lucide-star-off'
 
@@ -915,7 +915,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
-                                .setPlaceholder('')
+                                .setPlaceholder(DEFAULT_SETTINGS.filledImage)
                                 .setValue(plugin.settings.filledImage)
                                 .onChange(async (value) => {
                                     plugin.settings.filledImage = value;
@@ -925,7 +925,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                             break;
                         case 'empty':
                             setting.addText(text => text
-                                .setPlaceholder('')
+                                .setPlaceholder(DEFAULT_SETTINGS.emptyImage)
                                 .setValue(plugin.settings.emptyImage)
                                 .onChange(async (value) => {
                                     plugin.settings.emptyImage = value;
