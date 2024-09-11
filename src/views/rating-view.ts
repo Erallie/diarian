@@ -84,6 +84,25 @@ export class RatingView extends Modal {
             }
         }
 
+        function getCurrentEl(ev: TouchEvent, func: Function) {
+            // Get the current coordinates of the touch point
+            const touchX = ev.touches[0].clientX;
+            const touchY = ev.touches[0].clientY;
+
+            // Get the current element at the touch point
+            const newTarget = document.elementFromPoint(touchX, touchY);
+            if (newTarget) {
+                let id: string | number = newTarget.id.slice('rating-'.length);
+                if (id == '0')
+                    id = 0;
+                else if (id)
+                    id = Number.parseInt(id);
+
+                if (typeof id === 'number')
+                    func(id);
+            }
+        }
+
         for (let i = 0; i < this.maxValue; i++) {
             ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
@@ -95,34 +114,14 @@ export class RatingView extends Modal {
                 strokeHover(i);
             })
             ratingStrokes[i].addEventListener('touchmove', (ev) => {
-                const newTarget = ev.target as HTMLElement;
-                if (newTarget) {
-                    let id: string | number = newTarget.id.slice('rating-'.length);
-                    if (id == '0')
-                        id = 0;
-                    else if (id)
-                        id = Number.parseInt(id);
-
-                    if (typeof id === 'number')
-                        strokeHover(id);
-                }
+                getCurrentEl(ev, strokeHover);
             })
 
             ratingStrokes[i].addEventListener('mouseup', (ev) => {
                 endClick(i);
             });
             ratingStrokes[i].addEventListener('touchend', (ev) => {
-                const newTarget = ev.target as HTMLElement;
-                if (newTarget) {
-                    let id: string | number = newTarget.id.slice('rating-'.length);
-                    if (id == '0')
-                        id = 0;
-                    else if (id)
-                        id = Number.parseInt(id);
-
-                    if (typeof id === 'number')
-                        endClick(i);
-                }
+                getCurrentEl(ev, endClick);
             });
             /* (ratingStrokes[i].firstChild as HTMLElement)?.onClickEvent((ev) => {
                 console.log('got here');
