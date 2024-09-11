@@ -95,14 +95,34 @@ export class RatingView extends Modal {
                 strokeHover(i);
             })
             ratingStrokes[i].addEventListener('touchmove', (ev) => {
-                strokeHover(i);
+                const newTarget = ev.target as HTMLElement;
+                if (newTarget) {
+                    let id: string | number = newTarget.id.slice('rating-'.length);
+                    if (id == '0')
+                        id = 0;
+                    else if (id)
+                        id = Number.parseInt(id);
+
+                    if (typeof id === 'number')
+                        strokeHover(id);
+                }
             })
 
             ratingStrokes[i].addEventListener('mouseup', (ev) => {
                 endClick(i);
             });
             ratingStrokes[i].addEventListener('touchend', (ev) => {
-                endClick(i);
+                const newTarget = ev.target as HTMLElement;
+                if (newTarget) {
+                    let id: string | number = newTarget.id.slice('rating-'.length);
+                    if (id == '0')
+                        id = 0;
+                    else if (id)
+                        id = Number.parseInt(id);
+
+                    if (typeof id === 'number')
+                        endClick(i);
+                }
             });
             /* (ratingStrokes[i].firstChild as HTMLElement)?.onClickEvent((ev) => {
                 console.log('got here');
