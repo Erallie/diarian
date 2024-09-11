@@ -852,7 +852,7 @@ export class DiarianSettingTab extends PluginSettingTab {
             ratingPreview.textContent = 'Ratings will appear as:';
             ratingPreview.createEl('br');
             const ratingPrevDisplay = new DocumentFragment();
-            displayRating(3, 5, plugin.settings, ratingPrevDisplay);
+            displayRating(plugin.settings, 3, 5, ratingPrevDisplay);
             ratingPreview.append(ratingPrevDisplay);
 
             ratingPreviewSetting.setName(ratingPreview);
@@ -1055,7 +1055,7 @@ export class DiarianSettingTab extends PluginSettingTab {
     }
 }
 
-export function displayRating(value: number, maxValue: number, settings: DiarianSettings, combinedFrag?: DocumentFragment) {
+export function displayRating(settings: DiarianSettings, value?: number, maxValue?: number, combinedFrag?: DocumentFragment) {
     let filledItem;
     let emptyItem;
     const app: App = this.app;
@@ -1063,7 +1063,7 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
     const filledCombined = new DocumentFragment();
     const emptyCombined = new DocumentFragment();
 
-    function setImage(path: string, value: number, combinedFrag?: DocumentFragment) {
+    function setImage(path: string, newValue?: number, combinedFrag?: DocumentFragment) {
         let source: string;
         const imgFile = app.vault.getFileByPath(normalizePath(path));
         if (imgFile)
@@ -1078,15 +1078,15 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         const item = new DocumentFragment();
         appendImg(item);
 
-        if (combinedFrag)
-            for (let i = 0; i < value; i++) {
+        if (combinedFrag && newValue)
+            for (let i = 0; i < newValue; i++) {
                 appendImg(combinedFrag);
             }
 
         return item;
     }
 
-    function setLucideIcon(icon: string, value: number, className: string, combinedFrag?: DocumentFragment) {
+    function setLucideIcon(icon: string, className: string, newValue?: number, combinedFrag?: DocumentFragment) {
         function appendIcon(docFrag: DocumentFragment, className?: string) {
             let cls = 'rating-stroke'
             if (className)
@@ -1098,8 +1098,8 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         const item = new DocumentFragment();
         appendIcon(item);
 
-        if (combinedFrag)
-            for (let i = 0; i < value; i++) {
+        if (combinedFrag && newValue)
+            for (let i = 0; i < newValue; i++) {
                 appendIcon(combinedFrag, className);
             }
 
@@ -1119,13 +1119,14 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         case RatingType.text:
             // filledItem = setText(value, settings.filledText, 'text-accent', filledCombined);
             filledItem = settings.filledText;
-            filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
+            if (value)
+                filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
             break;
         case RatingType.image:
             filledItem = setImage(settings.filledImage, value, filledCombined);
             break;
         case RatingType.icon:
-            filledItem = setLucideIcon(settings.filledIcon, value, 'text-accent', filledCombined);
+            filledItem = setLucideIcon(settings.filledIcon, 'text-accent', value, filledCombined);
             break;
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
@@ -1136,13 +1137,14 @@ export function displayRating(value: number, maxValue: number, settings: Diarian
         case RatingType.text:
             // emptyItem = setText(maxValue - value, settings.emptyText, 'text-faint', emptyCombined);
             emptyItem = settings.emptyText;
-            emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
+            if (value && maxValue)
+                emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
             break;
         case RatingType.image:
-            emptyItem = setImage(settings.emptyImage, (maxValue - value), emptyCombined);
+            emptyItem = setImage(settings.emptyImage, ((maxValue && value) ? maxValue - value : undefined), emptyCombined);
             break;
         case RatingType.icon:
-            emptyItem = setLucideIcon(settings.emptyIcon, (maxValue - value), 'text-faint', filledCombined);
+            emptyItem = setLucideIcon(settings.emptyIcon, 'text-faint', ((maxValue && value) ? maxValue - value : undefined), filledCombined);
             break;
         default:
             printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);

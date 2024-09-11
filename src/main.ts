@@ -418,7 +418,7 @@ export default class Diarian extends Plugin {
                 // fullRating.textContent = filledText;
                 fullRating.createEl('span', { text: filledText, cls: 'text-accent' });
                 fullRating.createEl('span', { text: emptyText, cls: 'text-faint' }); */
-                displayRating(value, max, this.settings, fullRating);
+                displayRating(this.settings, value, max, fullRating);
                 statBar.setText(fullRating);
 
             }

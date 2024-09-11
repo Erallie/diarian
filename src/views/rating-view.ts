@@ -31,13 +31,7 @@ export class RatingView extends Modal {
 
         const rating = contentEl.createEl('p', { cls: 'rating' });
         rating.id = 'rating';
-
-        const maxValue = this.maxValue;
-        const defaultVal = this.defaultVal;
-        const plugin = this.plugin;
         const thisComp = this;
-        const statBar = this.statBar;
-        const app = this.app;
 
         let ratingStrokes: HTMLSpanElement[] = [];
         // const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
@@ -45,10 +39,10 @@ export class RatingView extends Modal {
         const setDefaultStroke = (currentVal: number) => {
             // If filled stroke
             if (currentVal < this.defaultVal)
-                return displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled;
+                return displayRating(this.plugin.settings).filled;
             // If empty stroke
             else
-                return displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty;
+                return displayRating(this.plugin.settings).empty;
         }
 
         const setDefaultClass = (currentVal: number) => {
@@ -61,31 +55,31 @@ export class RatingView extends Modal {
         }
 
         function strokeHover(i: number) {
-            for (let ii = 0; ii < maxValue; ii++) {
+            for (let ii = 0; ii < thisComp.maxValue; ii++) {
                 if (ii <= i) {
                     /* ratingStrokes[ii].empty();
                     ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
-                    ratingStrokes[ii].setText(displayRating(defaultVal, maxValue, plugin.settings).filled);
+                    ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).filled);
                     ratingStrokes[ii].className = 'text-accent';
                 }
                 else {
                     /* ratingStrokes[ii].empty();
                     ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
-                    ratingStrokes[ii].setText(displayRating(defaultVal, maxValue, plugin.settings).empty);
+                    ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).empty);
                     ratingStrokes[ii].className = 'text-faint';
                 }
             }
         }
 
         function endClick(i: number) {
-            let markdownView = app.workspace.getActiveViewOfType(MarkdownView);
+            let markdownView = thisComp.app.workspace.getActiveViewOfType(MarkdownView);
             const file = markdownView?.file;
             const { folder, format }: any = getModifiedFolderAndFormat();
             if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
-                app.fileManager.processFrontMatter(file, (frontmatter) => {
-                    frontmatter[plugin.settings.ratingProp] = `${i + 1}/${maxValue}`;
+                thisComp.app.fileManager.processFrontMatter(file, (frontmatter) => {
+                    frontmatter[thisComp.plugin.settings.ratingProp] = `${i + 1}/${thisComp.maxValue}`;
                 });
-                plugin.setStatBarText(statBar, `${i + 1}/${maxValue}`);
+                thisComp.plugin.setStatBarText(thisComp.statBar, `${i + 1}/${thisComp.maxValue}`);
                 thisComp.close();
             }
         }
@@ -139,60 +133,21 @@ export class RatingView extends Modal {
         const settings = contentEl.createDiv();
 
 
-        if (this.settingsShown) {
-            new Setting(settings)
-                .setName('Maximum value')
-                .setDesc('The maximum value the rating can have.')
-                .addSlider((slider) =>
-                    slider
-                        .setLimits(1, 10, 1)
-                        .setValue(this.maxValue)
-                        .setDynamicTooltip()
-                        .onChange((value) => {
-                            this.maxValue = value;
-                            this.onClose();
-                            this.onOpen();
-                        }));
-            //#region hideText
-            const hideText = new DocumentFragment;
-            const icon = hideText.createSpan({ cls: 'rating-settings-svg' });
-            setIcon(icon, 'lucide-chevron-down');
-
-            hideText.createEl('span', { text: 'Hide settings' });
-            //#endregion
-            showSettingsEl.setText(hideText);
-        }
-        else {
-
-            //#region showText
-            const showText = new DocumentFragment;
-            const icon = showText.createSpan({ cls: 'rating-settings-svg' });
-            setIcon(icon, 'lucide-chevron-right');
-
-            showText.createEl('span', { text: 'Show settings' });
-            //#endregion
-            showSettingsEl.setText(showText);
-            settings.empty();
-        }
-
-
-        showSettingsEl.onClickEvent((ev) => {
-            this.settingsShown = !this.settingsShown;
-            // handleSettings();
-
-            if (this.settingsShown) {
+        function toggleSettings() {
+            // console.log('got here');
+            if (thisComp.settingsShown) {
                 new Setting(settings)
                     .setName('Maximum value')
                     .setDesc('The maximum value the rating can have.')
                     .addSlider((slider) =>
                         slider
                             .setLimits(1, 10, 1)
-                            .setValue(this.maxValue)
+                            .setValue(thisComp.maxValue)
                             .setDynamicTooltip()
                             .onChange((value) => {
-                                this.maxValue = value;
-                                this.onClose();
-                                this.onOpen();
+                                thisComp.maxValue = value;
+                                thisComp.onClose();
+                                thisComp.onOpen();
                             }));
                 //#region hideText
                 const hideText = new DocumentFragment;
@@ -214,7 +169,17 @@ export class RatingView extends Modal {
                 //#endregion
                 showSettingsEl.setText(showText);
                 settings.empty();
-            }
+            }//
+        }
+
+        toggleSettings();
+
+
+        showSettingsEl.onClickEvent((ev) => {
+            this.settingsShown = !this.settingsShown;
+            // handleSettings();
+
+            toggleSettings();
         })
 
 
@@ -222,11 +187,11 @@ export class RatingView extends Modal {
 
     onClose() {
         const { contentEl } = this;
-        let ratingStrokes: HTMLElement[] | null[] = [];
+        /* let ratingStrokes: HTMLElement[] | null[] = [];
         for (let i = 0; i < this.maxValue; i++) {
             ratingStrokes[i] = document.getElementById(`rating-${i}`);
         }
-        const rating = document.getElementById('rating');
+        const rating = document.getElementById('rating'); */
         //remove event listeners here
         contentEl.empty();
 
