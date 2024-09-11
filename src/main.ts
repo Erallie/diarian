@@ -102,7 +102,7 @@ export default class Diarian extends Plugin {
 
         const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
         if (markdownView) {
-            this.onFileOpen(ratingStatBar, markdownView.file);
+            await this.onFileOpen(ratingStatBar, markdownView.file);
         }
         //#endregion
 
@@ -310,8 +310,8 @@ export default class Diarian extends Plugin {
 
 
         this.registerEvent( //On file open
-            this.app.workspace.on('file-open', (file) => {
-                this.onFileOpen(ratingStatBar, file);
+            this.app.workspace.on('file-open', async (file) => {
+                await this.onFileOpen(ratingStatBar, file);
             }))
 
     }
