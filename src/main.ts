@@ -412,12 +412,7 @@ export default class Diarian extends Plugin {
                 printToConsole(logLevel.warn, 'The rating cannot be larger than the maximum!');
             }
             else {
-                const fullRating = new DocumentFragment;/* 
-                const filledText = this.settings.filledStroke.repeat(value);
-                const emptyText = this.settings.emptyStroke.repeat(max - value);
-                // fullRating.textContent = filledText;
-                fullRating.createEl('span', { text: filledText, cls: 'text-accent' });
-                fullRating.createEl('span', { text: emptyText, cls: 'text-faint' }); */
+                const fullRating = new DocumentFragment;
                 displayRating(this.settings, value, max, fullRating);
                 statBar.setText(fullRating);
 
