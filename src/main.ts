@@ -537,7 +537,6 @@ export default class Diarian extends Plugin {
                     });
             }
         }
-
     }
 
     refreshViews(refCalView: boolean, refRevView: boolean, startMoment?: moment.Moment) {
