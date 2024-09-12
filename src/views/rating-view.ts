@@ -103,7 +103,7 @@ export class RatingView extends Modal {
             }
         }
 
-        for (let i = 0; i < this.maxValue; i++) {
+        for (let i = 0; i < this.maxValue; i++) { // Create ratingStrokes
             ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
@@ -111,11 +111,16 @@ export class RatingView extends Modal {
                 strokeHover(i);
             });
             ratingStrokes[i].addEventListener('touchstart', (ev) => {
+                ev.preventDefault();
                 strokeHover(i);
-            })
+            });
             ratingStrokes[i].addEventListener('touchmove', (ev) => {
                 getCurrentEl(ev, strokeHover);
-            })
+            });
+
+            ratingStrokes[i].addEventListener('mousedown', (ev) => {
+                ev.preventDefault();
+            });
 
             ratingStrokes[i].addEventListener('mouseup', (ev) => {
                 endClick(i);
@@ -123,19 +128,6 @@ export class RatingView extends Modal {
             ratingStrokes[i].addEventListener('touchend', (ev) => {
                 getCurrentEl(ev, endClick);
             });
-            /* (ratingStrokes[i].firstChild as HTMLElement)?.onClickEvent((ev) => {
-                console.log('got here');
-                let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-                const file = markdownView?.file;
-                const { folder, format }: any = getModifiedFolderAndFormat();
-                if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
-                    this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-                        frontmatter[this.plugin.settings.ratingProp] = `${i + 1}/${this.maxValue}`;
-                    });
-                    this.plugin.setStatBarText(this.statBar, `${i + 1}/${this.maxValue}`);
-                    this.close();
-                }
-            }); */
         }
 
         rating.addEventListener('mouseleave', (ev) => {
