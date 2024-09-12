@@ -708,6 +708,5 @@ export default class Diarian extends Plugin {
             editor.getCursor()
         );
         editor.setCursor(newCursorLine, 0);
-
     }
-}//
+}
