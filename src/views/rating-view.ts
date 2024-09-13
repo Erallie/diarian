@@ -89,6 +89,8 @@ export class RatingView extends Modal {
             }
         }
 
+        let currentId: number;
+
         function getCurrentEl(ev: TouchEvent, func: Function) {
             // Get the current coordinates of the touch point
             const touchX = ev.touches[0].clientX;
@@ -103,8 +105,10 @@ export class RatingView extends Modal {
                 else if (id)
                     id = Number.parseInt(id);
 
-                if (typeof id === 'number')
+                if (typeof id === 'number') {
+                    currentId = id;
                     func(id);
+                }
             }
         }
 
@@ -119,6 +123,7 @@ export class RatingView extends Modal {
             });
             ratingStrokes[i].addEventListener('touchstart', (ev) => {
                 ev.preventDefault();
+                currentId = i;
                 strokeHover(i);
             });
             ratingStrokes[i].addEventListener('touchmove', (ev) => {
@@ -133,7 +138,8 @@ export class RatingView extends Modal {
                 endClick(i);
             });
             ratingStrokes[i].addEventListener('touchend', (ev) => {
-                getCurrentEl(ev, endClick);
+                endClick(currentId);
+                // getCurrentEl(ev, endClick);
             });
         }
 
