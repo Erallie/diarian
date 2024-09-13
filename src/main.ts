@@ -312,8 +312,19 @@ export default class Diarian extends Plugin {
         this.registerEvent( //On file open
             this.app.workspace.on('file-open', async (file) => {
                 await this.onFileOpen(ratingStatBar, file);
-            }))
+            })
+        );
 
+        this.registerEvent( //on active leaf change
+            this.app.workspace.on('active-leaf-change', async (leaf) => {
+                if (!leaf || !(leaf.view instanceof MarkdownView)) {
+                    ratingStatBar.setText('');
+                    return;
+                }
+                let file = leaf.view.file;
+                await this.onFileOpen(ratingStatBar, file);
+            })
+        );
     }
 
     async loadSettings() {
