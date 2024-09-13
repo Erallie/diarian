@@ -98,29 +98,39 @@ export class RatingView extends Modal {
 
             // Get the current element at the touch point
             const newTarget = document.elementFromPoint(touchX, touchY);
+
+            function resetID() {
+                currentId = undefined;
+                for (let i = 0; i < this.maxValue; i++) {
+                    setDefaultStroke(i, ratingStrokes[i]);
+                }
+            }
+
             if (newTarget) {
-                let id: string | number = newTarget.id.slice('rating-'.length);
+                let id: string | number = newTarget.id;
+                if (!newTarget.id) {
+                    resetID();
+                    return;
+                }
+
+                if (id.startsWith('rating-'))
+                    id = id.slice('rating-'.length);
+                else {
+                    resetID();
+                    return;
+                }
+
                 if (id == '0')
                     id = 0;
                 else if (id)
                     id = Number.parseInt(id);
-                else {
-                    currentId = undefined;
-                    for (let i = 0; i < this.maxValue; i++) {
-                        setDefaultStroke(i, ratingStrokes[i]);
-                    }
-                    return;
-                }
 
                 if (typeof id === 'number') {
                     currentId = id;
                     func(id);
                 }
                 else {
-                    currentId = undefined;
-                    for (let i = 0; i < this.maxValue; i++) {
-                        setDefaultStroke(i, ratingStrokes[i]);
-                    }
+                    resetID();
                 }
             }
         }
