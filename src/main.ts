@@ -3,10 +3,10 @@ import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
-import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType, displayRating } from 'src/settings';
+import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat, getPriorNotes } from 'src/get-daily-notes';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
-import { RatingView } from 'src/views/rating-view';
+import { RatingView, RatingStroke, displayRating } from 'src/views/rating-view';
 import { SelectView } from 'src/views/select-view';
 import { Notification } from 'src/views/react-nodes/notification';
 
@@ -413,7 +413,7 @@ export default class Diarian extends Plugin {
             }
             else {
                 const fullRating = new DocumentFragment;
-                displayRating(this.settings, value, max, fullRating);
+                displayRating(this.settings, fullRating, RatingStroke.combined, '', value, max);
                 statBar.setText(fullRating);
             }
         }

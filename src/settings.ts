@@ -1,7 +1,8 @@
-import { App, PluginSettingTab, Setting, Platform, normalizePath, moment, setIcon } from 'obsidian';
+import { App, PluginSettingTab, Setting, Platform, moment } from 'obsidian';
 import type Diarian from 'src/main';
 import { Unit, getTimeSpanTitle, printToConsole, logLevel } from './constants';
 import { getAllDailyNotes, getModifiedFolderAndFormat } from './get-daily-notes';
+import { RatingStroke, displayRating } from './views/rating-view';
 
 
 //#region constants
@@ -852,7 +853,7 @@ export class DiarianSettingTab extends PluginSettingTab {
             ratingPreview.textContent = 'Ratings will appear as:';
             ratingPreview.createEl('br');
             const ratingPrevDisplay = new DocumentFragment();
-            displayRating(plugin.settings, 3, 5, ratingPrevDisplay);
+            displayRating(plugin.settings, ratingPrevDisplay, RatingStroke.combined, '', 3, 5);
             ratingPreview.append(ratingPrevDisplay);
 
             ratingPreviewSetting.setName(ratingPreview);
@@ -1055,112 +1056,3 @@ export class DiarianSettingTab extends PluginSettingTab {
     }
 }
 
-export function displayRating(settings: DiarianSettings, value?: number, maxValue?: number, combinedFrag?: DocumentFragment) {
-    let filledItem;
-    let emptyItem;
-    const app: App = this.app;
-
-    const filledCombined = new DocumentFragment();
-    const emptyCombined = new DocumentFragment();
-
-    function setImage(path: string, newValue?: number, combinedFrag?: DocumentFragment) {
-        let source: string;
-        const imgFile = app.vault.getFileByPath(normalizePath(path));
-        if (imgFile)
-            source = app.vault.getResourcePath(imgFile);
-        else
-            source = path;
-
-        function appendImg(docFrag: DocumentFragment) {
-            docFrag.createEl('img', { cls: 'rating-stroke', attr: { src: source } });
-        }
-
-        const item = new DocumentFragment();
-        appendImg(item);
-
-        if (combinedFrag && typeof newValue == 'number')
-            for (let i = 0; i < newValue; i++) {
-                appendImg(combinedFrag);
-            }
-
-        return item;
-    }
-
-    function setLucideIcon(icon: string, className: string, newValue?: number, combinedFrag?: DocumentFragment) {
-        function appendIcon(docFrag: DocumentFragment, className?: string) {
-            let cls = 'rating-stroke'
-            if (className)
-                cls += ' ' + className;
-            const iconSpan = docFrag.createSpan({ cls: cls });
-            setIcon(iconSpan, icon);
-        }
-
-        const item = new DocumentFragment();
-        appendIcon(item);
-
-        if (combinedFrag && newValue)
-            for (let i = 0; i < newValue; i++) {
-                appendIcon(combinedFrag, className);
-            }
-
-        return item;
-    }
-
-    /* function setText(value: number, text: string, className: string, combinedFrag?: DocumentFragment) {
-        filledCombined.createEl('span', { text: text.repeat(value), cls: className });
-
-        const item = new DocumentFragment();
-        item.createEl('span', { text: text, cls: className });
-        return item;
-    } */
-
-    const filledTypeMapped = ratingTypeMap[settings.filledType as RatingType];
-    switch (filledTypeMapped) {
-        case RatingType.text:
-            // filledItem = setText(value, settings.filledText, 'text-accent', filledCombined);
-            filledItem = settings.filledText;
-            if (value)
-                filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
-            break;
-        case RatingType.image:
-            filledItem = setImage(settings.filledImage, value, filledCombined);
-            break;
-        case RatingType.icon:
-            filledItem = setLucideIcon(settings.filledIcon, 'text-accent', value, filledCombined);
-            break;
-        default:
-            printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
-    }
-
-    const emptyTypeMapped = ratingTypeMap[settings.emptyType as RatingType];
-    switch (emptyTypeMapped) {
-        case RatingType.text:
-            // emptyItem = setText(maxValue - value, settings.emptyText, 'text-faint', emptyCombined);
-            emptyItem = settings.emptyText;
-            if (value && maxValue)
-                emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' });
-            break;
-        case RatingType.image:
-            emptyItem = setImage(settings.emptyImage, ((maxValue && typeof value == 'number') ? maxValue - value : undefined), emptyCombined);
-            break;
-        case RatingType.icon:
-            emptyItem = setLucideIcon(settings.emptyIcon, 'text-faint', ((maxValue && typeof value == 'number') ? maxValue - value : undefined), filledCombined);
-            break;
-        default:
-            printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);
-    }
-
-    if (combinedFrag) {
-        combinedFrag.append(filledCombined);
-        combinedFrag.append(emptyCombined);
-    }
-
-    /* return {
-        filled: filledItem || new DocumentFragment,
-        empty: emptyItem || new DocumentFragment
-    } */
-    return {
-        filled: filledItem || '',
-        empty: emptyItem || ''
-    }
-}

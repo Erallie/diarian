@@ -108,12 +108,12 @@ img.rating-stroke {
     margin: 0.1em;
 }
 
-.rating-stroke>svg {
+span[id^='rating-']>svg {
     height: 1em;
     width: 1em;
 }
 
-.rating-strike {
+.rating-stroke {
     font-size: 1em;
 }
 

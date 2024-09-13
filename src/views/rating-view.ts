@@ -1,7 +1,8 @@
-import { App, MarkdownView, Modal, Setting, TFile, setIcon } from 'obsidian';
+import { App, MarkdownView, Modal, Setting, TFile, setIcon, normalizePath } from 'obsidian';
 import { isDailyNote, getModifiedFolderAndFormat } from '../get-daily-notes';
-import { displayRating } from 'src/settings';
+import { DiarianSettings, RatingType, ratingTypeMap } from 'src/settings';
 import type Diarian from 'src/main';
+import { printToConsole, logLevel } from 'src/constants';
 
 export class RatingView extends Modal {
     plugin: Diarian;
@@ -36,37 +37,41 @@ export class RatingView extends Modal {
         let ratingStrokes: HTMLSpanElement[] = [];
         // const { filled, empty } = displayRating(this.defaultVal, this.maxValue, this.plugin.settings)
 
-        const setDefaultStroke = (currentVal: number) => {
+        const setDefaultStroke = (currentVal: number, element: HTMLElement) => {
             // If filled stroke
             if (currentVal < this.defaultVal)
-                return displayRating(this.plugin.settings).filled;
+                displayRating(this.plugin.settings, element, RatingStroke.filled, '')
+            // return displayRating(this.plugin.settings).filled;
             // If empty stroke
             else
-                return displayRating(this.plugin.settings).empty;
+                displayRating(this.plugin.settings, element, RatingStroke.empty, 'text-faint')
+            // return displayRating(this.plugin.settings).empty;
         }
 
-        const setDefaultClass = (currentVal: number) => {
+        /* const setDefaultClass = (currentVal: number) => {
             // If filled stroke
             if (currentVal < this.defaultVal)
                 return '';
             // If empty stroke
             else
                 return 'text-faint';
-        }
+        } */
 
         function strokeHover(i: number) {
             for (let ii = 0; ii < thisComp.maxValue; ii++) {
                 if (ii <= i) {
                     /* ratingStrokes[ii].empty();
                     ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
-                    ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).filled);
-                    ratingStrokes[ii].className = 'text-accent';
+                    displayRating(thisComp.plugin.settings, ratingStrokes[ii], RatingStroke.filled, 'text-accent');
+                    /* ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).filled);
+                    ratingStrokes[ii].className = 'text-accent'; */
                 }
                 else {
                     /* ratingStrokes[ii].empty();
                     ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
-                    ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).empty);
-                    ratingStrokes[ii].className = 'text-faint';
+                    /* ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).empty);
+                    ratingStrokes[ii].className = 'text-faint'; */
+                    displayRating(thisComp.plugin.settings, ratingStrokes[ii], RatingStroke.empty, 'text-faint');
                 }
             }
         }
@@ -104,7 +109,9 @@ export class RatingView extends Modal {
         }
 
         for (let i = 0; i < this.maxValue; i++) { // Create ratingStrokes
-            ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
+            // ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
+            ratingStrokes[i] = rating.createSpan();
+            setDefaultStroke(i, ratingStrokes[i]);
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
@@ -134,8 +141,9 @@ export class RatingView extends Modal {
             for (let i = 0; i < this.maxValue; i++) {
                 /* ratingStrokes[i].empty();
                 ratingStrokes[i].append(setDefaultStroke(i)); */
-                ratingStrokes[i].setText(setDefaultStroke(i));
-                ratingStrokes[i].className = setDefaultClass(i);
+                // ratingStrokes[i].setText(setDefaultStroke(i));
+                // ratingStrokes[i].className = setDefaultClass(i);
+                setDefaultStroke(i, ratingStrokes[i]);
             }
         })
 
@@ -207,4 +215,151 @@ export class RatingView extends Modal {
         contentEl.empty();
 
     }
+}
+
+export enum RatingStroke {
+    filled = 'filled',
+    empty = 'empty',
+    combined = 'combined'
+}
+
+export function displayRating(settings: DiarianSettings, element: DocumentFragment | HTMLElement, type: RatingStroke, className: string, value?: number, maxValue?: number) {
+    /* let filledItem;
+    let emptyItem; */
+    const app: App = this.app;
+
+    const filledCombined = new DocumentFragment();
+    const emptyCombined = new DocumentFragment();
+
+    function setText(text: string, className: string, newValue?: number, combinedFrag?: DocumentFragment) {//
+        if (element instanceof HTMLElement) {
+            element.setText(text);
+            element.removeClasses(['text-accent', 'text-faint']);
+            if (className)
+                element.addClass(className);
+        }
+
+        if (typeof newValue === 'number' && combinedFrag && type == RatingStroke.combined)
+            combinedFrag.createEl('span', { text: text.repeat(newValue), cls: className });
+    }
+
+    function setImage(path: string, newValue?: number, combinedFrag?: DocumentFragment) {
+        let source: string;
+        const imgFile = app.vault.getFileByPath(normalizePath(path));
+        if (imgFile)
+            source = app.vault.getResourcePath(imgFile);
+        else
+            source = path;
+
+        function appendImg(docFrag: DocumentFragment | HTMLElement) {
+            docFrag.createEl('img', { cls: 'rating-stroke', attr: { src: source } });
+        }
+
+        if (element instanceof HTMLElement) {
+            element.empty();
+            appendImg(element);
+        }
+
+        /* const item = new DocumentFragment();
+        appendImg(item); */
+
+        if (combinedFrag && typeof newValue == 'number' && type == RatingStroke.combined)
+            for (let i = 0; i < newValue; i++) {
+                appendImg(combinedFrag);
+            }
+
+        // return item;
+    }
+
+    function setLucideIcon(icon: string, className: string, newValue?: number, combinedFrag?: DocumentFragment) {
+        function appendIcon(docFrag: DocumentFragment, className?: string) {
+            let cls = 'rating-stroke'
+            if (className)
+                cls += ' ' + className;
+            const iconSpan = docFrag.createSpan({ cls: cls });
+            setIcon(iconSpan, icon);
+        }
+
+        if (element instanceof HTMLElement) {
+            element.empty();
+            element.removeClasses(['text-accent', 'text-faint']);
+            if (className)
+                element.addClass(className);
+            setIcon(element, icon);
+        }
+        /* const item = new DocumentFragment();
+        appendIcon(item); */
+
+        if (combinedFrag && typeof newValue === 'number' && type == RatingStroke.combined)
+            for (let i = 0; i < newValue; i++) {
+                appendIcon(combinedFrag, className);
+            }
+
+        /* return item; */
+    }
+
+    /* function setText(value: number, text: string, className: string, combinedFrag?: DocumentFragment) {
+        filledCombined.createEl('span', { text: text.repeat(value), cls: className });
+
+        const item = new DocumentFragment();
+        item.createEl('span', { text: text, cls: className });
+        return item;
+    } */
+
+    if (type == RatingStroke.combined || type == RatingStroke.filled) {
+        const filledTypeMapped = ratingTypeMap[settings.filledType as RatingType];
+        switch (filledTypeMapped) {
+            case RatingType.text:
+                setText(settings.filledText, ((type == RatingStroke.filled) ? className : 'text-accent'), value, filledCombined);
+                // filledItem = setText(value, settings.filledText, 'text-accent', filledCombined);
+                // filledItem = settings.filledText;
+                // if (value)
+                //     filledCombined.createEl('span', { text: (filledItem as string).repeat(value), cls: 'text-accent' });
+                break;
+            case RatingType.image:
+                setImage(settings.filledImage, value, filledCombined);
+                break;
+            case RatingType.icon:
+                setLucideIcon(settings.filledIcon, ((type == RatingStroke.filled) ? className : 'text-accent'), value, filledCombined);
+                break;
+            default:
+                printToConsole(logLevel.error, `Cannot display rating:\n${settings.filledType} is not a valid filled RatingType!`);
+        }
+    }
+
+
+    if (type == RatingStroke.combined || type == RatingStroke.empty) {
+        const emptyTypeMapped = ratingTypeMap[settings.emptyType as RatingType];
+        switch (emptyTypeMapped) {
+            case RatingType.text:
+                setText(settings.emptyText, ((type == RatingStroke.empty) ? className : 'text-faint'), ((maxValue && typeof value == 'number') ? maxValue - value : undefined), emptyCombined);
+                // emptyItem = setText(maxValue - value, settings.emptyText, 'text-faint', emptyCombined);
+                /* emptyItem = settings.emptyText;
+                if (value && maxValue)
+                    emptyCombined.createEl('span', { text: (emptyItem as string).repeat(maxValue - value), cls: 'text-faint' }); */
+                break;
+            case RatingType.image:
+                setImage(settings.emptyImage, ((maxValue && typeof value == 'number') ? maxValue - value : undefined), emptyCombined);
+                break;
+            case RatingType.icon:
+                setLucideIcon(settings.emptyIcon, ((type == RatingStroke.empty) ? className : 'text-faint'), ((maxValue && typeof value == 'number') ? maxValue - value : undefined), filledCombined);
+                break;
+            default:
+                printToConsole(logLevel.error, `Cannot display rating:\n${settings.emptyType} is not a valid empty RatingType!`);
+        }
+    }
+
+    if (type == RatingStroke.combined && element instanceof DocumentFragment) {
+        element.append(filledCombined);
+        element.append(emptyCombined);
+    }
+
+    /* return {
+        filled: filledItem || new DocumentFragment,
+        empty: emptyItem || new DocumentFragment
+    } */
+    /* return {
+        filled: filledItem || '',
+        empty: emptyItem || ''
+    } */
 }
