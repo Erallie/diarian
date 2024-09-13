@@ -269,6 +269,7 @@ export class DiarianSettingTab extends PluginSettingTab {
     display(): void {
         const { containerEl } = this;
         const plugin = this.plugin;
+        // const app = this.app;
 
         containerEl.empty();
 
@@ -922,6 +923,16 @@ export class DiarianSettingTab extends PluginSettingTab {
                                     await plugin.saveSettings();
                                     setRatingPrev();
                                 }));
+                            /* setting.addSearch((cb) => {
+                                const suggest = new SuggestImages(app, cb.inputEl, plugin)
+                                cb.setPlaceholder(DEFAULT_SETTINGS.filledImage)
+                                    .setValue(plugin.settings.filledImage)
+                                    .onChange(async (value) => {
+                                        plugin.settings.filledImage = value;
+                                        await plugin.saveSettings();
+                                        setRatingPrev();
+                                    })
+                            }) */
                             break;
                         case 'empty':
                             setting.addText(text => text
@@ -932,6 +943,16 @@ export class DiarianSettingTab extends PluginSettingTab {
                                     await plugin.saveSettings();
                                     setRatingPrev();
                                 }));
+                            /* setting.addSearch((cb) => {
+                                new SuggestImages(app, cb.inputEl, plugin)
+                                cb.setPlaceholder(DEFAULT_SETTINGS.emptyImage)
+                                    .setValue(plugin.settings.emptyImage)
+                                    .onChange(async (value) => {
+                                        plugin.settings.emptyImage = value;
+                                        await plugin.saveSettings();
+                                        setRatingPrev();
+                                    })
+                            }) */
                             break;
                     }
                     break;
@@ -1054,4 +1075,40 @@ export class DiarianSettingTab extends PluginSettingTab {
         //#endregion
     }
 }
+/* class SuggestImages extends SuggestModal<any> {
+    // inputEl: HTMLInputElement;
+    plugin: Diarian;
+    // options?: { title: string, placeholder: string }
 
+    getSuggestions(query: string): TFile[] {
+        const abstractFiles = this.app.vault.getAllLoadedFiles();
+        const files: TFile[] = [];
+        const lowerCaseInputStr = query.toLowerCase();
+        abstractFiles.forEach((file: TAbstractFile) => {
+            if (
+                file instanceof TFile &&
+                (file.extension == 'avif' || file.extension == 'bmp' || file.extension == 'gif' || file.extension == 'jpeg' || file.extension == 'jpg' || file.extension == "png" || file.extension == 'svg' || file.extension == 'webp') &&
+                file.path.toLowerCase().contains(lowerCaseInputStr)
+            ) {
+                files.push(file);
+            }
+        });
+        return files;
+        // throw new Error('Method not implemented.');
+    }
+    renderSuggestion(file: TFile, el: HTMLElement) {
+        el.setText(file.path)
+        // throw new Error('Method not implemented.');
+    }
+    onChooseSuggestion(file: TFile) {
+        this.inputEl.value = file.path;
+        this.inputEl.trigger("input");
+        this.close();
+        // throw new Error('Method not implemented.');
+    }
+    constructor(app: App, inputEl: HTMLInputElement, plugin: Diarian) {
+        super(app);
+        this.inputEl = inputEl;
+        this.plugin = plugin;
+    }
+} */
