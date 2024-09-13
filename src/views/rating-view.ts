@@ -89,7 +89,7 @@ export class RatingView extends Modal {
             }
         }
 
-        let currentId: number;
+        let currentId: number | undefined;
 
         function getCurrentEl(ev: TouchEvent, func: Function) {
             // Get the current coordinates of the touch point
@@ -109,6 +109,9 @@ export class RatingView extends Modal {
                     currentId = id;
                     func(id);
                 }
+                else {
+                    currentId = undefined;
+                }
             }
         }
 
@@ -119,6 +122,7 @@ export class RatingView extends Modal {
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
             ratingStrokes[i].addEventListener('mouseenter', (ev) => {
+                // currentId = i;
                 strokeHover(i);
             });
             ratingStrokes[i].addEventListener('touchstart', (ev) => {
@@ -135,10 +139,12 @@ export class RatingView extends Modal {
             });
 
             ratingStrokes[i].addEventListener('mouseup', (ev) => {
+                // if (currentId !== undefined)
                 endClick(i);
             });
             ratingStrokes[i].addEventListener('touchend', (ev) => {
-                endClick(currentId);
+                if (currentId !== undefined)
+                    endClick(currentId);
                 // getCurrentEl(ev, endClick);
             });
         }
@@ -149,6 +155,7 @@ export class RatingView extends Modal {
                 ratingStrokes[i].append(setDefaultStroke(i)); */
                 // ratingStrokes[i].setText(setDefaultStroke(i));
                 // ratingStrokes[i].className = setDefaultClass(i);
+                // currentId = undefined;
                 setDefaultStroke(i, ratingStrokes[i]);
             }
         })
