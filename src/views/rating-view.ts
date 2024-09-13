@@ -104,6 +104,13 @@ export class RatingView extends Modal {
                     id = 0;
                 else if (id)
                     id = Number.parseInt(id);
+                else {
+                    currentId = undefined;
+                    for (let i = 0; i < this.maxValue; i++) {
+                        setDefaultStroke(i, ratingStrokes[i]);
+                    }
+                    return;
+                }
 
                 if (typeof id === 'number') {
                     currentId = id;
