@@ -111,6 +111,9 @@ export class RatingView extends Modal {
                 }
                 else {
                     currentId = undefined;
+                    for (let i = 0; i < this.maxValue; i++) {
+                        setDefaultStroke(i, ratingStrokes[i]);
+                    }
                 }
             }
         }
@@ -151,11 +154,6 @@ export class RatingView extends Modal {
 
         rating.addEventListener('mouseleave', (ev) => {
             for (let i = 0; i < this.maxValue; i++) {
-                /* ratingStrokes[i].empty();
-                ratingStrokes[i].append(setDefaultStroke(i)); */
-                // ratingStrokes[i].setText(setDefaultStroke(i));
-                // ratingStrokes[i].className = setDefaultClass(i);
-                // currentId = undefined;
                 setDefaultStroke(i, ratingStrokes[i]);
             }
         })
