@@ -859,22 +859,21 @@ export class DiarianSettingTab extends PluginSettingTab {
             ratingPreviewSetting.setName(ratingPreview);
         }
 
-        function setRatingSetting(setting: Setting, value: RatingType, which: string) {
-
+        function setRatingSetting(setting: Setting, value: RatingType, which: RatingStroke) {
             setting.clear();
 
-            let article = 'a';
-            let textPlaceholder = DEFAULT_SETTINGS.filledText;
-            let iconPlaceholder = DEFAULT_SETTINGS.filledIcon;
+            let article: string;
 
-            if (which == 'empty') {
-                article = 'an';
-                textPlaceholder = DEFAULT_SETTINGS.emptyText;
-                iconPlaceholder = DEFAULT_SETTINGS.emptyIcon;
-            }
-            else if (which != 'filled') {
-                printToConsole(logLevel.error, `Cannot set rating setting:\n${which} is not a valid rating stroke!`);
-                return;
+            switch (which) {
+                case RatingStroke.empty:
+                    article = 'an';
+                    break;
+                case RatingStroke.filled:
+                    article = 'a';
+                    break;
+                default:
+                    printToConsole(logLevel.error, `Cannot set rating setting:\n${which} is not a valid rating stroke!`);
+                    return;
             }
 
             const desc = new DocumentFragment();
@@ -887,7 +886,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
-                                .setPlaceholder(textPlaceholder)
+                                .setPlaceholder(DEFAULT_SETTINGS.filledText)
                                 .setValue(plugin.settings.filledText)
                                 .onChange(async (value) => {
                                     plugin.settings.filledText = value;
@@ -897,7 +896,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                             break;
                         case 'empty':
                             setting.addText(text => text
-                                .setPlaceholder(textPlaceholder)
+                                .setPlaceholder(DEFAULT_SETTINGS.emptyText)
                                 .setValue(plugin.settings.emptyText)
                                 .onChange(async (value) => {
                                     plugin.settings.emptyText = value;
@@ -945,7 +944,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     switch (which) {
                         case 'filled':
                             setting.addText(text => text
-                                .setPlaceholder(iconPlaceholder)
+                                .setPlaceholder(DEFAULT_SETTINGS.filledIcon)
                                 .setValue(plugin.settings.filledIcon)
                                 .onChange(async (value) => {
                                     plugin.settings.filledIcon = value;
@@ -955,7 +954,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                             break;
                         case 'empty':
                             setting.addText(text => text
-                                .setPlaceholder(iconPlaceholder)
+                                .setPlaceholder(DEFAULT_SETTINGS.emptyIcon)
                                 .setValue(plugin.settings.emptyIcon)
                                 .onChange(async (value) => {
                                     plugin.settings.emptyIcon = value;
@@ -980,7 +979,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     .onChange(async (value) => {
                         this.plugin.settings.filledType = value as RatingType;
                         void this.plugin.saveSettings();
-                        setRatingSetting(filledStroke, value as RatingType, 'filled');
+                        setRatingSetting(filledStroke, value as RatingType, RatingStroke.filled);
                     }));
 
         emptyType
@@ -991,11 +990,11 @@ export class DiarianSettingTab extends PluginSettingTab {
                     .onChange(async (value) => {
                         this.plugin.settings.emptyType = value as RatingType;
                         void this.plugin.saveSettings();
-                        setRatingSetting(emptyStroke, value as RatingType, 'empty');
+                        setRatingSetting(emptyStroke, value as RatingType, RatingStroke.empty);
                     }));
 
-        setRatingSetting(filledStroke, this.plugin.settings.filledType as RatingType, 'filled');
-        setRatingSetting(emptyStroke, this.plugin.settings.emptyType as RatingType, 'empty');
+        setRatingSetting(filledStroke, this.plugin.settings.filledType as RatingType, RatingStroke.filled);
+        setRatingSetting(emptyStroke, this.plugin.settings.emptyType as RatingType, RatingStroke.empty);
 
         setRatingPrev();
 
