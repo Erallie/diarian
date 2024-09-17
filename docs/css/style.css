@@ -1,0 +1,309 @@
+.poppins-thin {
+    font-family: "Poppins", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+}
+
+.poppins-extralight {
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.poppins-light {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.poppins-regular {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.poppins-medium {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.poppins-semibold {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.poppins-bold {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.poppins-extrabold {
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.poppins-black {
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.poppins-thin-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+}
+
+.poppins-extralight-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+}
+
+.poppins-light-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+.poppins-regular-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.poppins-medium-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.poppins-semibold-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.poppins-bold-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.poppins-extrabold-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-style: italic;
+}
+
+.poppins-black-italic {
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+}
+
+div#content {
+    display: flex;
+    height: 100%;
+}
+
+header,
+main {
+    padding: 0px 30px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    margin: 0;
+}
+
+header {
+    position: sticky;
+    flex-grow: 0;
+    flex-shrink: 0;
+    max-width: 100%;
+    flex-basis: 300px;
+    background-color: var(--background-color);
+    border-right: 1.5px solid var(--hr-color);
+}
+
+main {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+main>div {
+    margin: 0 auto;
+    width: 600px;
+    max-width: 100%;
+}
+
+body {
+    font-family: "Poppins";
+    /* font-size: 1rem; */
+    margin: 0;
+    color: var(--text-normal);
+    background-color: var(--background-color);
+    height: 100vh;
+    overflow-x: clip;
+}
+
+a {
+    color: var(--text-accent);
+}
+
+a:hover {
+    color: var(--text-accent-hover);
+}
+
+header a {
+    color: var(--text-muted);
+}
+
+header a:hover {
+    color: var(--text-normal);
+}
+
+header li {
+    color: var(--text-faint);
+}
+
+header>ol ol {
+    list-style-type: none;
+    padding: 0;
+    padding-left: 10px;
+    border-left: 0.01px solid var(--text-faint);
+}
+
+header ol {
+    list-style-type: none;
+    padding: 0;
+}
+
+header>ol {
+    margin: 0;
+}
+
+header ol>li>ol {
+    margin-left: 10px;
+}
+
+h1:first-child {
+    position: sticky;
+    top: 0px;
+    padding-top: 20px;
+    background-color: var(--background-color);
+    border-bottom: 1.5px solid var(--hr-color);
+}
+
+img {
+    max-width: min(800px, 100%);
+    max-height: 100vh;
+    object-fit: scale-down;
+}
+
+* {
+    --accent-h: 258;
+    --accent-s: 50%;
+    --accent-plus-60: calc(var(--accent-h) + 60);
+    --accent-plus-120: calc(var(--accent-h) + 120);
+    --accent-minus-60: calc(var(--accent-h) - 60);
+    --accent-minus-120: calc(var(--accent-h) - 120);
+    --accent-s-pastel: min(var(--accent-s), 50%);
+
+    --bg-s: 35%;
+    --bg-l-alt: 70%;
+    --background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l));
+    --text-accent: hsl(var(--accent-minus-60), var(--accent-s), var(--accent-l-readable));
+}
+
+.theme-dark header,
+.theme-dark header * {
+    --bg-l: 30%;
+    --bg-l-alt: 32%;
+}
+
+body.theme-dark {
+    --bg-l: 25%;
+    --bg-l-alt: 27%;
+    --text-normal: hsl(0, 0%, 85%);
+    --text-muted: hsl(var(--accent-h), 15%, 68%);
+    --text-faint: hsl(var(--accent-h), 20%, 51%);
+    --accent-l-readable: 50%;
+    --accent-l-closer: 40%;
+    --hr-color: hsl(var(--accent-h), 25%, 15%);
+    --text-accent-hover: hsl(calc(var(--accent-minus-60) - 5), calc(var(--accent-s) * 1.05), calc(var(--accent-l-readable) * 1.29));
+}
+
+
+.theme-light header,
+.theme-light header * {
+    --bg-l: 65%;
+    --bg-l-alt: 60%;
+}
+
+body.theme-light {
+    --bg-l: 75%;
+    --bg-l-alt: 70%;
+    --text-normal: hsl(0, 0%, 13%);
+    --text-muted: hsl(var(--accent-h), 15%, 33%);
+    --text-faint: hsl(var(--accent-h), 20%, 47%);
+    --accent-l-readable: 35%;
+    --accent-l-closer: 60%;
+    --hr-color: hsl(var(--accent-h), 25%, 90%);
+    --text-accent-hover: hsl(calc(var(--accent-minus-60) - 3), calc(var(--accent-s) * 1.02), calc(var(--accent-l-readable) * 1.15));
+}
+
+code {
+    display: inline-block;
+    font-size: 1.1em;
+    border-radius: 20px;
+    padding: 4px 6px;
+    overflow: visible;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-color: hsl(var(--accent-h), var(--bg-s), var(--bg-l-alt));
+}
+
+mark {
+    display: inline-block;
+    font-size: 1rem;
+    border-radius: 20px;
+    padding: 1px 6px;
+    overflow: visible;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    background-color: hsla(var(--accent-plus-60), var(--accent-s-pastel), var(--accent-l-closer), 0.6);
+}
+
+ol:has(>li[id^="fn"]) {
+    font-size: 0.8em;
+    color: var(--text-faint);
+}
+
+ol:has(>li[id^="fn"]):before {
+    content: "";
+    display: block;
+    border-top: 1.5px solid var(--hr-color);
+    margin-bottom: 10px;
+    margin-left: -20px;
+}
+
+:target {
+    scroll-margin-top: 90px;
+}
+
+blockquote {
+    border-left: 4px solid hsl(var(--accent-plus-60), var(--accent-s-pastel), var(--accent-l-closer));
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+::selection {
+    background-color: hsla(var(--accent-minus-60), 50%, var(--accent-l-closer), 0.25);
+}
