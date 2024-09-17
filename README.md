@@ -172,15 +172,19 @@ A modal will then open that will allow you to set the rating as you like.
 
 ![rating-modal](Attachments/rating-modal.png#interface)
 ### Customization
-Under **Settings → Diarian → Rating**, you can set the **Filled rating item** and the **Empty rating item** to any Unicode character or emoji you like.
+Under **Settings → Diarian → Rating**, you can set the **Filled rating item type** and the **Empty rating item type** to use either a Unicode character or emoji, an image of your choice, or an icon from the [Lucide](https://lucide.dev/) library.
 
-For example, here are some hearts:
+Here are some hearts that I drew (images):
 
-![rating-heart-example](Attachments/rating-heart-example.png#interface)
+![rating-images](Attachments/rating-images.png#interface)
 
-And here is some food:
+Here's something more goth (emojis):
 
-![rating-pizza-example](Attachments/rating-pizza-example.png#interface)
+![rating-emojis](Attachments/rating-emojis.png#interface)
+
+And here are some smileys ([Lucide](https://lucide.dev/) icons):
+
+![rating-icons](Attachments/rating-icons.png#interface)
 ## Timestamp
 To insert a timestamp, do one of the following:
 - Perform the **Diarian: Insert timestamp** command (See [Command palette](https://help.obsidian.md/Plugins/Command+palette)).
