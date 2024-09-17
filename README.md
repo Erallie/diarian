@@ -22,9 +22,10 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 	5. [Timestamp](#timestamp)
 	6. [Multiple/nested daily notes](#multiplenested-daily-notes)
 3. [Installation](#installation)
-	1. [Use BRAT](#use-brat)
-	2. [Manual installation](#manual-installation)
-4. [Credits](#credits)
+	1. [Obsidian Marketplace](#obsidian-marketplace)
+	2. [BRAT](#brat)
+	3. [Manual installation](#manual-installation)
+5. [Credits](#credits)
 # Features
 ## Included features
 - A [**Calendar**](#calendar) view that displays which days have daily notes on them.
@@ -205,7 +206,15 @@ This plugin reads your settings under **Settings → Daily notes** to create new
 
 Once that is done, new notes with the new format will show up in the **Calendar**.
 # Installation
-## Use BRAT
+## Obsidian Marketplace
+To install this plugin via the Obsidian Marketplace, perform the following steps:
+1. Navigate to the CSS Inserter plugin page by either selecting [this link](https://obsidian.md/plugins?id=diarian) or doing the following:
+	1. Navigate to **Settings → Community plugins**
+	2. Select **Turn on community plugins**.
+	3. Select **Community plugins → Browse** and search for "Diarian".
+2. Select **Install**.
+3. To enable the plugin, select **Enable**.
+## BRAT
 Install this plugin using [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) by doing the following:
 1. Make sure the [BRAT](https://obsidian.md/plugins?id=obsidian42-brat) plugin is installed in your vault.
 2. Go to **Settings → BRAT → Beta Plugin List → Add Beta Plugin**
