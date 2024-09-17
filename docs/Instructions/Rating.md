@@ -20,12 +20,16 @@ A modal will then open that will allow you to set the rating as you like.
 
 ![rating-modal](/diarian/Attachments/rating-modal.png)
 ## Customization
-Under **Settings → Diarian → Rating**, you can set the **Filled rating item** and the **Empty rating item** to any Unicode character or emoji you like.
+Under **Settings → Diarian → Rating**, you can set the **Filled rating item type** and the **Empty rating item type** to use either a Unicode character or emoji, an image of your choice, or an icon from the [Lucide](https://lucide.dev/) library.
 
-For example, here are some hearts:
+Here are some hearts that I drew (images):
 
-![rating-heart-example](/diarian/Attachments/rating-heart-example.png)
+![../../../README/Attachments/rating-images.png](/diarian/Attachments/rating-images.png)
 
-And here is some food:
+Here's something more goth (emojis):
 
-![rating-pizza-example](/diarian/Attachments/rating-pizza-example.png)
+![../../../README/Attachments/rating-emojis.png](/diarian/Attachments/rating-emojis.png)
+
+And here are some smileys ([Lucide](https://lucide.dev/) icons):
+
+![../../../README/Attachments/rating-icons.png](/diarian/Attachments/rating-icons.png)
