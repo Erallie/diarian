@@ -1,4 +1,4 @@
-import { App, Modal, Setting, moment, normalizePath, setIcon, TFile, ProgressBarComponent } from 'obsidian';
+import { App, Modal, Setting, moment, normalizePath, setIcon, TFile, ProgressBarComponent, Platform } from 'obsidian';
 import type Diarian from 'src/main';
 import { printToConsole, logLevel } from 'src/constants';
 import { getModifiedFolderAndFormat, getAllDailyNotes } from 'src/get-daily-notes';
@@ -175,7 +175,8 @@ export class ConvertView extends Modal {
             this.plugin.refreshViews(true, true);
 
 
-            const endText = 'Conversion finished!'
+            let endText = 'Conversion finished!'
+            if (Platform.isMobile) endText += '\nReopen your vault to access the converted notes.';
             setText(endText);
             printToConsole(logLevel.info, endText);
 
