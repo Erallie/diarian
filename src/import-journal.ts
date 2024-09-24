@@ -479,7 +479,7 @@ export async function writeNote(date: moment.Moment, content: { frontmatter: str
         const folderPath = newPath.slice(0, index);
         // printToConsole(logLevel.log, folderPath);
         if (!this.app.vault.getFolderByPath(folderPath)) {
-            this.app.vault.createFolder(folderPath);
+            await this.app.vault.createFolder(folderPath);
         }
     }
 
