@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, moment, View, Plugin, TFile, WorkspaceLeaf, Menu, IconName, Platform, Notice } from 'obsidian';
+import { Editor, MarkdownView, moment, Plugin, TFile, WorkspaceLeaf, Menu, IconName, Platform, Notice } from 'obsidian';
 import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
@@ -9,6 +9,7 @@ import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { RatingView, RatingStroke, displayRating } from 'src/views/rating-view';
 import { SelectView } from 'src/views/select-view';
 import { Notification } from 'src/views/react-nodes/notification';
+import { ConvertView } from './views/format-view';
 
 
 export default class Diarian extends Plugin {
@@ -255,6 +256,15 @@ export default class Diarian extends Plugin {
                 new ImportView(this.app, this).open();
             }
         });
+
+        this.addCommand({ // Open importer
+            id: 'open-converter',
+            name: 'Open format converter',
+            icon: 'lucide-refresh-ccw-dot',
+            callback: () => {
+                new ConvertView(this.app, this).open();
+            }
+        });
         //#endregion
 
         // This adds a settings tab so the user can configure various aspects of the plugin
@@ -399,6 +409,14 @@ export default class Diarian extends Plugin {
                 .setIcon('lucide-import')
                 .onClick(() => {
                     new ImportView(this.app, this).open();
+                }));
+
+        menu.addItem((item) => // Open importer
+            item
+                .setTitle('Open format converter')
+                .setIcon('lucide-refresh-ccw-dot')
+                .onClick(() => {
+                    new ConvertView(this.app, this).open();
                 }));
 
         return menu;

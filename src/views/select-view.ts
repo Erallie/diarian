@@ -3,6 +3,7 @@ import type Diarian from 'src/main';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { ImportView } from 'src/import-journal';
+import { ConvertView } from './format-view';
 
 export class SelectView extends Modal {
     plugin: Diarian;
@@ -50,6 +51,16 @@ export class SelectView extends Modal {
             .setButtonText('Open importer')
             .onClick(() => {
                 new ImportView(this.app, this.plugin).open();
+                this.close();
+            });
+
+
+        new ButtonComponent(contentEl)
+            .setClass('select-view-button')
+            .setIcon('lucide-refresh-ccw-dot')
+            .setButtonText('Open format converter')
+            .onClick(() => {
+                new ConvertView(this.app, this.plugin).open();
                 this.close();
             });
 
