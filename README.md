@@ -21,11 +21,12 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 		1. [Customization](#customization)
 	5. [Timestamp](#timestamp)
 	6. [Multiple/nested daily notes](#multiplenested-daily-notes)
+	7. [Date format converter](#date-format-converter)
 3. [Installation](#installation)
 	1. [Obsidian Marketplace](#obsidian-marketplace)
 	2. [BRAT](#brat)
 	3. [Manual installation](#manual-installation)
-5. [Credits](#credits)
+4. [Credits](#credits)
 # Features
 ## Included features
 - A [**Calendar**](#calendar) view that displays which days have daily notes on them.
@@ -51,6 +52,8 @@ This plugin is *unofficial* to both [Obsidian](https://obsidian.md/) and [Diariu
 - Supports daily notes that have the date or time specified in the file path instead of just the file name.
 	- Allows for [nested daily notes](#multiplenested-daily-notes) sorted in folders by year, month, or day (etc).
 	- Unlike most other plugins I’ve encountered on the Obsidian marketplace.
+- [Convert the date format](#date-format-converter) of pre-existing daily notes.
+	- Allows for migration of previously created daily notes to a new date format.
 <!-- ## Planned features
 Being in early development, there are some important features I have yet to add:
 - The option to specify how to process -->
@@ -209,6 +212,11 @@ This plugin reads your settings under **Settings → Daily notes** to create new
 > 	- Nested under the folder **"2024"**
 
 Once that is done, new notes with the new format will show up in the **Calendar**.
+## Date format converter
+Access the **Date format converter** from the context menu that opens after clicking the **ribbon icon**.
+
+The **Date format converter** allows you to rename/move pre-existing daily notes to match the format specified under **Settings → Daily notes → Date format** and the folder specified under **Settings → Daily notes → New file location**.
+- If you wish to change the format and/or folder of pre-existing daily notes, the above settings should be adjusted *before* using the **Date format converter**.
 # Installation
 ## Obsidian Marketplace
 To install this plugin via the Obsidian Marketplace, perform the following steps:

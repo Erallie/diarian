@@ -21,7 +21,7 @@ export class ConvertView extends Modal {
         infoDesc.createEl('span', { text: 'View ' }).createEl('a', {
             text: 'converter notes',
             attr: {
-                href: 'https://github.com/Erallie/diarian?tab=readme-ov-file#converter-notes'
+                href: 'https://github.com/Erallie/diarian?tab=readme-ov-file#date-format-converter'
             }
         })
         infoDesc.createEl('span', { text: '.' });
