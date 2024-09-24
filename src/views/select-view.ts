@@ -58,7 +58,7 @@ export class SelectView extends Modal {
         new ButtonComponent(contentEl)
             .setClass('select-view-button')
             .setIcon('lucide-refresh-ccw-dot')
-            .setButtonText('Open format converter')
+            .setButtonText('Open date format converter')
             .onClick(() => {
                 new ConvertView(this.app, this.plugin).open();
                 this.close();

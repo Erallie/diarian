@@ -259,7 +259,7 @@ export default class Diarian extends Plugin {
 
         this.addCommand({ // Open importer
             id: 'open-converter',
-            name: 'Open format converter',
+            name: 'Open date format converter',
             icon: 'lucide-refresh-ccw-dot',
             callback: () => {
                 new ConvertView(this.app, this).open();
@@ -413,7 +413,7 @@ export default class Diarian extends Plugin {
 
         menu.addItem((item) => // Open importer
             item
-                .setTitle('Open format converter')
+                .setTitle('Open date format converter')
                 .setIcon('lucide-refresh-ccw-dot')
                 .onClick(() => {
                     new ConvertView(this.app, this).open();
