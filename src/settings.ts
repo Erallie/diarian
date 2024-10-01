@@ -184,9 +184,7 @@ export interface DiarianSettings {
     previewLength: number;
     openInNewPane: boolean;
     notePrevDisplay: NotePrevDisplay;
-    // useCallout: boolean;
     showNoteTitle: boolean;
-    // useQuote: boolean;
 
     reviewInterval: number;
     reviewIntervalUnit: Unit;
@@ -227,9 +225,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     previewLength: 250,
     openInNewPane: false,
     notePrevDisplay: 'callout' as NotePrevDisplay,
-    // useCallout: true,
     showNoteTitle: true,
-    // useQuote: true,
 
     reviewInterval: 3,
     reviewIntervalUnit: Unit.month,
@@ -427,7 +423,11 @@ export class DiarianSettingTab extends PluginSettingTab {
         const calLocDesc = new DocumentFragment;
         calLocDesc.textContent = 'The location the  ';
         calLocDesc.createEl('strong', { text: "Calendar" });
-        calLocDesc.createEl('span', { text: " view will open in." });
+        calLocDesc.createEl('span', { text: " view will open in" });
+        if (Platform.isDesktop) {
+            calLocDesc.createEl('span', { text: " by default" });
+        };
+        calLocDesc.createEl('span', { text: '.' });
 
         new Setting(containerEl)
             .setName('Leaf location')
@@ -446,11 +446,6 @@ export class DiarianSettingTab extends PluginSettingTab {
         //#endregion
 
         //#region Open on startup
-        /* const openCalName = new DocumentFragment;
-        openCalName.textContent = 'Open ';
-        openCalName.createEl('strong', { text: "Calendar" });
-        openCalName.createEl('span', { text: ' on startup' }); */
-
         const openCalDesc = new DocumentFragment;
         openCalDesc.textContent = 'Open the ';
         openCalDesc.createEl('strong', { text: "Calendar" });
@@ -460,10 +455,12 @@ export class DiarianSettingTab extends PluginSettingTab {
             .setName('Open on startup')
             .setDesc(openCalDesc)
             .addToggle((toggle) =>
-                toggle.setValue(this.plugin.settings.calStartup).onChange((value) => {
-                    this.plugin.settings.calStartup = value;
-                    void this.plugin.saveSettings();
-                }));
+                toggle
+                    .setValue(this.plugin.settings.calStartup)
+                    .onChange((value) => {
+                        this.plugin.settings.calStartup = value;
+                        void this.plugin.saveSettings();
+                    }));
         //#endregion
 
         //#endregion
