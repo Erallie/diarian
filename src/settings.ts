@@ -173,6 +173,7 @@ export const ratingTypeMap: { [key: string]: RatingType } = {
 //#region Setting defaults
 export interface DiarianSettings {
     newNoteMode: NewNoteMode;
+    disableBanners: boolean;
 
     calendarType: CalType;
     disableFuture: boolean;
@@ -215,6 +216,7 @@ export interface DiarianSettings {
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
     newNoteMode: 'live' as NewNoteMode,
+    disableBanners: false,
 
     calendarType: 'iso8601' as CalType,
     disableFuture: false,
@@ -286,6 +288,40 @@ export class DiarianSettingTab extends PluginSettingTab {
                         void this.plugin.saveSettings();
                     })
             })
+
+
+        //#region Disable Banner Plugin images
+        const disableBannerDesc = new DocumentFragment;
+        disableBannerDesc.textContent = 'Disable showing banner images using the ';
+        disableBannerDesc.createEl("a", {
+            text: "Banner plugin",
+            attr: {
+                href: "obsidian://show-plugin?id=obsidian-banners",
+            },
+        });
+        disableBannerDesc.createEl('span', { text: ' or the ' })
+            .createEl("a", {
+                text: "CSS snippet",
+                attr: {
+                    href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
+                },
+            });
+        disableBannerDesc.createEl('span', { text: ' in ' })
+            .createEl('strong', { text: 'Calendar' });
+        disableBannerDesc.createEl('span', { text: ' view tiles and note previews.' });
+
+        new Setting(containerEl)
+            .setName('Disable banner images')
+            .setDesc(disableBannerDesc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.disableBanners)
+                    .onChange((value) => {
+                        this.plugin.settings.disableBanners = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
+                    }));
+        //#endregion
 
         //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
