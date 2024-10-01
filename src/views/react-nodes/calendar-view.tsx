@@ -21,6 +21,7 @@ interface ImageProps {
     folder: string;
     format: string;
     app: App;
+    plugin: Diarian;
 }
 
 export class CalendarView extends ItemView {
@@ -150,7 +151,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
                         <div className='dot-container'>
                             <Dots />
                         </div>
-                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} />
+                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} plugin={plugin} />
                     </>
                 )
             }
@@ -319,7 +320,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     )
 };
 
-const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
+const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');
 
     const [imgPath, setImgPath] = useState('');
@@ -343,8 +344,9 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                 if (bannerKey && bannerKey != '') {
                     let thisNote = getNoteByMoment(date, folder, format);
                     // let bannerValue;
+                    // const frontmatter = app.metadataCache.getCache(thisNote.path)?.frontmatter;
                     const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
-                    if (bannerValue) {
+                    if (!plugin.settings.disableBanners && bannerValue) {
                         const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
                         findResourcePath(bannerValue, thisNote, imgRegex);
                         if (!hasImage && (!imgPath || imgPath == "")) {
@@ -358,8 +360,23 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                 else {
                     const thisNote = getNoteByMoment(date, folder, format);
                     await app.vault.cachedRead(thisNote)
-                        .then((content) => {
-                            const imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                        .then(async (content) => {
+                            let imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+
+                            const classes = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.['cssclasses'];
+                            const hasCSSBanner = classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
+                            console.log(hasCSSBanner);
+                            if (hasCSSBanner) {
+                                if (plugin.settings.disableBanners)
+                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(?!\|banner)(\|((?!\[\[)(?!]]).)*)?]]/i;
+                                else {
+                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(\|banner)]]/i;
+
+                                    findResourcePath(content, thisNote, imgRegex);
+
+                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                                }
+                            }
                             findResourcePath(content, thisNote, imgRegex);
                         });
                 }
