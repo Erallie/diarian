@@ -173,17 +173,18 @@ export const ratingTypeMap: { [key: string]: RatingType } = {
 //#region Setting defaults
 export interface DiarianSettings {
     newNoteMode: NewNoteMode;
-    disableBanners: boolean;
 
     calendarType: CalType;
     disableFuture: boolean;
     headingFormat: string;
     calLocation: LeafType;
+    calDisableBanners: boolean;
     calStartup: boolean;
 
     previewLength: number;
     openInNewPane: boolean;
     notePrevDisplay: NotePrevDisplay;
+    prevDisableBanners: boolean;
     showNoteTitle: boolean;
 
     reviewInterval: number;
@@ -214,17 +215,18 @@ export interface DiarianSettings {
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
     newNoteMode: 'live' as NewNoteMode,
-    disableBanners: false,
 
     calendarType: 'iso8601' as CalType,
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
+    calDisableBanners: false,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
 
     previewLength: 250,
     openInNewPane: false,
     notePrevDisplay: 'callout' as NotePrevDisplay,
+    prevDisableBanners: true,
     showNoteTitle: true,
 
     reviewInterval: 3,
@@ -285,39 +287,6 @@ export class DiarianSettingTab extends PluginSettingTab {
                     })
             })
 
-
-        //#region Disable Banner Plugin images
-        const disableBannerDesc = new DocumentFragment;
-        disableBannerDesc.textContent = 'Disable showing banner images using the ';
-        disableBannerDesc.createEl("a", {
-            text: "Banner plugin",
-            attr: {
-                href: "obsidian://show-plugin?id=obsidian-banners",
-            },
-        });
-        disableBannerDesc.createEl('span', { text: ' or the ' })
-            .createEl("a", {
-                text: "CSS snippet",
-                attr: {
-                    href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
-                },
-            });
-        disableBannerDesc.createEl('span', { text: ' in ' })
-            .createEl('strong', { text: 'Calendar' });
-        disableBannerDesc.createEl('span', { text: ' view tiles and note previews.' });
-
-        new Setting(containerEl)
-            .setName('Disable banner images')
-            .setDesc(disableBannerDesc)
-            .addToggle((toggle) =>
-                toggle
-                    .setValue(this.plugin.settings.disableBanners)
-                    .onChange((value) => {
-                        this.plugin.settings.disableBanners = value;
-                        void this.plugin.saveSettings();
-                        this.plugin.refreshViews(true, true);
-                    }));
-        //#endregion
 
         //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
@@ -417,6 +386,39 @@ export class DiarianSettingTab extends PluginSettingTab {
                     this.plugin.refreshViews(true, false);
                 }));
 
+        //#endregion
+
+        //#region Disable Banner Plugin images
+        const calBannerDesc = new DocumentFragment;
+        calBannerDesc.textContent = 'Disable showing banner images using the ';
+        calBannerDesc.createEl("a", {
+            text: "Banner plugin",
+            attr: {
+                href: "obsidian://show-plugin?id=obsidian-banners",
+            },
+        });
+        calBannerDesc.createEl('span', { text: ' or the ' })
+            .createEl("a", {
+                text: "CSS snippet",
+                attr: {
+                    href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
+                },
+            });
+        calBannerDesc.createEl('span', { text: ' in ' })
+            .createEl('strong', { text: 'Calendar' });
+        calBannerDesc.createEl('span', { text: ' view tiles.' });
+
+        new Setting(containerEl)
+            .setName('Disable banner images')
+            .setDesc(calBannerDesc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.calDisableBanners)
+                    .onChange((value) => {
+                        this.plugin.settings.calDisableBanners = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
+                    }));
         //#endregion
 
         //#region Calendar location
@@ -700,6 +702,32 @@ export class DiarianSettingTab extends PluginSettingTab {
             })
 
         //#endregion
+
+
+        //#region Disable Banner Plugin images
+        const notePrevBannerDesc = new DocumentFragment;
+        notePrevBannerDesc.textContent = 'Disable showing banner images using the ';
+        notePrevBannerDesc.createEl("a", {
+            text: "CSS snippet",
+            attr: {
+                href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
+            },
+        });
+        notePrevBannerDesc.createEl('span', { text: ' in note previews.' });
+
+        new Setting(containerEl)
+            .setName('Disable banner images')
+            .setDesc(notePrevBannerDesc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.prevDisableBanners)
+                    .onChange((value) => {
+                        this.plugin.settings.prevDisableBanners = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, true);
+                    }));
+        //#endregion
+
 
         /* if (!this.plugin.settings.useCallout) {
             new Setting(containerEl)

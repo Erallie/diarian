@@ -346,7 +346,7 @@ const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
                     // let bannerValue;
                     // const frontmatter = app.metadataCache.getCache(thisNote.path)?.frontmatter;
                     const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
-                    if (!plugin.settings.disableBanners && bannerValue) {
+                    if (!plugin.settings.calDisableBanners && bannerValue) {
                         const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
                         findResourcePath(bannerValue, thisNote, imgRegex);
                         if (!hasImage && (!imgPath || imgPath == "")) {
@@ -367,7 +367,7 @@ const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
                             const hasCSSBanner = classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
                             console.log(hasCSSBanner);
                             if (hasCSSBanner) {
-                                if (plugin.settings.disableBanners)
+                                if (plugin.settings.calDisableBanners)
                                     imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(?!\|banner)(\|((?!\[\[)(?!]]).)*)?]]/i;
                                 else {
                                     imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(\|banner)]]/i;
