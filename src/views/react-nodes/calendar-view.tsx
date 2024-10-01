@@ -323,9 +323,6 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');
 
     const [imgPath, setImgPath] = useState('');
-    // const [hasImage, setHasImage] = useState(false);
-    const imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
-    // let imgPath = "";
     useEffect(() => {
         let hasImage = false;
         const imagePath = async () => {
@@ -335,10 +332,8 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
                     if (imgFile && !hasImage && (!imgPath || imgPath == "")) {
                         const resourcePath = app.vault.getResourcePath(imgFile);
-                        // setHasImage(true);
                         hasImage = true;
                         setImgPath(resourcePath);
-                        // imgPath = resourcePath;
                     }
                 }
             }
@@ -349,9 +344,6 @@ const Image = ({ filteredDates, folder, format, app }: ImageProps) => {
                     let thisNote = getNoteByMoment(date, folder, format);
                     // let bannerValue;
                     const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
-                    /* await app.fileManager.processFrontMatter(thisNote, (frontmatter) => {
-                        bannerValue = frontmatter[bannerKey];
-                    }); */
                     if (bannerValue) {
                         const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
                         findResourcePath(bannerValue, thisNote, imgRegex);
