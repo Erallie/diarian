@@ -17,10 +17,17 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
     const ref = useRef<HTMLDivElement | HTMLQuoteElement>(null);
 
     void (async () => {
-        const preSlicedContent = (await app.vault.cachedRead(note))
+        let preSlicedContent = (await app.vault.cachedRead(note))
             // remove frontmatter
             // .replace(/---.*?---/s, "")
             .replace(/---.*?---/s, "");
+
+        const classes = await app.metadataCache.getCache(note.path)?.frontmatter?.['cssclasses'];
+        const hasCSSBanner = classes && classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
+        if (hasCSSBanner && plugin.settings.prevDisableBanners) {
+            const bannerRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(\|banner)]](\n)?/i;
+            preSlicedContent = preSlicedContent.replace(bannerRegex, "");
+        }
         let slicedContent = preSlicedContent
             // restrict to chosen preview length
             .substring(0, plugin.settings.previewLength);
