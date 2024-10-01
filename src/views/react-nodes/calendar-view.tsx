@@ -347,7 +347,7 @@ const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
                     // const frontmatter = app.metadataCache.getCache(thisNote.path)?.frontmatter;
                     const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
                     if (!plugin.settings.calDisableBanners && bannerValue) {
-                        const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                        const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)*]]/i;
                         findResourcePath(bannerValue, thisNote, imgRegex);
                         if (!hasImage && (!imgPath || imgPath == "")) {
                             hasImage = true;
@@ -361,11 +361,11 @@ const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
                     const thisNote = getNoteByMoment(date, folder, format);
                     await app.vault.cachedRead(thisNote)
                         .then(async (content) => {
-                            let imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
+                            let imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)*]]/i;
 
                             const classes = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.['cssclasses'];
-                            const hasCSSBanner = classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
-                            console.log(hasCSSBanner);
+                            const hasCSSBanner = classes && classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
+                            // console.log(hasCSSBanner);
                             if (hasCSSBanner) {
                                 if (plugin.settings.calDisableBanners)
                                     imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(?!\|banner)(\|((?!\[\[)(?!]]).)*)?]]/i;
