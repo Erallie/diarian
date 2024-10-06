@@ -30,12 +30,14 @@ export class CalendarView extends ItemView {
     plugin: Diarian;
     app: App;
     startDate: Date;
+    bannerKey: string;
 
     constructor(leaf: WorkspaceLeaf, plugin: Diarian, app: App) {
         super(leaf);
         this.plugin = plugin;
         this.app = app;
         this.startDate = new Date();
+        this.bannerKey = getBannerProperty();
     }
 
     getViewType() {
@@ -62,6 +64,7 @@ export class CalendarView extends ItemView {
 
     async refresh(plugin: Diarian, newDate?: Date) {
         this.plugin = plugin;
+        this.bannerKey = getBannerProperty();
         if (newDate && newDate !== undefined) this.startDate = newDate;
         this.onClose();
         this.onOpen();
@@ -72,6 +75,7 @@ export class CalendarView extends ItemView {
 const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
+    const bannerKey = thisComp.bannerKey;
     const { folder, format }: any = getModifiedFolderAndFormat();
     const filledDates = getMoments(dailyNotes, folder, format);
 
@@ -104,9 +108,6 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         innerSetDate(nextDate);
         thisComp.startDate = nextDate;
     }
-
-
-    const bannerKey = getBannerProperty();
 
     function tileContent({ date, view }: any) {
         if (view === 'month') {
