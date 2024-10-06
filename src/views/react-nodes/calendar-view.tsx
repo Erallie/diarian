@@ -22,6 +22,7 @@ interface ImageProps {
     format: string;
     app: App;
     plugin: Diarian;
+    bannerKey: string;
 }
 
 export class CalendarView extends ItemView {
@@ -105,6 +106,8 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     }
 
 
+    const bannerKey = getBannerProperty();
+
     function tileContent({ date, view }: any) {
         if (view === 'month') {
             let filteredDates: moment.Moment[] = [];
@@ -144,14 +147,12 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
                         </div>
                     ) */
 
-
-
                 return (
                     <>
                         <div className='dot-container'>
                             <Dots />
                         </div>
-                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} plugin={plugin} />
+                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} plugin={plugin} bannerKey={bannerKey} />
                     </>
                 )
             }
@@ -320,7 +321,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     )
 };
 
-const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
+const Image = ({ filteredDates, folder, format, app, plugin, bannerKey }: ImageProps) => {
     // printToConsole(logLevel.log, 'created image');
 
     const [imgPath, setImgPath] = useState('');
@@ -338,8 +339,8 @@ const Image = ({ filteredDates, folder, format, app, plugin }: ImageProps) => {
                     }
                 }
             }
+
             for (let date of filteredDates) {
-                let bannerKey = getBannerProperty();
                 // printToConsole(logLevel.log, bannerKey);
                 if (bannerKey && bannerKey != '') {
                     let thisNote = getNoteByMoment(date, folder, format);
