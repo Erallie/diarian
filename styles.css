@@ -713,7 +713,11 @@ button.filled-date:has(img) {
 
 button.filled-date:has(img) :not(img) {
     z-index: 1;
-    text-shadow: 0px 0px var(--size-2-2) black;
+    --white: white;
+    --black: black;
+    color: var(--white);
+    text-shadow: 0px 0px var(--size-2-2) var(--black), 0px 0px var(--size-2-2) var(--black),
+        0px 0px var(--size-2-2) var(--black);
 }
 
 button.filled-date:enabled:hover:has(img) .calendar-attachment,
