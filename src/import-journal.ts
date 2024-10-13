@@ -568,13 +568,13 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     if (array.rating) {
         frontmatter += `\n${plugin.settings.ratingProp}: ${array.rating}/5`;
     }
-    if (array.tags.length != 0) {
+    if (array.tags && array.tags.length != 0) {
         frontmatter += `\ntags:`;
         for (let i in array.tags) {
             frontmatter += `\n  - ${array.tags[i]}`;
         }
     }
-    if (array.people.length != 0) {
+    if (array.people && array.people.length != 0) {
         frontmatter += `\npeople:`;
         for (let i in array.people) {
             frontmatter += `\n  - ${array.people[i]}`;
@@ -589,7 +589,7 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     if (array.lunar && array.lunar != '') {
         frontmatter += `\nlunar phase: ${array.lunar}`
     }
-    if (array.tracker.length != 0) {
+    if (array.tracker && array.tracker.length != 0) {
         for (let string of array.tracker) {
             const markdownString = htmlToMarkdown(string);
             const key = markdownString.slice(0, markdownString.lastIndexOf(':'));
@@ -600,7 +600,7 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     frontmatter += '\n---';
 
     let body = '';
-    if (array.heading != '') {
+    if (array.heading && array.heading != '') {
         body += `# ${htmlToMarkdown(array.heading)}\n`;
     }
     if (array.html && array.html != '') {
@@ -612,13 +612,13 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
         frontmatterObj[mapViewProperty] = array.location.toString();
     if (array.rating)
         frontmatterObj[plugin.settings.ratingProp] = `${array.rating}/5`;
-    if (array.tags.length != 0) {
+    if (array.tags && array.tags.length != 0) {
         frontmatterObj['tags'] = [];
         for (let i in array.tags) {
             frontmatterObj['tags'][i] = array.tags[i];
         }
     }
-    if (array.people.length != 0) {
+    if (array.people && array.people.length != 0) {
         frontmatterObj['people'] = [];
         for (let i in array.people) {
             frontmatterObj['people'][i] = array.people[i];
@@ -633,7 +633,7 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     }
     if (array.lunar && array.lunar != '')
         frontmatterObj['lunar phase'] = array.lunar;
-    if (array.tracker.length != 0)
+    if (array.tracker && array.tracker.length != 0)
         for (let string of array.tracker) {
             const markdownString = htmlToMarkdown(string);
             const key = markdownString.slice(0, markdownString.lastIndexOf(':'));
