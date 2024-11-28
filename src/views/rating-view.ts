@@ -101,7 +101,7 @@ export class RatingView extends Modal {
 
             function resetID() {
                 currentId = undefined;
-                for (let i = 0; i < this.maxValue; i++) {
+                for (let i = 0; i < thisComp.maxValue; i++) {
                     setDefaultStroke(i, ratingStrokes[i]);
                 }
             }
