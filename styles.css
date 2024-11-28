@@ -203,8 +203,7 @@ span[id^='rating-']>svg {
 
 /* #region select view */
 
-/* .bottom-modal-text.is-ios,
-.bottom-modal-text.is-android,
+/* .bottom-modal-text.is-mobile,
 .bottom-modal-text {
     margin-bottom: var(--size-4-4);
 } */
@@ -236,8 +235,7 @@ div.modal:has(.new-note-div) {
     /* max-width: var(--modal-max-width); */
 }
 
-/* div.modal:has(.new-note-div).is-ios,
-div.modal:has(.new-note-div).is-android */
+/* div.modal:has(.new-note-div).is-mobile */
 div.modal:has(.new-note-div) {
     /* width: 50%; */
     padding: var(--size-4-5) var(--size-4-3);
@@ -266,29 +264,25 @@ div.modal:has(.new-note-div) {
 }
 
 /* #region new note input */
-body:not(.is-ios):not(.is-android) .new-note-input,
-body.is-ios .new-note-input.dropdown,
-body.is-android .new-note-input.dropdown {
+body:not(.is-mobile) .new-note-input,
+body.is-mobile .new-note-input.dropdown {
     padding-inline-start: var(--size-4-6);
 }
 
-body.is-ios .new-note-input:not(.dropdown),
-body.is-android .new-note-input:not(.dropdown) {
+body.is-mobile .new-note-input:not(.dropdown) {
     padding-inline-start: calc(var(--size-4-6) / 2);
     padding-inline-end: calc(var(--size-4-6) / 2);
 }
 
-/* body.is-ios .new-note-input.dropdown,
-body.is-android .new-note-input.dropdown {
+/* body.is-mobile .new-note-input.dropdown {
     text-align: center;
 } */
 
-body:not(.is-ios):not(.is-android) .new-note-input {
+body:not(.is-mobile) .new-note-input {
     flex: 2;
 }
 
-body.is-ios .new-note-input,
-body.is-android .new-note-input {
+body.is-mobile .new-note-input {
     flex: 2.5;
     padding-inline-start: calc(var(--size-4-6) / 2);
     padding-inline-end: calc(var(--size-4-6) / 2);
