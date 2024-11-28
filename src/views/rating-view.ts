@@ -113,13 +113,13 @@ export class RatingView extends Modal {
                     return;
                 } */
 
-                if (id.startsWith('rating-'))
+                if (id && id.startsWith('rating-'))
                     id = id.slice('rating-'.length);
                 else if (newTarget.parentElement?.id.startsWith('rating-')) {
                     id = newTarget.parentElement.id.slice('rating-'.length);
                 }
                 else {
-                    printToConsole(logLevel.warn, `Invalid id: ${id}`, true)
+                    printToConsole(logLevel.warn, `Invalid id: ${id}`)
                     resetID();
                     return;
                 }
