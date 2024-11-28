@@ -32,6 +32,7 @@ export class RatingView extends Modal {
 
         const rating = contentEl.createEl('p', { cls: 'rating' });
         rating.id = 'rating';
+        // rating.setAttribute("draggable", "false")
         const thisComp = this;
 
         let ratingStrokes: HTMLSpanElement[] = [];
@@ -119,7 +120,7 @@ export class RatingView extends Modal {
                     id = newTarget.parentElement.id.slice('rating-'.length);
                 }
                 else {
-                    printToConsole(logLevel.warn, `Invalid id: ${id}`, true)
+                    // printToConsole(logLevel.warn, `Invalid id: ${id}`, true)
                     resetID();
                     return;
                 }
