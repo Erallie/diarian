@@ -108,10 +108,10 @@ export class RatingView extends Modal {
 
             if (newTarget) {
                 let id: string | number = newTarget.id;
-                if (newTarget.id === undefined || newTarget.id === null || newTarget.id === "") {
+                /* if (newTarget.id === undefined || newTarget.id === null || newTarget.id === "") {
                     resetID();
                     return;
-                }
+                } */
 
                 if (id.startsWith('rating-'))
                     id = id.slice('rating-'.length);
