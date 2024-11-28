@@ -119,7 +119,7 @@ export class RatingView extends Modal {
                     id = newTarget.parentElement.id.slice('rating-'.length);
                 }
                 else {
-                    printToConsole(logLevel.warn, id, true)
+                    printToConsole(logLevel.warn, `Invalid id: ${id}`, true)
                     resetID();
                     return;
                 }
