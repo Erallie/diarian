@@ -39,18 +39,18 @@ export class RatingView extends Modal {
 
         const setDefaultStroke = (currentVal: number, element: HTMLElement) => {
             // If filled stroke
-            if (currentVal < this.defaultVal)
-                displayRating(this.plugin.settings, element, RatingStroke.filled, '')
-            // return displayRating(this.plugin.settings).filled;
+            if (currentVal < thisComp.defaultVal)
+                displayRating(thisComp.plugin.settings, element, RatingStroke.filled, '')
+            // return displayRating(thisComp.plugin.settings).filled;
             // If empty stroke
             else
-                displayRating(this.plugin.settings, element, RatingStroke.empty, 'text-faint')
-            // return displayRating(this.plugin.settings).empty;
+                displayRating(thisComp.plugin.settings, element, RatingStroke.empty, 'text-faint')
+            // return displayRating(thisComp.plugin.settings).empty;
         }
 
         /* const setDefaultClass = (currentVal: number) => {
             // If filled stroke
-            if (currentVal < this.defaultVal)
+            if (currentVal < thisComp.defaultVal)
                 return '';
             // If empty stroke
             else
@@ -61,14 +61,14 @@ export class RatingView extends Modal {
             for (let ii = 0; ii < thisComp.maxValue; ii++) {
                 if (ii <= i) {
                     /* ratingStrokes[ii].empty();
-                    ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).filled) */
+                    ratingStrokes[ii].append(displayRating(thisComp.defaultVal, thisComp.maxValue, thisComp.plugin.settings).filled) */
                     displayRating(thisComp.plugin.settings, ratingStrokes[ii], RatingStroke.filled, 'text-accent');
                     /* ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).filled);
                     ratingStrokes[ii].className = 'text-accent'; */
                 }
                 else {
                     /* ratingStrokes[ii].empty();
-                    ratingStrokes[ii].append(displayRating(this.defaultVal, this.maxValue, this.plugin.settings).empty); */
+                    ratingStrokes[ii].append(displayRating(thisComp.defaultVal, thisComp.maxValue, thisComp.plugin.settings).empty); */
                     /* ratingStrokes[ii].setText(displayRating(thisComp.plugin.settings).empty);
                     ratingStrokes[ii].className = 'text-faint'; */
                     displayRating(thisComp.plugin.settings, ratingStrokes[ii], RatingStroke.empty, 'text-faint');
@@ -119,7 +119,7 @@ export class RatingView extends Modal {
                     id = newTarget.parentElement.id.slice('rating-'.length);
                 }
                 else {
-                    printToConsole(logLevel.warn, `Invalid id: ${id}`)
+                    printToConsole(logLevel.warn, `Invalid id: ${id}`, true)
                     resetID();
                     return;
                 }
@@ -139,7 +139,7 @@ export class RatingView extends Modal {
             }
         }
 
-        for (let i = 0; i < this.maxValue; i++) { // Create ratingStrokes
+        for (let i = 0; i < thisComp.maxValue; i++) { // Create ratingStrokes
             // ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             ratingStrokes[i] = rating.createSpan();
             setDefaultStroke(i, ratingStrokes[i]);
@@ -150,7 +150,7 @@ export class RatingView extends Modal {
                 strokeHover(i);
             });
             ratingStrokes[i].addEventListener('touchstart', (ev) => {
-                ev.preventDefault();
+                // ev.preventDefault();
                 currentId = i;
                 strokeHover(i);
             });
@@ -158,9 +158,9 @@ export class RatingView extends Modal {
                 getCurrentEl(ev, strokeHover);
             });
 
-            ratingStrokes[i].addEventListener('mousedown', (ev) => {
+            /* ratingStrokes[i].addEventListener('mousedown', (ev) => {
                 ev.preventDefault();
-            });
+            }); */
 
             ratingStrokes[i].addEventListener('mouseup', (ev) => {
                 // if (currentId !== undefined)
@@ -174,7 +174,7 @@ export class RatingView extends Modal {
         }
 
         rating.addEventListener('mouseleave', (ev) => {
-            for (let i = 0; i < this.maxValue; i++) {
+            for (let i = 0; i < thisComp.maxValue; i++) {
                 setDefaultStroke(i, ratingStrokes[i]);
             }
         })
@@ -227,7 +227,7 @@ export class RatingView extends Modal {
 
 
         showSettingsEl.onClickEvent((ev) => {
-            this.settingsShown = !this.settingsShown;
+            thisComp.settingsShown = !thisComp.settingsShown;
             // handleSettings();
 
             toggleSettings();
@@ -284,7 +284,7 @@ export function displayRating(settings: DiarianSettings, element: DocumentFragme
             source = path;
 
         function appendImg(docFrag: DocumentFragment | HTMLElement) {
-            docFrag.createEl('img', { cls: 'rating-stroke', attr: { src: source } });
+            docFrag.createEl('img', { cls: 'rating-stroke', attr: { src: source, draggable: "false" } });
         }
 
         if (element instanceof HTMLElement) {
@@ -308,7 +308,7 @@ export function displayRating(settings: DiarianSettings, element: DocumentFragme
             let cls = 'rating-stroke'
             if (className)
                 cls += ' ' + className;
-            const iconSpan = docFrag.createSpan({ cls: cls });
+            const iconSpan = docFrag.createSpan({ cls: cls, attr: { draggable: "false" } });
             setIcon(iconSpan, icon);
         }
 
