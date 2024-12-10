@@ -698,7 +698,7 @@ button.react-calendar__tile--active:enabled:focus {
     height: 100%;
     object-fit: cover;
     object-position: center center;
-    filter: brightness(75%) contrast(95%);
+    filter: brightness(85%) contrast(95%);
 }
 
 button.filled-date:has(img) {
@@ -714,12 +714,20 @@ button.filled-date:has(img) :not(img) {
         0px 0px var(--size-2-2) var(--black);
 }
 
+button.filled-date:enabled:hover:has(img) :not(img),
+button.filled-date:enabled:focus:has(img) :not(img),
+button.react-calendar__tile--active:has(img) :not(img) {
+    text-shadow: 0px 0px var(--size-2-2) var(--black), 0px 0px var(--size-2-2) var(--black),
+        0px 0px var(--size-4-2) var(--black),
+        0px 0px var(--size-4-2) var(--black);
+}
+
 button.filled-date:enabled:hover:has(img) .calendar-attachment,
 button.filled-date:enabled:focus:has(img) .calendar-attachment,
 button.react-calendar__tile--active:has(img) .calendar-attachment,
 button.react-calendar__tile--active:enabled:hover:has(img) .calendar-attachment,
 button.react-calendar__tile--active:enabled:focus:has(img) .calendar-attachment {
-    filter: brightness(85%) contrast(100%);
+    filter: brightness(100%) contrast(100%);
 }
 
 button.filled-date:enabled:hover:has(img),
