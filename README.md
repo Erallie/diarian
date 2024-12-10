@@ -220,7 +220,7 @@ The **Date format converter** allows you to rename/move pre-existing daily notes
 # Installation
 ## Obsidian Marketplace
 To install this plugin via the Obsidian Marketplace, perform the following steps:
-1. Navigate to the CSS Inserter plugin page by either selecting [this link](https://obsidian.md/plugins?id=diarian) or doing the following:
+1. Navigate to the Diarian plugin page by either selecting [this link](https://obsidian.md/plugins?id=diarian) or doing the following:
 	1. Navigate to **Settings → Community plugins**
 	2. Select **Turn on community plugins**.
 	3. Select **Community plugins → Browse** and search for "Diarian".
