@@ -295,10 +295,10 @@ export class DiarianSettingTab extends PluginSettingTab {
         const calTypeDesc = new DocumentFragment;
         calTypeDesc.textContent = 'The type of calendar that will be displayed.';
         calTypeDesc.createEl('br');
-        calTypeDesc.createEl('span', { text: 'This will affect the starting weekday. Currently, the week starts on ' })/* .createEl('br');
+        calTypeDesc.appendText('This will affect the starting weekday. Currently, the week starts on ')/* .createEl('br');
         calTypeDesc.createEl('span', { text: "Currently, the week starts on " }) */;
         const startWeekday = calTypeDesc.createSpan({ cls: 'text-accent' });
-        calTypeDesc.createEl('span', { text: '.' });
+        calTypeDesc.appendText('.');
 
 
         function setWeekdayText(value: string) {
@@ -342,7 +342,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const disableFutureDesc = new DocumentFragment;
         disableFutureDesc.textContent = 'Disable accessing future dates in the ';
         disableFutureDesc.createEl('strong', { text: "Calendar" });
-        disableFutureDesc.createEl('span', { text: " view." });
+        disableFutureDesc.appendText(" view.");
 
         new Setting(containerEl)
             .setName('Disable future dates')
@@ -366,12 +366,12 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "https://momentjs.com/docs/#/displaying/format/",
             },
         });
-        headingFormatDesc.createEl("span", { text: " format for headings in the " })
-            .createEl('strong', { text: "Calendar" });
-        headingFormatDesc.createEl('span', { text: " view." })
-            .createEl("br");
-        const headingFormatContainer = headingFormatDesc.createEl('span', { text: 'Headings will appear as: ' });
-        const headingFormat = headingFormatContainer.createSpan({ cls: 'text-accent' });
+        headingFormatDesc.appendText(" format for headings in the ")
+        headingFormatDesc.createEl('strong', { text: "Calendar" });
+        headingFormatDesc.appendText(" view.")
+        headingFormatDesc.createEl("br");
+        headingFormatDesc.appendText('Headings will appear as: ');
+        const headingFormat = headingFormatDesc.createSpan({ cls: 'text-accent' });
 
         new Setting(containerEl)
             .setName('Heading format')
@@ -397,16 +397,16 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "obsidian://show-plugin?id=obsidian-banners",
             },
         });
-        calBannerDesc.createEl('span', { text: ' or the ' })
-            .createEl("a", {
-                text: "CSS snippet",
-                attr: {
-                    href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
-                },
-            });
-        calBannerDesc.createEl('span', { text: ' in ' })
-            .createEl('strong', { text: 'Calendar' });
-        calBannerDesc.createEl('span', { text: ' view tiles.' });
+        calBannerDesc.appendText(' or the ')
+        calBannerDesc.createEl("a", {
+            text: "CSS snippet",
+            attr: {
+                href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
+            },
+        });
+        calBannerDesc.appendText(' in ')
+        calBannerDesc.createEl('strong', { text: 'Calendar' });
+        calBannerDesc.appendText(' view tiles.');
 
         new Setting(containerEl)
             .setName('Disable banner images')
@@ -425,11 +425,11 @@ export class DiarianSettingTab extends PluginSettingTab {
         const calLocDesc = new DocumentFragment;
         calLocDesc.textContent = 'The location the  ';
         calLocDesc.createEl('strong', { text: "Calendar" });
-        calLocDesc.createEl('span', { text: " view will open in" });
+        calLocDesc.appendText(" view will open in");
         if (Platform.isDesktop) {
-            calLocDesc.createEl('span', { text: " by default" });
+            calLocDesc.appendText(" by default");
         };
-        calLocDesc.createEl('span', { text: '.' });
+        calLocDesc.appendText('.');
 
         new Setting(containerEl)
             .setName('Leaf location')
@@ -451,7 +451,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const openCalDesc = new DocumentFragment;
         openCalDesc.textContent = 'Open the ';
         openCalDesc.createEl('strong', { text: "Calendar" });
-        openCalDesc.createEl('span', { text: " view on startup." });
+        openCalDesc.appendText(" view on startup.");
 
         new Setting(containerEl)
             .setName('Open on startup')
@@ -476,7 +476,8 @@ export class DiarianSettingTab extends PluginSettingTab {
             "Notes will be displayed in intervals of this amount of time before the current day.";
         intervalDescription.createEl("br");
         /* intervalDescription.createEl('span', { text: 'For example, if this is set to every 3 months, notes will be displayed from 3 months ago, 6 months ago, 9 months ago, and so on.' }).createEl('br'); */
-        intervalDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+        intervalDescription.appendText('Currently set to ')
+        intervalDescription.createEl("span", {
             text: "every " + getTimeSpanTitle(this.plugin.settings.reviewInterval, this.plugin.settings.reviewIntervalUnit), cls: 'text-accent'
 
         });
@@ -525,9 +526,10 @@ export class DiarianSettingTab extends PluginSettingTab {
         delayDescription.textContent =
             "Only notes from this long ago or earlier will be included in the ";
         delayDescription.createEl('strong', { text: "On this day" });
-        delayDescription.createEl('span', { text: " view." });
+        delayDescription.appendText(" view.");
         delayDescription.createEl("br");
-        delayDescription.createEl('span', { text: 'Currently set to ' }).createEl("span", {
+        delayDescription.appendText('Currently set to ')
+        delayDescription.createEl("span", {
             text: getTimeSpanTitle(this.plugin.settings.reviewDelay, this.plugin.settings.reviewDelayUnit) + " ago or earlier", cls: 'text-accent'
 
         });
@@ -576,7 +578,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const revNotifTypeDesc = new DocumentFragment;
         revNotifTypeDesc.textContent = 'Receive a notification via this method when there are notes from ';
         revNotifTypeDesc.createEl('strong', { text: "On this day" });
-        revNotifTypeDesc.createEl('span', { text: " to review." });
+        revNotifTypeDesc.appendText(" to review.");
 
         new Setting(containerEl)
             .setName('Notifications')
@@ -597,7 +599,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const onThisDayLocDesc = new DocumentFragment;
         onThisDayLocDesc.textContent = 'The location the  ';
         onThisDayLocDesc.createEl('strong', { text: "On this day" });
-        onThisDayLocDesc.createEl('span', { text: " view will open in." });
+        onThisDayLocDesc.appendText(" view will open in.");
 
         new Setting(containerEl)
             .setName('Leaf location')
@@ -624,7 +626,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const openOnThisDayDesc = new DocumentFragment;
         openOnThisDayDesc.textContent = 'Open the ';
         openOnThisDayDesc.createEl('strong', { text: "On this day" });
-        openOnThisDayDesc.createEl('span', { text: " view on startup." });
+        openOnThisDayDesc.appendText(" view on startup.");
 
 
         new Setting(containerEl)
@@ -683,9 +685,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "https://help.obsidian.md/Editing+and+formatting/Callouts",
             },
         });
-        notePrevDispDesc.createEl("span", {
-            text: ", blockquotes, or regular text to render note previews."
-        })
+        notePrevDispDesc.appendText(", blockquotes, or regular text to render note previews.")
 
         new Setting(containerEl)
             .setName("How to display content")
@@ -713,7 +713,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "https://github.com/HandaArchitect/obsidian-banner-snippet",
             },
         });
-        notePrevBannerDesc.createEl('span', { text: ' in note previews.' });
+        notePrevBannerDesc.appendText(' in note previews.');
 
         new Setting(containerEl)
             .setName('Disable banner images')
@@ -749,13 +749,14 @@ export class DiarianSettingTab extends PluginSettingTab {
         notePaneDesc.textContent =
             "When clicked, notes will open in a new tab when possible";
         if (Platform.isDesktop) {
-            notePaneDesc.createEl('span', { text: ' by default.' })
+            notePaneDesc.appendText(' by default.')
             notePaneDesc.createEl("br");
-            notePaneDesc.createEl('span', { text: 'Middle-clicking a note will ' }).createEl('em', { text: 'always' });
-            notePaneDesc.createEl('span', { text: ' open it in a new tab regardless of this setting.' });
+            notePaneDesc.appendText('Middle-clicking a note will ');
+            notePaneDesc.createEl('em', { text: 'always' });
+            notePaneDesc.appendText(' open it in a new tab regardless of this setting.');
         }
         else {
-            notePaneDesc.createEl('span', { text: '.' })
+            notePaneDesc.appendText('.')
         }
         new Setting(containerEl)
             .setName(notePaneTitle)
@@ -786,7 +787,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "https://momentjs.com/docs/#/displaying/format/",
             },
         });
-        dateStampDesc.createEl("span", { text: " format for the date part of timestamps." });
+        dateStampDesc.appendText(" format for the date part of timestamps.");
 
         const timeStampDesc = new DocumentFragment();
         timeStampDesc.textContent =
@@ -797,7 +798,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 href: "https://momentjs.com/docs/#/displaying/format/",
             },
         });
-        timeStampDesc.createEl("span", { text: " format for the time part of timestamps." });
+        timeStampDesc.appendText(" format for the time part of timestamps.");
 
 
         const dateStampSetting = new Setting(containerEl)
@@ -824,15 +825,15 @@ export class DiarianSettingTab extends PluginSettingTab {
         timeStampPreview.createEl('br');
         const timeStampFormatContainer = timeStampPreview.createEl('span', { text: '— ', cls: 'text-accent' });
         const dateStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
-        timeStampFormatContainer.createEl('span', { text: ' ', cls: 'text-accent' });
+        timeStampFormatContainer.appendText(' ');
         const timeStampFormat = timeStampFormatContainer.createSpan({ cls: 'text-accent' });
-        timeStampFormatContainer.createEl('span', { text: ' —', cls: 'text-accent' });
+        timeStampFormatContainer.appendText(' —');
 
         const timeStampPrevDesc = new DocumentFragment();
 
         timeStampPrevDesc.textContent = 'If the active note is from the current day, only the time will be inserted.';
         timeStampPrevDesc.createEl('br');
-        timeStampPrevDesc.createEl('span', { text: 'Otherwise, both the date and the time will be inserted.' })
+        timeStampPrevDesc.appendText('Otherwise, both the date and the time will be inserted.')
 
         new Setting(containerEl)
             .setName(timeStampPreview)
@@ -971,7 +972,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 case RatingType.image:
                     desc.textContent = `Enter the path to the image you'd like to represent ${article} ${which} rating item.`
                     desc.createEl('br');
-                    desc.createEl('span', { text: 'Can be a local path to an image in your vault or a url to an image online.' });
+                    desc.appendText('Can be a local path to an image in your vault or a url to an image online.');
                     setting
                         .setDesc(desc)
                     switch (which) {
@@ -1020,7 +1021,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 case RatingType.icon:
                     desc.textContent = `Enter the name of the `;
                     desc.createEl('a', { text: 'Lucide', attr: { href: 'https://lucide.dev/' } });
-                    desc.createEl('span', { text: ` icon you'd like to represent ${article} ${which} rating item.` })
+                    desc.appendText(` icon you'd like to represent ${article} ${which} rating item.`)
                     setting
                         .setDesc(desc)
                     switch (which) {
@@ -1090,19 +1091,23 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         refreshDesc.textContent = 'Diarian usually only checks notes you ';
         refreshDesc.createEl('strong', { text: 'create' });
-        refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'delete' });
-        refreshDesc.createEl('span', { text: ', ' }).createEl('strong', { text: 'rename' });
-        refreshDesc.createEl('span', { text: ', or ' }).createEl('strong', { text: 'move' });
-        refreshDesc.createEl('span', { text: ' to update the list of Daily notes.' }).createEl('br');
-        refreshDesc.createEl('span', { text: 'This feature retrieves ' })
-            .createEl('strong', { text: 'all notes' });
-        refreshDesc.createEl('span', { text: ' from your vault and filters it for Daily notes.' })
-            .createEl('br');
-        refreshDesc.createEl('span', { text: 'Only use this feature if there are daily notes missing in the ', cls: 'setting-error' })
-            .createEl('strong', { text: 'Calendar' });
-        refreshDesc.createEl('span', { text: ' view or the ', cls: 'setting-error' })
-            .createEl('strong', { text: 'On this day' });
-        refreshDesc.createEl('span', { text: ' view.', cls: 'setting-error' })
+        refreshDesc.appendText(', ')
+        refreshDesc.createEl('strong', { text: 'delete' });
+        refreshDesc.appendText(', ')
+        refreshDesc.createEl('strong', { text: 'rename' });
+        refreshDesc.appendText(', or ')
+        refreshDesc.createEl('strong', { text: 'move' });
+        refreshDesc.appendText(' to update the list of Daily notes.')
+        refreshDesc.createEl('br');
+        refreshDesc.appendText('This feature retrieves ')
+        refreshDesc.createEl('strong', { text: 'all notes' });
+        refreshDesc.appendText(' from your vault and filters it for Daily notes.')
+        refreshDesc.createEl('br');
+        const refreshDescError = refreshDesc.createEl('span', { text: 'Only use this feature if there are daily notes missing in the ', cls: 'setting-error' })
+        refreshDescError.createEl('strong', { text: 'Calendar' });
+        refreshDescError.appendText(' view or the ')
+        refreshDescError.createEl('strong', { text: 'On this day' });
+        refreshDescError.appendText(' view.')
 
         new Setting(containerEl)
             .setName('Refresh daily notes')
