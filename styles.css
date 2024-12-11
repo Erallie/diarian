@@ -698,7 +698,7 @@ button.react-calendar__tile--active:enabled:focus {
     height: 100%;
     object-fit: cover;
     object-position: center center;
-    filter: brightness(85%) contrast(95%);
+    filter: brightness(80%) contrast(95%);
 }
 
 button.filled-date:has(img) {
