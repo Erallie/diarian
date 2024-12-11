@@ -143,6 +143,7 @@ export class RatingView extends Modal {
         for (let i = 0; i < thisComp.maxValue; i++) { // Create ratingStrokes
             // ratingStrokes[i] = rating.createEl('span', { text: setDefaultStroke(i), cls: setDefaultClass(i) });
             ratingStrokes[i] = rating.createSpan();
+            ratingStrokes[i].setAttribute('draggable', 'false');
             setDefaultStroke(i, ratingStrokes[i]);
             // ratingStrokes[i] = rating.appendChild(setDefaultStroke(i));
             ratingStrokes[i].id = `rating-${i}`;
