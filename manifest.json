@@ -1,7 +1,7 @@
 {
     "id": "diarian",
     "name": "Diarian",
-    "version": "1.2.21",
+    "version": "1.2.22",
     "minAppVersion": "1.6.7",
     "description": "All-in-one journaling toolkit.",
     "author": "Erika Gozar",
