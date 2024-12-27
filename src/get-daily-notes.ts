@@ -82,7 +82,7 @@ export function isDailyNote(file: TFile, folder: string, format: string, pathOve
 
     if (matchesBookends) {
         const newName = path.slice(checkIndex, path.length - '.md'.length);
-        const result = moment(newName, format, true).isValid();
+        const result = moment(newName, format, false).isValid();
         // if (result) {
         // printToConsole(logLevel.log, newName + " vs " + format);
         return result;
