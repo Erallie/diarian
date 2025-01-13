@@ -21,7 +21,6 @@ export const NotePreview = ({ note, view, plugin, app }: Props) => {
             // remove frontmatter
             // .replace(/---.*?---/s, "")
             .replace(/---.*?---/s, "");
-
         const classes = await app.metadataCache.getCache(note.path)?.frontmatter?.['cssclasses'];
         const hasCSSBanner = classes && classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
         if (hasCSSBanner && plugin.settings.prevDisableBanners) {
@@ -137,7 +136,7 @@ export function openDailyNote(note: TFile, plugin: Diarian, app: App, newNote: b
             }
 
             if (!leaf) {
-                const { folder, format } = getModifiedFolderAndFormat();
+                const { folder, format } = getModifiedFolderAndFormat(plugin.settings);
                 for (let i = 0; i < leaves.length; i++) {
                     const file = (leaves[i].view as MarkdownView).file;
                     if (file && isDailyNote(file, folder, format) && !leaves[i].getViewState().pinned && leaves[i].getRoot() === workspace.rootSplit) {

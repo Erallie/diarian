@@ -138,7 +138,7 @@ export class NewDailyNote extends Modal {
             // printToConsole(logLevel.log, dateString + timeString);
             const noteDate = moment(dateString + timeString, DATE_FORMAT + TIME_FORMAT);
 
-            const { format, folder } = getModifiedFolderAndFormat();
+            const { format, folder } = getModifiedFolderAndFormat(plugin.settings);
 
             let content = '';
 

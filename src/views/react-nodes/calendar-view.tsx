@@ -76,7 +76,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
     const bannerKey = thisComp.bannerKey;
-    const { folder, format }: any = getModifiedFolderAndFormat();
+    const { folder, format }: any = getModifiedFolderAndFormat(plugin.settings);
     const filledDates = getMoments(dailyNotes, folder, format);
 
 
@@ -167,7 +167,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         dDate => isSameDay(moment(selectedDate), dDate)))
         .length !== 0) {
 
-        const { folder, format }: any = getModifiedFolderAndFormat();
+        const { folder, format }: any = getModifiedFolderAndFormat(plugin.settings);
 
         let i = 0;
         let notesToShow: any = [];

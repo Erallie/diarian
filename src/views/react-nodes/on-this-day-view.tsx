@@ -66,7 +66,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
             <p>No notes to show.</p>
         )
     }
-    const { folder, format }: any = getModifiedFolderAndFormat();
+    const { folder, format }: any = getModifiedFolderAndFormat(plugin.settings);
     filteredNotes.sort(function (fileA, fileB) {
         const momentA = getMoment(fileA, folder, format);
         const momentB = getMoment(fileB, folder, format);

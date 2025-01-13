@@ -45,7 +45,7 @@ export class ConvertView extends Modal {
         // new Setting(contentEl).setDesc(infoDesc);
 
 
-        const { folder, format } = getModifiedFolderAndFormat();
+        const { folder, format } = getModifiedFolderAndFormat(this.plugin.settings);
 
         let oldFolder = folder;
 

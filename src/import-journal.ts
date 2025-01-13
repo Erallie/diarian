@@ -254,7 +254,7 @@ export class ImportView extends Modal {
 
             const mapViewProperty = getMapViewProperty();
 
-            let { format, folder }: any = getModifiedFolderAndFormat();
+            let { format, folder }: any = getModifiedFolderAndFormat(this.plugin.settings);
 
             for (let i = 0; i < datafiles.length; i++) {
                 let index = 0;

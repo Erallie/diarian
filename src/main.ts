@@ -26,7 +26,7 @@ export default class Diarian extends Plugin {
 
         this.app.workspace.onLayoutReady(() => {
 
-            const { folder, format }: any = getModifiedFolderAndFormat();
+            const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
             this.dailyNotes = getAllDailyNotes(folder, format);
             this.sortDailyNotes(folder, format);
 
@@ -38,7 +38,7 @@ export default class Diarian extends Plugin {
             //#region Events for updating notes
             this.registerEvent( //on rename
                 this.app.vault.on('rename', (file, oldPath) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     if (file instanceof TFile) {
                         if (isDailyNote(file, folder, format, oldPath)) {
                             this.dailyNotes = this.dailyNotes.filter(thisFile => {
@@ -58,7 +58,7 @@ export default class Diarian extends Plugin {
 
             this.registerEvent( //on create
                 this.app.vault.on('create', (file) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         // printToConsole(logLevel.log, isDailyNote(file, folder, format).toString());
                         this.dailyNotes[this.dailyNotes.length] = file;
@@ -70,7 +70,7 @@ export default class Diarian extends Plugin {
 
             this.registerEvent( //on delete
                 this.app.vault.on('delete', (file) => {
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     if (file instanceof TFile && isDailyNote(file, folder, format)) {
                         this.dailyNotes = this.dailyNotes.filter(thisFile => {
                             return (thisFile != file);
@@ -138,7 +138,7 @@ export default class Diarian extends Plugin {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     // printToConsole(logLevel.log, 'can open view');
                     return this.checkCallback(checking, 'insert-rating', markdownView.file, folder, format, ratingStatBar);
                     // This command will only show up in Command Palette when the check function returns true
@@ -158,7 +158,7 @@ export default class Diarian extends Plugin {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     // printToConsole(logLevel.log, 'can open view');
                     return this.checkCallback(checking, 'show-in-calendar', markdownView.file, folder, format);
                     // This command will only show up in Command Palette when the check function returns true
@@ -178,7 +178,7 @@ export default class Diarian extends Plugin {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
 
                     // printToConsole(logLevel.log, 'can open view');
                     return this.checkCallback(checking, 'next-note', markdownView.file, folder, format);
@@ -199,7 +199,7 @@ export default class Diarian extends Plugin {
                     // If checking is true, we're simply "checking" if the command can be run.
                     // If checking is false, then we want to actually perform the operation.
 
-                    const { folder, format }: any = getModifiedFolderAndFormat();
+                    const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
                     // printToConsole(logLevel.log, 'can open view');
                     return this.checkCallback(checking, 'previous-note', markdownView.file, folder, format);
                     // This command will only show up in Command Palette when the check function returns true
@@ -347,7 +347,7 @@ export default class Diarian extends Plugin {
     }
 
     async onFileOpen(ratingStatBar: HTMLElement, file: TFile | null) {
-        const { folder, format }: any = getModifiedFolderAndFormat();
+        const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
         if (file instanceof TFile && isDailyNote(file, folder, format)) {
             this.refreshViews(true, false, getMoment(file, folder, format));
             const rating = await this.app.metadataCache.getCache(file.path)?.frontmatter?.[this.settings.ratingProp];
@@ -536,7 +536,7 @@ export default class Diarian extends Plugin {
 
     addMenuItem(menu: Menu, commandID: string, title: string, icon: IconName, file?: TFile) {
         let isAvailable = false;
-        const { folder, format }: any = getModifiedFolderAndFormat();
+        const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
         if (file) {
             isAvailable = this.checkCallback(true, commandID, file, folder, format) || false;
             if (isAvailable) {
@@ -676,7 +676,7 @@ export default class Diarian extends Plugin {
         let dateString = '';
         const now = moment();
 
-        const { folder, format }: any = getModifiedFolderAndFormat();
+        const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
         const noteDate = getMoment(view.file, folder, format);
 
         if (!isSameDay(noteDate, now))

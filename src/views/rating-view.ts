@@ -80,7 +80,7 @@ export class RatingView extends Modal {
         function endClick(i: number) {
             let markdownView = thisComp.app.workspace.getActiveViewOfType(MarkdownView);
             const file = markdownView?.file;
-            const { folder, format }: any = getModifiedFolderAndFormat();
+            const { folder, format }: any = getModifiedFolderAndFormat(thisComp.plugin.settings);
             if (markdownView && file instanceof TFile && isDailyNote(file, folder, format)) {
                 thisComp.app.fileManager.processFrontMatter(file, (frontmatter) => {
                     frontmatter[thisComp.plugin.settings.ratingProp] = `${i + 1}/${thisComp.maxValue}`;

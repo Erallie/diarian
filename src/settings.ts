@@ -173,6 +173,10 @@ export const ratingTypeMap: { [key: string]: RatingType } = {
 //#region Setting defaults
 export interface DiarianSettings {
     newNoteMode: NewNoteMode;
+    overrideFolder: boolean;
+    overriddenFolder: string;
+    overrideFormat: boolean;
+    overriddenFormat: string;
 
     calendarType: CalType;
     disableFuture: boolean;
@@ -215,6 +219,10 @@ export interface DiarianSettings {
 
 export const DEFAULT_SETTINGS: DiarianSettings = {
     newNoteMode: 'live' as NewNoteMode,
+    overrideFolder: false,
+    overriddenFolder: "",
+    overrideFormat: false,
+    overriddenFormat: "",
 
     calendarType: 'iso8601' as CalType,
     disableFuture: false,
@@ -274,7 +282,6 @@ export class DiarianSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         // new Setting(containerEl).setName('On startup').setHeading();
-
         new Setting(containerEl).setName('Open new daily notes in')
             .setDesc('The mode new daily notes created by Diarian will open in.')
             .addDropdown((dropdown) => {
@@ -287,6 +294,111 @@ export class DiarianSettingTab extends PluginSettingTab {
                     })
             })
 
+        //#region Path Overrides
+
+
+        const overrideError = new DocumentFragment;
+        const overrideErrorSpan = overrideError.createEl('span', { text: 'You must trigger ', cls: 'setting-error' });
+        overrideErrorSpan.createEl('strong', { text: 'Refresh daily notes' });
+        overrideErrorSpan.appendText(" at the bottom of this page before these settings take effect!");
+
+        new Setting(containerEl).setName('Daily notes overrides').setHeading().setDesc(overrideError);
+
+        //#region Override Folder
+        //#region Toggle
+        const overrideFolderFrag = new DocumentFragment();
+        overrideFolderFrag.textContent =
+            "Enable this to override the folder path for your daily notes.";
+        overrideFolderFrag.createEl("br");
+        overrideFolderFrag.appendText("Disabling this will use your settings from the Daily notes plugin, which can be found under ");
+        overrideFolderFrag.createEl("strong", { text: "Settings → Daily notes → New file location" });
+        overrideFolderFrag.appendText(".")
+
+        new Setting(containerEl).setName('Override daily notes folder')
+            .setDesc(overrideFolderFrag)
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(this.plugin.settings.overrideFolder)
+                    .onChange(async (value) => {
+                        this.plugin.settings.overrideFolder = value;
+                        await this.plugin.saveSettings();
+                        this.display();
+                    })
+            })
+        //#endregion
+        //#region Path
+        if (this.plugin.settings.overrideFolder) {
+            const overriddenFolderFrag = new DocumentFragment();
+            overriddenFolderFrag.textContent = "The new path for the folder that contains your daily notes.";
+            overriddenFolderFrag.createEl("br");
+            overriddenFolderFrag.appendText("Leave this blank to use your vault's root folder.")
+
+            new Setting(containerEl).setName('New daily notes folder')
+                .setDesc(overriddenFolderFrag)
+                .addText(text =>
+                    text
+                        .setPlaceholder("Journal")
+                        .setValue(this.plugin.settings.overriddenFolder)
+                        .onChange(async (value) => {
+                            this.plugin.settings.overriddenFolder = value;
+                            await this.plugin.saveSettings();
+                        })
+                )
+        }
+        //#endregion
+        //#endregion
+
+        //#region Override Format
+        //#region Toggle
+        const overrideFormatFrag = new DocumentFragment();
+        overrideFormatFrag.textContent =
+            "Enable this to override the date format for your daily notes.";
+        overrideFormatFrag.createEl("br");
+        overrideFormatFrag.appendText("Disabling this will use your settings from the Daily notes plugin, which can be found under ");
+        overrideFormatFrag.createEl("strong", { text: "Settings → Daily notes → Date format" });
+        overrideFormatFrag.appendText(".")
+
+        new Setting(containerEl).setName('Override daily notes date format')
+            .setDesc(overrideFormatFrag)
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(this.plugin.settings.overrideFormat)
+                    .onChange(async (value) => {
+                        this.plugin.settings.overrideFormat = value;
+                        await this.plugin.saveSettings();
+                        this.display();
+                    })
+            })
+        //#endregion
+        //#region Path
+        if (this.plugin.settings.overrideFormat) {
+            const overriddenFormatFrag = new DocumentFragment();
+            overriddenFormatFrag.textContent = "The new date format for your daily notes";
+            overriddenFormatFrag.createEl("br");
+            overriddenFormatFrag.appendText("Follow ")
+            overriddenFormatFrag.createEl("a", {
+                text: "these instructions", attr: {
+                    href: "https://github.com/Erallie/diarian?tab=readme-ov-file#multiplenested-daily-notes"
+                }
+            })
+            overriddenFormatFrag.appendText(" if you want to use multiple/nested daily notes.")
+
+            new Setting(containerEl).setName('New daily notes folder')
+                .setDesc(overriddenFormatFrag)
+                .addText(text =>
+                    text
+                        .setPlaceholder("YYYY-MM-DD")
+                        .setValue(this.plugin.settings.overriddenFormat)
+                        .onChange(async (value) => {
+                            this.plugin.settings.overriddenFormat = value;
+                            await this.plugin.saveSettings();
+                        })
+                )
+        }
+        //#endregion
+        //#endregion
+
+        //#endregion
 
         //#region Calendar
         new Setting(containerEl).setName('Calendar').setHeading();
@@ -1118,7 +1230,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                     .setTooltip('Search the entire vault for daily notes.\nUse this feature sparingly!')
                     .setWarning()
                     .onClick(() => {
-                        const { folder, format }: any = getModifiedFolderAndFormat();
+                        const { folder, format }: any = getModifiedFolderAndFormat(this.plugin.settings);
                         this.plugin.dailyNotes = getAllDailyNotes(folder, format);
                         this.plugin.sortDailyNotes(folder, format);
                         // printToConsole(logLevel.log, this.dailyNotes.length.toString());

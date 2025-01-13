@@ -1,6 +1,7 @@
 import { normalizePath, TFile, moment } from 'obsidian';
 import Diarian from 'src/main';
 import { printToConsole, logLevel, Unit, DEFAULT_FORMAT } from './constants';
+import { DiarianSettings } from './settings';
 
 // const vault: Vault = app.vault;
 
@@ -82,7 +83,7 @@ export function isDailyNote(file: TFile, folder: string, format: string, pathOve
 
     if (matchesBookends) {
         const newName = path.slice(checkIndex, path.length - '.md'.length);
-        const result = moment(newName, format, false).isValid();
+        const result = moment(newName, format, true).isValid();
         // if (result) {
         // printToConsole(logLevel.log, newName + " vs " + format);
         return result;
@@ -147,7 +148,7 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
     let filteredNotes: TFile[] = [];
     let i = 0;
 
-    const { format, folder }: any = getModifiedFolderAndFormat();
+    const { format, folder }: any = getModifiedFolderAndFormat(plugin.settings);
 
     for (let note of allNotes) {
         const noteDate = getMoment(note, folder, format);
@@ -197,8 +198,15 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
     return filteredNotes;
 }
 
-export function getModifiedFolderAndFormat() {
+export function getModifiedFolderAndFormat(settings: DiarianSettings) {
     let { format, folder }: any = getDailyNoteSettings();
+    if (settings.overrideFolder) {
+        folder = settings.overriddenFolder;
+    }
+
+    if (settings.overrideFormat) {
+        format = settings.overriddenFormat;
+    }
 
     let newFormat = DEFAULT_FORMAT;
     if (format && format != '') newFormat = normalizePath(format);
