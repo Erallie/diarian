@@ -115,18 +115,6 @@ export class ImportView extends Modal {
 
         // #region duplicate entry
 
-        /* const dupEntryDesc = new DocumentFragment;
-        dupEntryDesc.textContent = "What to do when multiple entries share the same note path."
-        dupEntryDesc.createEl('br');
-        dupEntryDesc.createEl('span', { text: "This also applies when an entry being imported has the path of a note that already exists." }).createEl('br');
-        dupEntryDesc.createEl('br');
-        dupEntryDesc.createEl('strong', { text: 'Append:' });
-        dupEntryDesc.createEl('span', { text: " Append all new entries to the end of the note." }).createEl('br');
-        dupEntryDesc.createEl('strong', { text: "First entry:" });
-        dupEntryDesc.createEl('span', { text: " Only import the first entry/Do not touch the pre-existing note." }).createEl('br');
-        dupEntryDesc.createEl('strong', { text: "Last entry:" });
-        dupEntryDesc.createEl('span', { text: ' Only import the last entry/Overwrite the pre-existing note.' }); */
-
         const dupEntryDesc = new DocumentFragment;
         dupEntryDesc.textContent = 'What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.';
         dupEntryDesc.createEl('br');
