@@ -64,35 +64,38 @@ export class ImportView extends Modal {
                 href: "diarium://",
             },
         });
-        list1.createEl('span', { text: ' and head over to the ' }).createEl('strong', { text: 'Export' });
+        list1.appendText(' and head over to the ')
+        list1.createEl('strong', { text: 'Export' });
         if (Platform.isMacOS && Platform.isDesktop) {
-            list1.createEl('span', { text: ' tab.' });
+            list1.appendText(' tab.');
         }
         else {
-            list1.createEl('span', { text: ' menu.' });
+            list1.appendText(' menu.');
         }
         const list2 = instrList.createEl('li', { text: 'Under ' })
         list2.createEl('strong', { text: 'File format' });
-        list2.createEl('span', { text: ', select ' }).createEl('strong', { text: 'JSON (.json)' });
-        list2.createEl('span', { text: '.' });
+        list2.appendText(', select ')
+        list2.createEl('strong', { text: 'JSON (.json)' });
+        list2.appendText('.');
         /* const list3 = instrList.createEl('li')
         list3.createEl('strong', { text: 'Uncheck' });
         list3.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate file for each entry' });
         list3.createEl('span', { text: '.' }); */
         const list4 = instrList.createEl('li')
         list4.createEl('strong', { text: 'Check' });
-        list4.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate files for attachments' });
-        list4.createEl('span', { text: '.' });
+        list4.appendText(' the option ')
+        list4.createEl('strong', { text: 'Create separate files for attachments' });
+        list4.appendText('.');
         instrList.createEl('li', { text: 'Set the other options according to your liking.' });
         if (!Platform.isIosApp) {
             const list5 = instrList.createEl('li', { text: 'Select ' });
             list5.createEl('strong', { text: 'Export' });
-            list5.createEl('span', { text: '.' });
+            list5.appendText('.');
         }
         else {
             const list5 = instrList.createEl('li', { text: 'Select ' });
             list5.createEl('strong', { text: 'Export → Save to Files' });
-            list5.createEl('span', { text: '  and save the exported file to any location.' });
+            list5.appendText('  and save the exported file to any location.');
             instrList.createEl('li', { text: 'Import your saved zip or json file below.' });
         }
         // instrList.createEl('li', { text: 'Decompress the exported zip file.' }); //Change this wording!
@@ -119,14 +122,14 @@ export class ImportView extends Modal {
         dupEntryDesc.textContent = 'What to do when multiple entries share the same note path. This also applies when an entry being imported has the path of a note that already exists.';
         dupEntryDesc.createEl('br');
         dupEntryDesc.createEl('br');
-        dupEntryDesc.createEl('span', { text: 'For multiple notes per day, follow ' })
-            .createEl('a', {
-                text: 'these instructions',
-                attr: {
-                    href: "https://github.com/Erallie/diarian?tab=readme-ov-file#multiplenested-daily-notes",
-                },
-            });
-        dupEntryDesc.createEl('span', { text: '.' });
+        dupEntryDesc.appendText('For multiple notes per day, follow ');
+        dupEntryDesc.createEl('a', {
+            text: 'these instructions',
+            attr: {
+                href: "https://github.com/Erallie/diarian?tab=readme-ov-file#multiplenested-daily-notes",
+            },
+        });
+        dupEntryDesc.appendText('.');
 
         let dupEntry = 'append' as DupEntry;
         const dupEntrySetting = new Setting(this.contentEl)
@@ -183,13 +186,14 @@ export class ImportView extends Modal {
         importNotes2a1.createEl('span', { text: ' property name can be set under ' }).createEl('strong', { text: 'Settings → Diarian → Rating → Property name' });
         importNotes2a1.createEl('span', { text: '.' }); */
         importDesc.createEl('br');
-        importDesc.createEl('span', { text: 'View ' }).createEl("a", {
+        importDesc.appendText('View ')
+        importDesc.createEl("a", {
             text: "importer notes",
             attr: {
                 href: "https://github.com/Erallie/diarian?tab=readme-ov-file#importer-notes",
             },
         });
-        importDesc.createEl('span', { text: '.' });
+        importDesc.appendText('.');
 
         const importSetting = new Setting(this.contentEl).setName("Import").setDesc(importDesc);
         const importButton = importSetting.controlEl.createEl("button");
