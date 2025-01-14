@@ -11,7 +11,6 @@ export enum DupEntry {
     lastEntry = 'Keep last entry (overwrite)'
 };
 
-
 const dupEntryMap: { [key: string]: DupEntry } = {
     append: DupEntry.append,
     firstEntry: DupEntry.firstEntry,
@@ -28,6 +27,16 @@ const dupPropsMap: { [key: string]: DupProps } = {
     codeblock: DupProps.codeblock,
     firstEntry: DupProps.firstEntry,
     lastEntry: DupProps.lastEntry,
+};
+
+export enum TrackerProps {
+    firstColon = 'Split at the first colon',
+    lastColon = "Split at the last colon",
+};
+
+const trackerPropsMap: { [key: string]: TrackerProps } = {
+    firstColon: TrackerProps.firstColon,
+    lastColon: TrackerProps.lastColon,
 };
 
 let skippedMoments: moment.Moment[] = [];
@@ -172,6 +181,35 @@ export class ImportView extends Modal {
                 }));
         //#endregion
 
+        // #region Tracker Data
+
+        const trackerDesc = new DocumentFragment;
+        trackerDesc.textContent = "Tracker data is exported to json as \"";
+        trackerDesc.createEl("strong", { text: "{key}: {value}" });
+        trackerDesc.appendText("\". This text is split at the colon (:) to determine which part is the key and which part is the value.");
+        trackerDesc.createEl('br');
+        trackerDesc.createEl("br");
+        trackerDesc.appendText("If you have colons (:) in the names or values of any of your trackers, you can decide whether to split the text at the ");
+        trackerDesc.createEl("strong", { text: "first colon" });
+        trackerDesc.appendText(" or the ");
+        trackerDesc.createEl("strong", { text: "last colon" });
+        trackerDesc.appendText(".");
+
+        let trackerValue = "firstColon" as TrackerProps;
+
+
+        new Setting(this.contentEl)
+            .setName("Where to separate tracker keys/values")
+            .setDesc(trackerDesc)
+            .addDropdown((dropdown) =>
+                dropdown
+                    .addOptions(TrackerProps)
+                    .setValue(trackerValue)
+                    .onChange((value) => {
+                        trackerValue = value as TrackerProps;
+                    }));
+        // #endregion
+
         //#region import button
         const importDesc = new DocumentFragment;
         importDesc.textContent = 'Begin the importing process.';
@@ -260,7 +298,7 @@ export class ImportView extends Modal {
                         progressMax = datafiles.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -269,7 +307,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
                         }
                     }
                     continue;
@@ -313,7 +351,7 @@ export class ImportView extends Modal {
                         progressMax = entries.length;
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
+                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
                     }
                     else {
                         // printToConsole(logLevel.log, 'Contains all entries');
@@ -322,7 +360,7 @@ export class ImportView extends Modal {
                         for (const data of dataArray) {
                             index++;
                             progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps);
+                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
                         }
                         break;
                     }
@@ -455,9 +493,9 @@ async function createAttachment(note: TFile, filePath: string, content: ArrayBuf
 
 
 
-async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian, dupEntry: DupEntry, dupProps: DupProps) {
+async function createEntry(data: any, format: string, folder: string, mapViewProperty: string, plugin: Diarian, dupEntry: DupEntry, dupProps: DupProps, trackerValue: TrackerProps) {
     const noteMoment = moment(data.date, 'YYYY-MM-DD[T]HH:mm:ss.SSSSSS');
-    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin), format, folder, dupEntry, dupProps);
+    await writeNote(noteMoment, formatContent(data, noteMoment, mapViewProperty, plugin, trackerValue), format, folder, dupEntry, dupProps);
 }
 
 export async function writeNote(date: moment.Moment, content: { frontmatter: string, frontmatterObj: any, body: string }, format: string, alteredFolder: string, dupEntry: DupEntry, dupProps: DupProps, newNote?: boolean, plugin?: Diarian) {
@@ -551,7 +589,7 @@ export async function writeNote(date: moment.Moment, content: { frontmatter: str
 
 
 // Transformation functions
-function formatContent(array: any, moment: moment.Moment, mapViewProperty: string, plugin: Diarian) {
+function formatContent(array: any, moment: moment.Moment, mapViewProperty: string, plugin: Diarian, trackerValue: TrackerProps) {
 
     let frontmatter = '---';
     if (array.location) {
@@ -584,9 +622,21 @@ function formatContent(array: any, moment: moment.Moment, mapViewProperty: strin
     if (array.tracker && array.tracker.length != 0) {
         for (let string of array.tracker) {
             const markdownString = htmlToMarkdown(string);
-            const key = markdownString.slice(0, markdownString.lastIndexOf(':'));
-            const value = markdownString.slice(markdownString.lastIndexOf(':'));
-            frontmatter += `\n"${key}"${value}`;
+
+            const trackerValueMapped = trackerPropsMap[trackerValue as TrackerProps];
+            switch (trackerValueMapped) {
+                case TrackerProps.firstColon:
+                    const keyFirst = markdownString.slice(0, markdownString.indexOf(': '));
+                    const valueFirst = markdownString.slice(markdownString.indexOf(': ') + 2);
+                    frontmatter += `\n"${keyFirst}": "${valueFirst}"`;
+                    break;
+                case TrackerProps.lastColon:
+                    const keyLast = markdownString.slice(0, markdownString.lastIndexOf(': '));
+                    const valueLast = markdownString.slice(markdownString.lastIndexOf(': ') + 2);
+                    frontmatter += `\n"${keyLast}": "${valueLast}"`;
+                    break;
+
+            }
         }
     }
     frontmatter += '\n---';
