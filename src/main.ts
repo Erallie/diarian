@@ -82,11 +82,12 @@ export default class Diarian extends Plugin {
 
             //#endregion
 
-
-            if (this.settings.onThisDayStartup)
-                this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
-            if (this.settings.calStartup)
-                this.openLeaf(ViewType.calendarView, this.settings.calLocation);
+            setTimeout(() => {
+                if (this.settings.onThisDayStartup)
+                    this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
+                if (this.settings.calStartup)
+                    this.openLeaf(ViewType.calendarView, this.settings.calLocation);
+            }, 100); // Adjust the delay as necessary
 
             this.openNotif();
         });
