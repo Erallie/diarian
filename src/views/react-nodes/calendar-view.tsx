@@ -14,6 +14,7 @@ interface ContainerProps {
     plugin: Diarian;
     app: App;
     thisComp: CalendarView;
+    monthStep: number;
 }
 
 interface ImageProps {
@@ -31,6 +32,8 @@ export class CalendarView extends ItemView {
     app: App;
     startDate: Date;
     bannerKey: string;
+    monthStep: number = 1;
+    viewWidth: number | null = null;
 
     constructor(leaf: WorkspaceLeaf, plugin: Diarian, app: App) {
         super(leaf);
@@ -51,15 +54,54 @@ export class CalendarView extends ItemView {
     async onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
         this.icon = 'lucide-calendar';
+        this.viewWidth = this.containerEl.getBoundingClientRect().width;
+
+        if (this.viewWidth > 322) {
+            this.monthStep = 1;
+        }
+        else if (this.viewWidth > 292) {
+            this.monthStep = 2;
+        }
+        else if (this.viewWidth > 285) {
+            this.monthStep = 3;
+        }
+        else {
+            this.monthStep = 4;
+        }
+
         this.root.render(
             <StrictMode>
-                <CalendarContainer view={this} plugin={this.plugin} app={this.app} thisComp={this} />
+                <CalendarContainer view={this} plugin={this.plugin} app={this.app} thisComp={this} monthStep={this.monthStep} />
             </StrictMode>
         );
     }
 
     async onClose() {
         this.root?.unmount();
+    }
+
+    onResize() {
+        const width = this.containerEl.getBoundingClientRect().width;
+        console.log(width); //
+
+        let monthStepNew;
+
+        if (width > 322) {
+            monthStepNew = 1;
+        }
+        else if (width > 292) {
+            monthStepNew = 2;
+        }
+        else if (width > 285) {
+            monthStepNew = 3;
+        }
+        else {
+            monthStepNew = 4;
+        }
+
+        if (monthStepNew != this.monthStep) {
+            this.refresh(this.plugin)
+        }
     }
 
     async refresh(plugin: Diarian, newDate?: Date) {
@@ -72,7 +114,7 @@ export class CalendarView extends ItemView {
 
 }
 
-const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
+const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: ContainerProps) => {
     const headingFormat = plugin.settings.headingFormat;
     const dailyNotes = plugin.dailyNotes;
     const bannerKey = thisComp.bannerKey;
@@ -220,6 +262,22 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
         }
     }
 
+    function formatMonthYear(locale: string | undefined, date: Date) {
+        const width = view.containerEl.getBoundingClientRect().width;
+        switch (monthStep) {
+            case 1:
+                return moment(date).format('MMMM YYYY');
+            case 2:
+                return moment(date).format('MMM YYYY');
+            case 3:
+                return moment(date).format('M/YYYY');
+            case 4:
+                return moment(date).format('M/YY');
+            default:
+                return moment(date).format('MMMM YYYY')
+        }
+    }
+
     const jumpLabel = (jumpType: string) => {
         switch (jumpType) {
             case 'next':
@@ -278,7 +336,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp }: ContainerProps) => {
                         <path d="M16 16h5v5" />
                     </svg></button>
             </div>
-            <Calendar onClickDay={outerSetDate} onViewChange={onViewChange} navigationAriaLabel={navLabel} next2AriaLabel={jumpLabel('next')} nextAriaLabel='Next' prev2AriaLabel={jumpLabel('prev')} prevAriaLabel='Previous' calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} />
+            <Calendar onClickDay={outerSetDate} onViewChange={onViewChange} navigationAriaLabel={navLabel} next2AriaLabel={jumpLabel('next')} nextAriaLabel='Next' prev2AriaLabel={jumpLabel('prev')} prevAriaLabel='Previous' calendarType={calType} maxDate={maxDate} value={selectedDate} tileClassName={tileClassName} tileContent={tileContent} formatMonthYear={formatMonthYear} />
             <div className='cal-date-heading-container'>
                 <h1>{moment(selectedDate).format(headingFormat)}</h1>
                 <button onClick={newDailyNote} className='cal-new-note-button' aria-label='Create new daily note' >
