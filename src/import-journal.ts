@@ -81,15 +81,13 @@ export class ImportView extends Modal {
         else {
             list1.appendText(' menu.');
         }
-        const list2 = instrList.createEl('li', { text: 'Under ' })
-        list2.createEl('strong', { text: 'File format' });
-        list2.appendText(', select ')
-        list2.createEl('strong', { text: 'JSON (.json)' });
-        list2.appendText('.');
-        /* const list3 = instrList.createEl('li')
-        list3.createEl('strong', { text: 'Uncheck' });
-        list3.createEl('span', { text: ' the option ' }).createEl('strong', { text: 'Create separate file for each entry' });
-        list3.createEl('span', { text: '.' }); */
+        if (!(Platform.isMacOS && Platform.isDesktop)) {
+            const list2 = instrList.createEl('li', { text: 'Under ' });
+            list2.createEl('strong', { text: 'File format' });
+            list2.appendText(', select ');
+            list2.createEl('strong', { text: 'JSON (.json)' });
+            list2.appendText('.');
+        }
         const list4 = instrList.createEl('li')
         list4.createEl('strong', { text: 'Check' });
         list4.appendText(' the option ')
@@ -121,7 +119,7 @@ export class ImportView extends Modal {
             attr: {
                 type: "file",
                 multiple: false,
-                accept: ".zip, .json"
+                accept: ".zip, .json, .docx"
             }
         });
 
@@ -313,6 +311,30 @@ export class ImportView extends Modal {
                     continue;
                 }
 
+                if (datafiles[i].name.toLowerCase().endsWith('.docx')) {
+                const docxEntries = await readDiariumDocx(datafiles[i]);
+
+                progressMax = docxEntries.length;
+
+                for (const data of docxEntries) {
+                    index++;
+                    progressBar.setValue(index / progressMax * 100);
+
+                    await createEntry(
+                        data,
+                        format,
+                        folder,
+                        mapViewProperty,
+                        this.plugin,
+                        dupEntry,
+                        dupProps,
+                        trackerValue
+                    );
+                }
+
+                continue;
+            }
+
                 // create a BlobReader to read with a ZipReader the zip from a Blob object
                 const reader = new ZipReader(new BlobReader(datafiles[i]));
 
@@ -321,57 +343,106 @@ export class ImportView extends Modal {
                 progressMax = entries.length;
 
 
-                for (let entry of entries) {
+                for (const entry of entries) {
                     progressBar.setValue(index / progressMax * 100);
-                    //skip if is folder
-                    if (entry.directory) continue;
 
-                    //skip if isn't json
-                    let isEntry: boolean = entry.filename.endsWith(".json") && !(entry.filename.startsWith('media/'));
-                    if (!isEntry) continue;
-
-                    if (!entry.getData) {
-                        printToConsole(logLevel.warn, `Cannot get data from ${entry.filename}:\nentry.getData() is undefined.`);
+                    // Skip folders.
+                    if (entry.directory) {
                         continue;
                     }
-                    const text = await entry.getData(
-                        // writer
-                        new TextWriter(),
-                        // options
-                        {
-                            /* onstart: (total) => {
-                                // onprogress callback
-                            } */
+
+                    // Media files are handled by the attachment loop below.
+                    if (entry.filename.startsWith('media/')) {
+                        continue;
+                    }
+
+                    if (!entry.getData) {
+                        printToConsole(
+                            logLevel.warn,
+                            `Cannot get data from ${entry.filename}:\nentry.getData() is undefined.`
+                        );
+
+                        continue;
+                    }
+
+                    const lowerFilename = entry.filename.toLowerCase();
+
+                    if (lowerFilename.endsWith('.json')) {
+                        const text = await entry.getData(
+                            new TextWriter()
+                        );
+
+                        const parsedData = JSON.parse(text);
+
+                        const dataArray: Array<any> = Array.isArray(parsedData)
+                            ? parsedData
+                            : [parsedData];
+
+                        for (const data of dataArray) {
+                            if (!data?.date) {
+                                printToConsole(
+                                    logLevel.warn,
+                                    `Cannot import ${entry.filename}:\nThe entry does not contain a date.`
+                                );
+
+                                continue;
+                            }
+
+                            index++;
+                            progressBar.setValue(index / progressMax * 100);
+
+                            await createEntry(
+                                data,
+                                format,
+                                folder,
+                                mapViewProperty,
+                                this.plugin,
+                                dupEntry,
+                                dupProps,
+                                trackerValue
+                            );
                         }
-                    );
 
-                    const parsedData = JSON.parse(text);
-                    const dataArray: Array<any> = Array.isArray(parsedData)
-                        ? parsedData
-                        : [parsedData];
+                        continue;
+                    }
 
-                    for (const data of dataArray) {
-                        if (!data?.date) {
+                    if (lowerFilename.endsWith('.docx')) {
+                        const docxBlob = await entry.getData(
+                            new BlobWriter(
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                            )
+                        );
+
+                        const docxEntries = await readDiariumDocx(
+                            docxBlob
+                        );
+
+                        if (docxEntries.length === 0) {
                             printToConsole(
                                 logLevel.warn,
-                                `Cannot import ${entry.filename}:\nThe entry does not contain a date.`
+                                `Cannot import ${entry.filename}:\nNo Diarium entries were found in the DOCX file.`
                             );
+
                             continue;
                         }
 
-                        index++;
-                        progressBar.setValue(index / progressMax * 100);
+                        for (const data of docxEntries) {
+                            index++;
+                            progressBar.setValue(index / progressMax * 100);
 
-                        await createEntry(
-                            data,
-                            format,
-                            folder,
-                            mapViewProperty,
-                            this.plugin,
-                            dupEntry,
-                            dupProps,
-                            trackerValue
-                        );
+                            await createEntry(
+                                data,
+                                format,
+                                folder,
+                                mapViewProperty,
+                                this.plugin,
+                                dupEntry,
+                                dupProps,
+                                trackerValue
+                            );
+                        }
+
+                        continue;
                     }
                 }
 
@@ -384,7 +455,7 @@ export class ImportView extends Modal {
                     if (entry.directory) continue;
 
                     //skip if isn't attachment
-                    let notAttachment: boolean = entry.filename.endsWith(".json") || !(entry.filename.startsWith('media/'));
+                    let notAttachment: boolean = !(entry.filename.startsWith('media/'));
                     if (notAttachment) continue;
 
                     const fullName = entry.filename;
@@ -480,6 +551,362 @@ export class ImportView extends Modal {
         const { contentEl } = this;
         contentEl.empty();
     }
+}
+
+interface DocxParagraph {
+    style: string;
+    text: string;
+}
+
+interface DiariumDocxEntry {
+    date: string;
+    html: string;
+    tags?: string[];
+    people?: string[];
+    weather?: string;
+    sun?: string;
+    lunar?: string;
+    location?: string;
+    rating?: number;
+}
+
+async function readDiariumDocx(file: Blob): Promise<DiariumDocxEntry[]> {
+    const reader = new ZipReader(new BlobReader(file));
+
+    try {
+        const entries = await reader.getEntries();
+
+        const documentEntry = entries.find(
+            (entry) => entry.filename === 'word/document.xml'
+        );
+
+        if (!documentEntry?.getData) {
+            throw new Error(
+                'The DOCX file does not contain word/document.xml.'
+            );
+        }
+
+        const documentXml = await documentEntry.getData(
+            new TextWriter()
+        );
+
+        return parseDiariumDocx(documentXml);
+    }
+    finally {
+        await reader.close();
+    }
+}
+
+function parseDiariumDocx(
+    documentXml: string
+): DiariumDocxEntry[] {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(
+        documentXml,
+        'application/xml'
+    );
+
+    const parserError = xml.querySelector('parsererror');
+
+    if (parserError) {
+        throw new Error(
+            `Could not parse the DOCX document XML: ${parserError.textContent}`
+        );
+    }
+
+    const paragraphs = getDocxParagraphs(xml);
+    const importedEntries: DiariumDocxEntry[] = [];
+
+    let currentParagraphs: DocxParagraph[] = [];
+
+    for (const paragraph of paragraphs) {
+        if (paragraph.style === 'Date') {
+            if (currentParagraphs.length > 0) {
+                const entry = createEntryFromDocxParagraphs(
+                    currentParagraphs
+                );
+
+                if (entry) {
+                    importedEntries.push(entry);
+                }
+            }
+
+            currentParagraphs = [paragraph];
+        }
+        else if (currentParagraphs.length > 0) {
+            currentParagraphs.push(paragraph);
+        }
+    }
+
+    if (currentParagraphs.length > 0) {
+        const entry = createEntryFromDocxParagraphs(
+            currentParagraphs
+        );
+
+        if (entry) {
+            importedEntries.push(entry);
+        }
+    }
+
+    return importedEntries;
+}
+
+function getDocxParagraphs(
+    document: Document
+): DocxParagraph[] {
+    const wordNamespace =
+        'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+
+    const paragraphElements = Array.from(
+        document.getElementsByTagNameNS(
+            wordNamespace,
+            'p'
+        )
+    );
+
+    return paragraphElements.map((paragraphElement) => {
+        const styleElement = paragraphElement
+            .getElementsByTagNameNS(
+                wordNamespace,
+                'pStyle'
+            )[0];
+
+        const style = styleElement?.getAttributeNS(
+            wordNamespace,
+            'val'
+        ) ?? '';
+
+        const text = readDocxParagraphText(
+            paragraphElement,
+            wordNamespace
+        );
+
+        return {
+            style,
+            text
+        };
+    });
+}
+
+function readDocxParagraphText(
+    paragraph: Element,
+    wordNamespace: string
+): string {
+    let text = '';
+
+    const walkNode = (node: Node): void => {
+        if (
+            node.nodeType === Node.ELEMENT_NODE
+            && (node as Element).namespaceURI === wordNamespace
+        ) {
+            const localName = (node as Element).localName;
+
+            if (localName === 't') {
+                text += node.textContent ?? '';
+                return;
+            }
+
+            if (localName === 'br') {
+                text += '\n';
+                return;
+            }
+
+            if (localName === 'tab') {
+                text += '\t';
+                return;
+            }
+        }
+
+        for (const child of Array.from(node.childNodes)) {
+            walkNode(child);
+        }
+    };
+
+    walkNode(paragraph);
+
+    return text;
+}
+
+function createEntryFromDocxParagraphs(
+    paragraphs: DocxParagraph[]
+): DiariumDocxEntry | null {
+    const dateParagraph = paragraphs.find(
+        (paragraph) => paragraph.style === 'Date'
+    );
+
+    if (!dateParagraph) {
+        return null;
+    }
+
+    const date = parseDocxDate(dateParagraph.text);
+
+    if (!date) {
+        printToConsole(
+            logLevel.warn,
+            `Cannot import DOCX entry:\nCould not parse date "${dateParagraph.text}".`
+        );
+
+        return null;
+    }
+
+    const contentParagraphs = paragraphs.filter(
+        (paragraph) =>
+            paragraph.style !== 'Date'
+            && paragraph.style !== 'TagsLocation'
+    );
+
+    const metadataParagraph = paragraphs.find(
+        (paragraph) =>
+            paragraph.style === 'TagsLocation'
+    );
+
+    const data: DiariumDocxEntry = {
+        date,
+        html: createDocxEntryHtml(contentParagraphs)
+    };
+
+    if (metadataParagraph) {
+        applyDocxMetadata(
+            data,
+            metadataParagraph.text
+        );
+    }
+
+    return data;
+}
+
+function parseDocxDate(dateText: string): string | null {
+    const normalizedDate = dateText
+        .replace(/[\u00A0\u202F]/g, ' ')
+        .trim();
+
+    const parsedDate = moment(
+        normalizedDate,
+        'dddd, MMMM D, YYYY h:mm A',
+        true
+    );
+
+    if (!parsedDate.isValid()) {
+        return null;
+    }
+
+    return parsedDate.format(
+        'YYYY-MM-DD[T]HH:mm:ss.SSSSSS'
+    );
+}
+
+function createDocxEntryHtml(
+    paragraphs: DocxParagraph[]
+): string {
+    const html: string[] = [];
+    let listItems: string[] = [];
+
+    const finishList = (): void => {
+        if (listItems.length === 0) {
+            return;
+        }
+
+        html.push(
+            `<ul>${listItems
+                .map((item) => `<li>${item}</li>`)
+                .join('')}</ul>`
+        );
+
+        listItems = [];
+    };
+
+    for (const paragraph of paragraphs) {
+        const escapedText = escapeHtml(
+            paragraph.text
+        );
+
+        if (paragraph.style === 'List') {
+            listItems.push(escapedText);
+            continue;
+        }
+
+        finishList();
+
+        if (paragraph.text.trim() === '') {
+            html.push('<p><br></p>');
+        }
+        else {
+            html.push(`<p>${escapedText}</p>`);
+        }
+    }
+
+    finishList();
+
+    return html.join('');
+}
+
+function applyDocxMetadata(
+    data: DiariumDocxEntry,
+    metadataText: string
+): void {
+    const metadataLines = metadataText
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+
+    for (const line of metadataLines) {
+        if (line.startsWith('Tags:')) {
+            data.tags = parseDocxListValue(
+                line.slice('Tags:'.length)
+            );
+        }
+        else if (line.startsWith('People:')) {
+            data.people = parseDocxListValue(
+                line.slice('People:'.length)
+            );
+        }
+        else if (line.startsWith('Weather:')) {
+            data.weather = line
+                .slice('Weather:'.length)
+                .trim();
+        }
+        else if (line.startsWith('☀️ Sunrise:')) {
+            data.sun = line;
+        }
+        else if (line.startsWith('Lunar phase:')) {
+            data.lunar = line
+                .slice('Lunar phase:'.length)
+                .trim();
+        }
+        else if (line.startsWith('Location:')) {
+            data.location = line
+                .slice('Location:'.length)
+                .trim();
+        }
+        else if (line.startsWith('Rating:')) {
+            const ratingText = line
+                .slice('Rating:'.length)
+                .trim();
+
+            data.rating = (
+                ratingText.match(/★/g) ?? []
+            ).length;
+        }
+    }
+}
+
+function parseDocxListValue(
+    value: string
+): string[] {
+    return value
+        .split(',')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+}
+
+function escapeHtml(value: string): string {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/\n/g, '<br>');
 }
 
 async function createAttachment(note: TFile, filePath: string, content: ArrayBuffer, fileMoment: moment.Moment) {
