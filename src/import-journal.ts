@@ -345,24 +345,33 @@ export class ImportView extends Modal {
                         }
                     );
 
-                    const data = JSON.parse(text);
-                    if (data.date) {
-                        // printToConsole(logLevel.log, 'Is separate entry');
-                        progressMax = entries.length;
+                    const parsedData = JSON.parse(text);
+                    const dataArray: Array<any> = Array.isArray(parsedData)
+                        ? parsedData
+                        : [parsedData];
+
+                    for (const data of dataArray) {
+                        if (!data?.date) {
+                            printToConsole(
+                                logLevel.warn,
+                                `Cannot import ${entry.filename}:\nThe entry does not contain a date.`
+                            );
+                            continue;
+                        }
+
                         index++;
                         progressBar.setValue(index / progressMax * 100);
-                        await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
-                    }
-                    else {
-                        // printToConsole(logLevel.log, 'Contains all entries');
-                        const dataArray: Array<any> = JSON.parse(text);
-                        progressMax = entries.length + dataArray.length;
-                        for (const data of dataArray) {
-                            index++;
-                            progressBar.setValue(index / progressMax * 100);
-                            await createEntry(data, format, folder, mapViewProperty, this.plugin, dupEntry, dupProps, trackerValue);
-                        }
-                        break;
+
+                        await createEntry(
+                            data,
+                            format,
+                            folder,
+                            mapViewProperty,
+                            this.plugin,
+                            dupEntry,
+                            dupProps,
+                            trackerValue
+                        );
                     }
                 }
 
