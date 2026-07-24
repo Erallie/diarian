@@ -1,0 +1,38 @@
+name: Question
+description: Ask a question about the plugin
+title: "[Question] "
+labels: ["question"]
+projects: []
+assignees:
+  - Erallie
+body:
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched existing issues and questions and have not found anything similar to what I'm asking.
+          required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you confused or wondering about?
+      value: "I was wondering how/why..."
+    validations:
+      required: true
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Upload screenshots
+      description: If applicable, add any screenshots that may help us understand your question.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about your question here.
+      value: "Type here"
+    validations:
+      required: false
