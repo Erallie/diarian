@@ -538,9 +538,14 @@ export class DiarianSettingTab extends PluginSettingTab {
         //#endregion
 
         //#region Rotate calendar images
+        const rotateImagesDesc = new DocumentFragment();
+        rotateImagesDesc.textContent = 'Rotate between all images found on a day instead of displaying only the first image in the ';
+        rotateImagesDesc.createEl('strong', { text: 'Calendar' });
+        rotateImagesDesc.appendText(' view tiles.');
+
         new Setting(containerEl)
             .setName('Rotate images')
-            .setDesc('Rotate between all images found a note instead of displaying only the first image.')
+            .setDesc(rotateImagesDesc)
             .addToggle((toggle) =>
                 toggle
                     .setValue(this.plugin.settings.calRotateImages)
@@ -551,10 +556,15 @@ export class DiarianSettingTab extends PluginSettingTab {
                         this.display();
                     }));
 
+        const rotationIntervalDesc = new DocumentFragment();
+        rotationIntervalDesc.textContent = 'The number of seconds each image is displayed in the ';
+        rotationIntervalDesc.createEl('strong', { text: 'Calendar' });
+        rotationIntervalDesc.appendText(' view tiles before changing to the next image.');
+
         if (this.plugin.settings.calRotateImages) {
             new Setting(containerEl)
                 .setName('Image rotation interval')
-                .setDesc('The number of seconds each image is displayed before changing to the next image.')
+                .setDesc(rotationIntervalDesc)
                 .addSlider((slider) =>
                     slider
                         .setLimits(1, 60, 1)
