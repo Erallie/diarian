@@ -18,7 +18,7 @@ body:
     attributes:
       label: Question
       description: What are you confused or wondering about?
-      value: "I was wondering how/why..."
+      placeholder: "I was wondering how/why..."
     validations:
       required: true
   - type: upload
@@ -26,13 +26,5 @@ body:
     attributes:
       label: Upload screenshots
       description: If applicable, add any screenshots that may help us understand your question.
-    validations:
-      required: false
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Add any other context about your question here.
-      value: "Type here"
     validations:
       required: false
