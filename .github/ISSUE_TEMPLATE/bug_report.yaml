@@ -19,7 +19,6 @@ body:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
       placeholder: "Tell us what happened."
-      value: "Tell us what happened."
     validations:
       required: true
   - type: textarea
@@ -32,11 +31,6 @@ body:
           2. Click on '...'
           3. Scroll down to '...'
           4. See error
-      value: |
-          1. Go to '...'
-          2. Click on '...'
-          3. Scroll down to '...'
-          4. See error
     validations:
       required: true
   - type: textarea
@@ -45,7 +39,6 @@ body:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: "Tell us what you expected."
-      value: "Tell us what you expected."
     validations:
       required: true
   - type: upload
@@ -61,7 +54,6 @@ body:
       label: Platform
       description: What platform are you experiencing this bug on?
       placeholder: "e.g. iOS/Android/Windows/MacOS/Linux"
-      value: "e.g. iOS/Android/Windows/MacOS/Linux"
     validations:
       required: true
   - type: input
@@ -70,7 +62,6 @@ body:
       label: Plugin version
       description: What is the version number of the plugin you are experiencing this bug on?
       placeholder: "e.g. 1.0.22"
-      value: "e.g. 1.0.22"
     validations:
       required: true
   - type: textarea
