@@ -183,6 +183,8 @@ export interface DiarianSettings {
     headingFormat: string;
     calLocation: LeafType;
     calDisableBanners: boolean;
+    calRotateImages: boolean;
+    calImageRotationInterval: number;
     calStartup: boolean;
 
     previewLength: number;
@@ -228,6 +230,8 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     calDisableBanners: false,
+    calRotateImages: false,
+    calImageRotationInterval: 10,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
 
@@ -531,6 +535,37 @@ export class DiarianSettingTab extends PluginSettingTab {
                         void this.plugin.saveSettings();
                         this.plugin.refreshViews(true, true);
                     }));
+        //#endregion
+
+        //#region Rotate calendar images
+        new Setting(containerEl)
+            .setName('Rotate images')
+            .setDesc('Rotate between all images found a note instead of displaying only the first image.')
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.calRotateImages)
+                    .onChange(async (value) => {
+                        this.plugin.settings.calRotateImages = value;
+                        await this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, false);
+                        this.display();
+                    }));
+
+        if (this.plugin.settings.calRotateImages) {
+            new Setting(containerEl)
+                .setName('Image rotation interval')
+                .setDesc('The number of seconds each image is displayed before changing to the next image.')
+                .addSlider((slider) =>
+                    slider
+                        .setLimits(1, 60, 1)
+                        .setValue(this.plugin.settings.calImageRotationInterval)
+                        .setDynamicTooltip()
+                        .onChange(async (value) => {
+                            this.plugin.settings.calImageRotationInterval = value;
+                            await this.plugin.saveSettings();
+                            this.plugin.refreshViews(true, false);
+                        }));
+        }
         //#endregion
 
         //#region Calendar location

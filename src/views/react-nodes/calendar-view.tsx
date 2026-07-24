@@ -381,76 +381,126 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
 };
 
 const Image = ({ filteredDates, folder, format, app, plugin, bannerKey }: ImageProps) => {
-    // printToConsole(logLevel.log, 'created image');
+    const [imagePaths, setImagePaths] = useState<string[]>([]);
+    const [imageIndex, setImageIndex] = useState(0);
 
-    const [imgPath, setImgPath] = useState('');
     useEffect(() => {
-        let hasImage = false;
-        const imagePath = async () => {
-            function findResourcePath(value: string, thisNote: TFile, imgRegex: RegExp) {
-                const match = imgRegex.exec(value);
-                if (match) {
-                    const imgFile = app.metadataCache.getFirstLinkpathDest(match[1], thisNote.path);
-                    if (imgFile && !hasImage && (!imgPath || imgPath == "")) {
-                        const resourcePath = app.vault.getResourcePath(imgFile);
-                        hasImage = true;
-                        setImgPath(resourcePath);
+        let cancelled = false;
+
+        const resolveImagePath = (imagePath: string, thisNote: TFile) => {
+            const imageFile = app.metadataCache.getFirstLinkpathDest(imagePath, thisNote.path);
+            return imageFile ? app.vault.getResourcePath(imageFile) : null;
+        };
+
+        const addUniqueImage = (paths: string[], imagePath: string | null) => {
+            if (imagePath && !paths.includes(imagePath)) {
+                paths.push(imagePath);
+            }
+        };
+
+        const getWikiLinkImages = (value: string, thisNote: TFile, regex: RegExp) => {
+            const paths: string[] = [];
+            let match: RegExpExecArray | null;
+
+            regex.lastIndex = 0;
+            while ((match = regex.exec(value)) !== null) {
+                addUniqueImage(paths, resolveImagePath(match[1], thisNote));
+            }
+
+            return paths;
+        };
+
+        const getMarkdownImages = (value: string, thisNote: TFile) => {
+            const paths: string[] = [];
+            const markdownImageRegex = /!\[[^\]]*]\(([^)]+\.(?:avif|bmp|gif|jpeg|jpg|png|svg|webp)(?:\?[^)]*)?)\)/gi;
+            let match: RegExpExecArray | null;
+
+            while ((match = markdownImageRegex.exec(value)) !== null) {
+                const rawPath = match[1].trim().replace(/^<|>$/g, '');
+                const localPath = resolveImagePath(decodeURIComponent(rawPath), thisNote);
+                addUniqueImage(paths, localPath ?? rawPath);
+            }
+
+            return paths;
+        };
+
+        const loadImagePaths = async () => {
+            const paths: string[] = [];
+
+            for (const date of filteredDates) {
+                const thisNote = getNoteByMoment(date, folder, format);
+                const cache = app.metadataCache.getCache(thisNote.path);
+                const bannerValue = bannerKey
+                    ? cache?.frontmatter?.[bannerKey]
+                    : undefined;
+
+                if (!plugin.settings.calDisableBanners && typeof bannerValue === 'string') {
+                    const bannerImages = getWikiLinkImages(
+                        bannerValue,
+                        thisNote,
+                        /!?\[\[([^*"<>:|?#^[\]]+\.(?:avif|bmp|gif|jpeg|jpg|png|svg|webp))(?:[|#](?:(?!\[\[|]]).)*)*]]/gi
+                    );
+
+                    if (bannerImages.length > 0) {
+                        bannerImages.forEach(path => addUniqueImage(paths, path));
                     }
+                    else {
+                        addUniqueImage(paths, bannerValue);
+                    }
+                }
+
+                const content = await app.vault.cachedRead(thisNote);
+                let wikiImageRegex = /!\[\[([^*"<>:|?#^[\]]+\.(?:avif|bmp|gif|jpeg|jpg|png|svg|webp))(?:[|#](?:(?!\[\[|]]).)*)?]]/gi;
+                const classes = cache?.frontmatter?.['cssclasses'];
+                const hasCSSBanner = Array.isArray(classes) && classes.includes('banner');
+
+                if (hasCSSBanner && plugin.settings.calDisableBanners) {
+                    wikiImageRegex = /!\[\[([^*"<>:|?#^[\]]+\.(?:avif|bmp|gif|jpeg|jpg|png|svg|webp))(?:#(?:(?!\[\[|]]|\|).)*)?(?!\|banner)(?:\|(?:(?!\[\[|]]).)*)?]]/gi;
+                }
+
+                getWikiLinkImages(content, thisNote, wikiImageRegex)
+                    .forEach(path => addUniqueImage(paths, path));
+                getMarkdownImages(content, thisNote)
+                    .forEach(path => addUniqueImage(paths, path));
+
+                if (!plugin.settings.calRotateImages && paths.length > 0) {
+                    break;
                 }
             }
 
-            for (let date of filteredDates) {
-                // printToConsole(logLevel.log, bannerKey);
-                if (bannerKey && bannerKey != '') {
-                    let thisNote = getNoteByMoment(date, folder, format);
-                    // let bannerValue;
-                    // const frontmatter = app.metadataCache.getCache(thisNote.path)?.frontmatter;
-                    const bannerValue = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.[bannerKey];
-                    if (!plugin.settings.calDisableBanners && bannerValue) {
-                        const imgRegex = /!?\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)*]]/i;
-                        findResourcePath(bannerValue, thisNote, imgRegex);
-                        if (!hasImage && (!imgPath || imgPath == "")) {
-                            hasImage = true;
-                            setImgPath(bannerValue);
-                        }
-                    }
-                }
-                if (hasImage || imgPath != "")
-                    break;
-                else {
-                    const thisNote = getNoteByMoment(date, folder, format);
-                    await app.vault.cachedRead(thisNote)
-                        .then(async (content) => {
-                            let imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)*]]/i;
-
-                            const classes = await app.metadataCache.getCache(thisNote.path)?.frontmatter?.['cssclasses'];
-                            const hasCSSBanner = classes && classes.find((cls: string) => { return cls == 'banner'; }) !== undefined; //It has the "banner" CSSclass in its metadata.
-                            // console.log(hasCSSBanner);
-                            if (hasCSSBanner) {
-                                if (plugin.settings.calDisableBanners)
-                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(?!\|banner)(\|((?!\[\[)(?!]]).)*)?]]/i;
-                                else {
-                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))(#((?!\[\[)(?!]])(?!\|).)*)?(\|banner)]]/i;
-
-                                    findResourcePath(content, thisNote, imgRegex);
-
-                                    imgRegex = /!\[\[([^*"<>:|?#^[\]]+\.(avif|bmp|gif|jpeg|jpg|png|svg|webp))([|#]((?!\[\[)(?!]]).)*)?]]/i;
-                                }
-                            }
-                            findResourcePath(content, thisNote, imgRegex);
-                        });
-                }
-                if (hasImage || imgPath != "")
-                    break;
+            if (!cancelled) {
+                setImagePaths(plugin.settings.calRotateImages ? paths : paths.slice(0, 1));
+                setImageIndex(0);
             }
+        };
+
+        void loadImagePaths();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [filteredDates, folder, format, app, plugin, bannerKey]);
+
+    useEffect(() => {
+        if (!plugin.settings.calRotateImages || imagePaths.length <= 1) {
+            return;
         }
-        imagePath();
-    }, [filteredDates, folder, format, app]);
-    if (imgPath != '')
-        return (
-            <img src={imgPath} className='calendar-attachment' />
-        )
-    return (<></>)
+
+        const intervalSeconds = Math.max(1, plugin.settings.calImageRotationInterval);
+        const intervalId = window.setInterval(() => {
+            setImageIndex(currentIndex => (currentIndex + 1) % imagePaths.length);
+        }, intervalSeconds * 1000);
+
+        return () => window.clearInterval(intervalId);
+    }, [imagePaths, plugin.settings.calRotateImages, plugin.settings.calImageRotationInterval]);
+
+    if (imagePaths.length === 0) {
+        return (<></>);
+    }
+
+    return (
+        <img src={imagePaths[imageIndex]} className='calendar-attachment' />
+    );
 }
 
 export function getBannerProperty() {
