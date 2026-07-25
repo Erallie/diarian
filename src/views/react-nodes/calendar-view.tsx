@@ -24,6 +24,7 @@ interface ImageProps {
     app: App;
     plugin: Diarian;
     bannerKey: string;
+    rotationIndex: number;
 }
 
 export class CalendarView extends ItemView {
@@ -127,6 +128,21 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     if (plugin.settings.disableFuture == false) maxDate = undefined;
 
     const [selectedDate, innerSetDate] = useState(thisComp.startDate);
+    const [rotationIndex, setRotationIndex] = useState(0);
+
+    useEffect(() => {
+        if (!plugin.settings.calRotateImages) {
+            setRotationIndex(0);
+            return;
+        }
+
+        const intervalSeconds = Math.max(1, plugin.settings.calImageRotationInterval);
+        const intervalId = window.setInterval(() => {
+            setRotationIndex(currentIndex => currentIndex + 1);
+        }, intervalSeconds * 1000);
+
+        return () => window.clearInterval(intervalId);
+    }, [plugin.settings.calRotateImages, plugin.settings.calImageRotationInterval]);
 
     function tileClassName({ date, view }: any) {
         // Add class to tiles in month view only
@@ -195,7 +211,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
                         <div className='dot-container'>
                             <Dots />
                         </div>
-                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} plugin={plugin} bannerKey={bannerKey} />
+                        <Image filteredDates={filteredDates} folder={folder} format={format} app={app} plugin={plugin} bannerKey={bannerKey} rotationIndex={rotationIndex} />
                     </>
                 )
             }
@@ -380,9 +396,8 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     )
 };
 
-const Image = ({ filteredDates, folder, format, app, plugin, bannerKey }: ImageProps) => {
+const Image = ({ filteredDates, folder, format, app, plugin, bannerKey, rotationIndex }: ImageProps) => {
     const [imagePaths, setImagePaths] = useState<string[]>([]);
-    const [imageIndex, setImageIndex] = useState(0);
 
     useEffect(() => {
         let cancelled = false;
@@ -470,7 +485,6 @@ const Image = ({ filteredDates, folder, format, app, plugin, bannerKey }: ImageP
 
             if (!cancelled) {
                 setImagePaths(plugin.settings.calRotateImages ? paths : paths.slice(0, 1));
-                setImageIndex(0);
             }
         };
 
@@ -481,22 +495,13 @@ const Image = ({ filteredDates, folder, format, app, plugin, bannerKey }: ImageP
         };
     }, [filteredDates, folder, format, app, plugin, bannerKey]);
 
-    useEffect(() => {
-        if (!plugin.settings.calRotateImages || imagePaths.length <= 1) {
-            return;
-        }
-
-        const intervalSeconds = Math.max(1, plugin.settings.calImageRotationInterval);
-        const intervalId = window.setInterval(() => {
-            setImageIndex(currentIndex => (currentIndex + 1) % imagePaths.length);
-        }, intervalSeconds * 1000);
-
-        return () => window.clearInterval(intervalId);
-    }, [imagePaths, plugin.settings.calRotateImages, plugin.settings.calImageRotationInterval]);
-
     if (imagePaths.length === 0) {
         return (<></>);
     }
+
+    const imageIndex = plugin.settings.calRotateImages
+        ? rotationIndex % imagePaths.length
+        : 0;
 
     return (
         <img src={imagePaths[imageIndex]} className='calendar-attachment' />
