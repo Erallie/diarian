@@ -230,7 +230,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     disableFuture: false,
     headingFormat: 'dddd, MMMM Do, YYYY',
     calDisableBanners: false,
-    calRotateImages: false,
+    calRotateImages: true,
     calImageRotationInterval: 1,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
