@@ -160,20 +160,6 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
         plugin.settings.calImageRotationInterval
     ]);
 
-    useEffect(() => {
-        if (!plugin.settings.calRotateImages) {
-            setRotationIndex(0);
-            return;
-        }
-
-        const intervalSeconds = plugin.settings.calImageRotationInterval;
-        const intervalId = window.setInterval(() => {
-            setRotationIndex(currentIndex => currentIndex + 1);
-        }, intervalSeconds * 1000);
-
-        return () => window.clearInterval(intervalId);
-    }, [plugin.settings.calRotateImages, plugin.settings.calImageRotationInterval]);
-
     function tileClassName({ date, view }: any) {
         // Add class to tiles in month view only
         if (view === 'month') {
