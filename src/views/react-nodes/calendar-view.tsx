@@ -420,6 +420,100 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     )
 };
 
+
+const MAX_CALENDAR_IMAGE_DIMENSION = 256;
+const resizedCalendarImageCache = new Map<string, Promise<string>>();
+
+const getResizedCalendarImage = (source: string): Promise<string> => {
+    const cachedImage = resizedCalendarImageCache.get(source);
+
+    if (cachedImage) {
+        return cachedImage;
+    }
+
+    const resizedImage = new Promise<string>((resolve) => {
+        if (
+            source.startsWith('data:image/svg+xml') ||
+            /\.svg(?:[?#]|$)/i.test(source) ||
+            /\.gif(?:[?#]|$)/i.test(source)
+        ) {
+            resolve(source);
+            return;
+        }
+
+        const image = new window.Image();
+
+        image.onload = () => {
+            const largestDimension = Math.max(
+                image.naturalWidth,
+                image.naturalHeight
+            );
+
+            if (
+                largestDimension === 0 ||
+                largestDimension <= MAX_CALENDAR_IMAGE_DIMENSION
+            ) {
+                resolve(source);
+                return;
+            }
+
+            const scale =
+                MAX_CALENDAR_IMAGE_DIMENSION /
+                largestDimension;
+
+            const width = Math.max(
+                1,
+                Math.round(image.naturalWidth * scale)
+            );
+
+            const height = Math.max(
+                1,
+                Math.round(image.naturalHeight * scale)
+            );
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const context = canvas.getContext('2d');
+
+            if (!context) {
+                resolve(source);
+                return;
+            }
+
+            try {
+                context.drawImage(image, 0, 0, width, height);
+
+                canvas.toBlob(
+                    (blob) => {
+                        if (!blob) {
+                            resolve(source);
+                            return;
+                        }
+
+                        resolve(URL.createObjectURL(blob));
+                    },
+                    'image/webp',
+                    0.82
+                );
+            }
+            catch {
+                resolve(source);
+            }
+        };
+
+        image.onerror = () => {
+            resolve(source);
+        };
+
+        image.src = source;
+    });
+
+    resizedCalendarImageCache.set(source, resizedImage);
+    return resizedImage;
+};
+
 const Image = ({
     filteredDates,
     folder,
@@ -436,6 +530,7 @@ const Image = ({
         useRef<HTMLImageElement>(null);
 
     const imageIndexRef = useRef(0);
+    const rotationInProgressRef = useRef(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -540,6 +635,32 @@ const Image = ({
     }, [filteredDates, folder, format, app, plugin, bannerKey]);
 
     useEffect(() => {
+        let cancelled = false;
+
+        if (imagePaths.length === 0) {
+            return;
+        }
+
+        const showFirstImage = async () => {
+            const resizedPath =
+                await getResizedCalendarImage(imagePaths[0]);
+
+            if (
+                !cancelled &&
+                imageElementRef.current
+            ) {
+                imageElementRef.current.src = resizedPath;
+            }
+        };
+
+        void showFirstImage();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [imagePaths]);
+
+    useEffect(() => {
         if (
             !plugin.settings.calRotateImages ||
             imagePaths.length <= 1
@@ -547,17 +668,33 @@ const Image = ({
             return;
         }
 
-        const rotateImage = () => {
-            imageIndexRef.current =
+        let cancelled = false;
+
+        const rotateImage = async () => {
+            if (rotationInProgressRef.current) {
+                return;
+            }
+
+            rotationInProgressRef.current = true;
+
+            const nextIndex =
                 (imageIndexRef.current + 1) %
                 imagePaths.length;
 
-            const imageElement = imageElementRef.current;
+            const resizedPath =
+                await getResizedCalendarImage(
+                    imagePaths[nextIndex]
+                );
 
-            if (imageElement) {
-                imageElement.src =
-                    imagePaths[imageIndexRef.current];
+            if (
+                !cancelled &&
+                imageElementRef.current
+            ) {
+                imageIndexRef.current = nextIndex;
+                imageElementRef.current.src = resizedPath;
             }
+
+            rotationInProgressRef.current = false;
         };
 
         rotationTimer.addEventListener(
@@ -566,6 +703,9 @@ const Image = ({
         );
 
         return () => {
+            cancelled = true;
+            rotationInProgressRef.current = false;
+
             rotationTimer.removeEventListener(
                 'rotate-calendar-images',
                 rotateImage
@@ -584,7 +724,6 @@ const Image = ({
     return (
         <img
             ref={imageElementRef}
-            src={imagePaths[0]}
             className="calendar-attachment"
         />
     );
