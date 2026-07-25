@@ -436,6 +436,102 @@ const Image = ({
         useRef<HTMLImageElement>(null);
 
     const imageIndexRef = useRef(0);
+    const currentPreparedUrlRef = useRef<string | null>(null);
+    const nextPreparedUrlRef = useRef<string | null>(null);
+    const nextPreparedIndexRef = useRef<number | null>(null);
+    const isRotatingRef = useRef(false);
+
+    const revokePreparedUrl = (url: string | null) => {
+        if (url?.startsWith('blob:')) {
+            URL.revokeObjectURL(url);
+        }
+    };
+
+    const prepareImage = async (imagePath: string): Promise<string> => {
+        // Keep animated GIFs and SVGs intact instead of flattening them
+        // through a canvas.
+        const pathWithoutQuery = imagePath.split('?')[0].toLowerCase();
+        if (
+            pathWithoutQuery.endsWith('.gif') ||
+            pathWithoutQuery.endsWith('.svg')
+        ) {
+            const preloadImage = new window.Image();
+            preloadImage.src = imagePath;
+
+            try {
+                await preloadImage.decode();
+            }
+            catch {
+                // The normal img element can still try to display it.
+            }
+
+            return imagePath;
+        }
+
+        try {
+            const sourceImage = new window.Image();
+            sourceImage.src = imagePath;
+            await sourceImage.decode();
+
+            const maximumDimension = 256;
+            const scale = Math.min(
+                1,
+                maximumDimension / sourceImage.naturalWidth,
+                maximumDimension / sourceImage.naturalHeight
+            );
+
+            // Do not create another copy when the source is already small.
+            if (scale === 1) {
+                return imagePath;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(
+                1,
+                Math.round(sourceImage.naturalWidth * scale)
+            );
+            canvas.height = Math.max(
+                1,
+                Math.round(sourceImage.naturalHeight * scale)
+            );
+
+            const context = canvas.getContext('2d');
+            if (!context) {
+                return imagePath;
+            }
+
+            context.drawImage(
+                sourceImage,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            const resizedBlob = await new Promise<Blob | null>(resolve => {
+                canvas.toBlob(resolve, 'image/webp', 0.82);
+            });
+
+            return resizedBlob
+                ? URL.createObjectURL(resizedBlob)
+                : imagePath;
+        }
+        catch {
+            // Remote images may not allow canvas access. In that case,
+            // still use the browser-cached original image.
+            const preloadImage = new window.Image();
+            preloadImage.src = imagePath;
+
+            try {
+                await preloadImage.decode();
+            }
+            catch {
+                // The visible img element will handle any final load error.
+            }
+
+            return imagePath;
+        }
+    };
 
     useEffect(() => {
         let cancelled = false;
@@ -540,6 +636,66 @@ const Image = ({
     }, [filteredDates, folder, format, app, plugin, bannerKey]);
 
     useEffect(() => {
+        let cancelled = false;
+
+        const prepareInitialImages = async () => {
+            revokePreparedUrl(currentPreparedUrlRef.current);
+            revokePreparedUrl(nextPreparedUrlRef.current);
+
+            currentPreparedUrlRef.current = null;
+            nextPreparedUrlRef.current = null;
+            nextPreparedIndexRef.current = null;
+            imageIndexRef.current = 0;
+
+            if (imagePaths.length === 0) {
+                return;
+            }
+
+            const currentUrl = await prepareImage(imagePaths[0]);
+
+            if (cancelled) {
+                revokePreparedUrl(currentUrl);
+                return;
+            }
+
+            currentPreparedUrlRef.current = currentUrl;
+
+            if (imageElementRef.current) {
+                imageElementRef.current.src = currentUrl;
+            }
+
+            if (
+                plugin.settings.calRotateImages &&
+                imagePaths.length > 1
+            ) {
+                const nextUrl = await prepareImage(imagePaths[1]);
+
+                if (cancelled) {
+                    revokePreparedUrl(nextUrl);
+                    return;
+                }
+
+                nextPreparedUrlRef.current = nextUrl;
+                nextPreparedIndexRef.current = 1;
+            }
+        };
+
+        void prepareInitialImages();
+
+        return () => {
+            cancelled = true;
+            revokePreparedUrl(currentPreparedUrlRef.current);
+            revokePreparedUrl(nextPreparedUrlRef.current);
+            currentPreparedUrlRef.current = null;
+            nextPreparedUrlRef.current = null;
+            nextPreparedIndexRef.current = null;
+        };
+    }, [
+        imagePaths,
+        plugin.settings.calRotateImages
+    ]);
+
+    useEffect(() => {
         if (
             !plugin.settings.calRotateImages ||
             imagePaths.length <= 1
@@ -547,28 +703,86 @@ const Image = ({
             return;
         }
 
-        const rotateImage = () => {
-            imageIndexRef.current =
-                (imageIndexRef.current + 1) %
-                imagePaths.length;
+        let cancelled = false;
 
-            const imageElement = imageElementRef.current;
-
-            if (imageElement) {
-                imageElement.src =
-                    imagePaths[imageIndexRef.current];
+        const rotateImage = async () => {
+            if (isRotatingRef.current) {
+                return;
             }
+
+            isRotatingRef.current = true;
+
+            try {
+                const nextIndex =
+                    (imageIndexRef.current + 1) %
+                    imagePaths.length;
+
+                let nextUrl = nextPreparedUrlRef.current;
+
+                if (
+                    !nextUrl ||
+                    nextPreparedIndexRef.current !== nextIndex
+                ) {
+                    revokePreparedUrl(nextUrl);
+                    nextUrl = await prepareImage(
+                        imagePaths[nextIndex]
+                    );
+
+                    if (cancelled) {
+                        revokePreparedUrl(nextUrl);
+                        return;
+                    }
+                }
+
+                const previousUrl =
+                    currentPreparedUrlRef.current;
+
+                imageIndexRef.current = nextIndex;
+                currentPreparedUrlRef.current = nextUrl;
+                nextPreparedUrlRef.current = null;
+                nextPreparedIndexRef.current = null;
+
+                if (imageElementRef.current) {
+                    imageElementRef.current.src = nextUrl;
+                }
+
+                revokePreparedUrl(previousUrl);
+
+                const followingIndex =
+                    (nextIndex + 1) % imagePaths.length;
+
+                const followingUrl = await prepareImage(
+                    imagePaths[followingIndex]
+                );
+
+                if (cancelled) {
+                    revokePreparedUrl(followingUrl);
+                    return;
+                }
+
+                revokePreparedUrl(nextPreparedUrlRef.current);
+                nextPreparedUrlRef.current = followingUrl;
+                nextPreparedIndexRef.current = followingIndex;
+            }
+            finally {
+                isRotatingRef.current = false;
+            }
+        };
+
+        const handleRotation = () => {
+            void rotateImage();
         };
 
         rotationTimer.addEventListener(
             'rotate-calendar-images',
-            rotateImage
+            handleRotation
         );
 
         return () => {
+            cancelled = true;
             rotationTimer.removeEventListener(
                 'rotate-calendar-images',
-                rotateImage
+                handleRotation
             );
         };
     }, [
