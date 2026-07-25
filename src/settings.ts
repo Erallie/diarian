@@ -231,7 +231,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     headingFormat: 'dddd, MMMM Do, YYYY',
     calDisableBanners: false,
     calRotateImages: false,
-    calImageRotationInterval: 10,
+    calImageRotationInterval: 1,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
 
@@ -567,7 +567,7 @@ export class DiarianSettingTab extends PluginSettingTab {
                 .setDesc(rotationIntervalDesc)
                 .addSlider((slider) =>
                     slider
-                        .setLimits(1, 60, 1)
+                        .setLimits(0.25, 5, 0.25)
                         .setValue(this.plugin.settings.calImageRotationInterval)
                         .setDynamicTooltip()
                         .onChange(async (value) => {

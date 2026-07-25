@@ -136,7 +136,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
             return;
         }
 
-        const intervalSeconds = Math.max(1, plugin.settings.calImageRotationInterval);
+        const intervalSeconds = plugin.settings.calImageRotationInterval;
         const intervalId = window.setInterval(() => {
             setRotationIndex(currentIndex => currentIndex + 1);
         }, intervalSeconds * 1000);
