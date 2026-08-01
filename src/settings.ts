@@ -186,6 +186,7 @@ export interface DiarianSettings {
     calRotateImages: boolean;
     calImageRotationInterval: number;
     calStartup: boolean;
+    calShowPastYears: boolean;
 
     previewLength: number;
     openInNewPane: boolean;
@@ -235,6 +236,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     calImageRotationInterval: 1,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
+    calShowPastYears: true,
 
     previewLength: 250,
     openInNewPane: false,
@@ -621,6 +623,26 @@ export class DiarianSettingTab extends PluginSettingTab {
                     .onChange((value) => {
                         this.plugin.settings.calStartup = value;
                         void this.plugin.saveSettings();
+                    }));
+        //#endregion
+
+        //#region Show past years
+        const pastYearsDesc = new DocumentFragment;
+        pastYearsDesc.textContent = 'Show a list of notes from the same calendar date in past years, directly under the ';
+        pastYearsDesc.createEl('strong', { text: "Calendar" });
+        pastYearsDesc.appendText(" view.");
+
+        new Setting(containerEl)
+            .setName('Show past years')
+            .setDesc(pastYearsDesc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.calShowPastYears)
+                    .onChange((value) => {
+                        this.plugin.settings.calShowPastYears = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, false);
+                        this.display();
                     }));
         //#endregion
 

@@ -198,6 +198,25 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian, referenceMomen
     return filteredNotes;
 }
 
+export function getNotesOnThisDayAcrossYears(allNotes: TFile[], folder: string, format: string, referenceMoment: moment.Moment) {
+    const refMonth = referenceMoment.month();
+    const refDate = referenceMoment.date();
+    const refYear = referenceMoment.year();
+
+    let filteredNotes: TFile[] = [];
+
+    for (let note of allNotes) {
+        const noteDate = getMoment(note, folder, format);
+        const isSameMonthDay = noteDate.month() == refMonth && noteDate.date() == refDate;
+        const isDifferentYear = noteDate.year() != refYear;
+        if (isSameMonthDay && isDifferentYear) {
+            filteredNotes.push(note);
+        }
+    }
+
+    return filteredNotes;
+}
+
 export function getModifiedFolderAndFormat(settings: DiarianSettings) {
     let { format, folder }: any = getDailyNoteSettings();
     if (settings.overrideFolder) {
