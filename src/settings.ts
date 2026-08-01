@@ -202,6 +202,7 @@ export interface DiarianSettings {
 
     onThisDayLoc: LeafType;
     onThisDayStartup: boolean;
+    onThisDaySyncSelectedDate: boolean;
 
     dateStampFormat: string;
     timeStampFormat: string;
@@ -250,6 +251,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
 
     onThisDayLoc: 'right' as LeafType,
     onThisDayStartup: false,
+    onThisDaySyncSelectedDate: false,
 
     dateStampFormat: 'M/D/YYYY',
     timeStampFormat: 'h:mm A',
@@ -793,6 +795,26 @@ export class DiarianSettingTab extends PluginSettingTab {
                 toggle.setValue(this.plugin.settings.onThisDayStartup).onChange((value) => {
                     this.plugin.settings.onThisDayStartup = value;
                     void this.plugin.saveSettings();
+                }));
+
+        //#endregion
+
+        //#region Sync to selected date
+        const syncOnThisDayDesc = new DocumentFragment;
+        syncOnThisDayDesc.textContent = 'Show notes relative to the ';
+        syncOnThisDayDesc.createEl('strong', { text: "Calendar" });
+        syncOnThisDayDesc.appendText("'s currently selected date, instead of always showing today's date.");
+
+        new Setting(containerEl)
+            .setName('Sync to selected date')
+            .setDesc(syncOnThisDayDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.onThisDaySyncSelectedDate).onChange((value) => {
+                    this.plugin.settings.onThisDaySyncSelectedDate = value;
+                    void this.plugin.saveSettings();
+                    if (!value) {
+                        this.plugin.refreshViews(false, true, moment());
+                    }
                 }));
 
         //#endregion

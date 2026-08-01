@@ -138,8 +138,8 @@ export function isSameDay(date1: moment.Moment, date2: moment.Moment) {
         && date1.year() == date2.year());
 }
 
-export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
-    const now = moment().endOf('day');
+export function getPriorNotes(allNotes: TFile[], plugin: Diarian, referenceMoment?: moment.Moment) {
+    const now = (referenceMoment ?? moment()).clone().endOf('day');
 
     // printToConsole(logLevel.log, now.format('MMMM Do, YYYY [at] h:mm:ss.SSS A'));
     const reviewInterval = plugin.settings.reviewInterval;

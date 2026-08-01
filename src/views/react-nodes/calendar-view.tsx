@@ -181,6 +181,9 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     function outerSetDate(nextDate: Date) {
         innerSetDate(nextDate);
         thisComp.startDate = nextDate;
+        if (plugin.settings.onThisDaySyncSelectedDate) {
+            plugin.refreshViews(false, true, moment(nextDate));
+        }
     }
 
     function tileContent({ date, view }: any) {
