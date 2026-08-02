@@ -309,7 +309,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
                 </div>
             ));
         } else {
-            pastYearsNode = <p>No notes from past years on this day.</p>;
+            pastYearsNode = <p>There are no notes from past years on this day.</p>;
         }
     }
 
@@ -459,7 +459,7 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
             </div>
             {plugin.settings.calShowPastYears && (
                 <div className='note-preview-container cal-past-years-container'>
-                    <h1>Previous entries on this date</h1>
+                    <h1>Previous notes on this day</h1>
                     {pastYearsNode}
                 </div>
             )}
