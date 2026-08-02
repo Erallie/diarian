@@ -585,7 +585,7 @@ export default class Diarian extends Plugin {
             for (let leaf of revView) {
                 let view = leaf.view;
                 if (view instanceof OnThisDayView) {
-                    view.refresh(this);
+                    view.refresh(this, startMoment?.toDate());
                 }
             }
         }

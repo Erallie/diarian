@@ -6,18 +6,19 @@ import type Diarian from 'src/main';
 interface Props {
     notes: TFile[];
     thisMoment: moment.Moment;
+    referenceMoment: moment.Moment;
     /* wrapper?: React.JSX.Element; */
     view: View;
     plugin: Diarian;
     app: App;
 }
 
-export const TimeSpan = ({ notes, thisMoment, /* wrapper, */ view, plugin, app }: Props) => {
+export const TimeSpan = ({ notes, thisMoment, referenceMoment, /* wrapper, */ view, plugin, app }: Props) => {
     const unit = plugin.settings.reviewIntervalUnit;
     // printToConsole(logLevel.log, thisMoment.toString());
 
 
-    const now = moment().endOf('day');
+    const now = referenceMoment.clone().endOf('day');
 
     if (!notes.length) {
         return null;

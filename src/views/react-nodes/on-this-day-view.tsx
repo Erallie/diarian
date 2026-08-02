@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { App, ItemView, WorkspaceLeaf, TFile, View } from "obsidian";
+import { App, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'src/main';
 import { ViewType } from 'src/constants';
@@ -11,17 +11,20 @@ interface ContainerProps {
     view: View;
     plugin: Diarian;
     app: App;
+    referenceMoment: moment.Moment;
 }
 
 export class OnThisDayView extends ItemView {
     root: Root | null = null;
     plugin: Diarian;
     app: App;
+    referenceDate: Date;
 
     constructor(leaf: WorkspaceLeaf, plugin: Diarian, app: App) {
         super(leaf);
         this.plugin = plugin;
         this.app = app;
+        this.referenceDate = new Date();
     }
 
     getViewType() {
@@ -39,7 +42,7 @@ export class OnThisDayView extends ItemView {
             <StrictMode>
                 <div className='on-this-day-container'>
                     <h1>On this day...</h1>
-                    <ReviewContainer view={this} plugin={this.plugin} app={this.app} />
+                    <ReviewContainer view={this} plugin={this.plugin} app={this.app} referenceMoment={moment(this.referenceDate)} />
                 </div>
             </StrictMode>
         );
@@ -50,8 +53,9 @@ export class OnThisDayView extends ItemView {
     }
 
 
-    async refresh(plugin: Diarian) {
+    async refresh(plugin: Diarian, newDate?: Date) {
         this.plugin = plugin;
+        if (newDate !== undefined) this.referenceDate = newDate;
         this.onClose();
         this.onOpen();
     }
@@ -59,8 +63,8 @@ export class OnThisDayView extends ItemView {
 }
 
 
-const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
-    let filteredNotes = getPriorNotes(plugin.dailyNotes, plugin);
+const ReviewContainer = ({ view, plugin, app, referenceMoment }: ContainerProps) => {
+    let filteredNotes = getPriorNotes(plugin.dailyNotes, plugin, referenceMoment);
     if (!filteredNotes || filteredNotes.length == 0) {
         return (
             <p>No notes to show.</p>
@@ -112,7 +116,7 @@ const ReviewContainer = ({ view, plugin, app }: ContainerProps) => {
     return (
         <div className='note-preview-container' >
             {array.map(({ notes, moment, id }) => (
-                <TimeSpan key={id} notes={notes} thisMoment={moment} view={view} plugin={plugin} app={app} />
+                <TimeSpan key={id} notes={notes} thisMoment={moment} referenceMoment={referenceMoment} view={view} plugin={plugin} app={app} />
             ))}
         </div>
     );

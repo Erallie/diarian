@@ -138,8 +138,8 @@ export function isSameDay(date1: moment.Moment, date2: moment.Moment) {
         && date1.year() == date2.year());
 }
 
-export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
-    const now = moment().endOf('day');
+export function getPriorNotes(allNotes: TFile[], plugin: Diarian, referenceMoment?: moment.Moment) {
+    const now = (referenceMoment ?? moment()).clone().endOf('day');
 
     // printToConsole(logLevel.log, now.format('MMMM Do, YYYY [at] h:mm:ss.SSS A'));
     const reviewInterval = plugin.settings.reviewInterval;
@@ -195,6 +195,25 @@ export function getPriorNotes(allNotes: TFile[], plugin: Diarian) {
 
 
     // printToConsole(logLevel.log, filteredNotes.length);
+    return filteredNotes;
+}
+
+export function getNotesOnThisDayAcrossYears(allNotes: TFile[], folder: string, format: string, referenceMoment: moment.Moment) {
+    const refMonth = referenceMoment.month();
+    const refDate = referenceMoment.date();
+    const refYear = referenceMoment.year();
+
+    let filteredNotes: TFile[] = [];
+
+    for (let note of allNotes) {
+        const noteDate = getMoment(note, folder, format);
+        const isSameMonthDay = noteDate.month() == refMonth && noteDate.date() == refDate;
+        const isDifferentYear = noteDate.year() != refYear;
+        if (isSameMonthDay && isDifferentYear) {
+            filteredNotes.push(note);
+        }
+    }
+
     return filteredNotes;
 }
 

@@ -186,6 +186,7 @@ export interface DiarianSettings {
     calRotateImages: boolean;
     calImageRotationInterval: number;
     calStartup: boolean;
+    calShowPastYears: boolean;
 
     previewLength: number;
     openInNewPane: boolean;
@@ -202,6 +203,7 @@ export interface DiarianSettings {
 
     onThisDayLoc: LeafType;
     onThisDayStartup: boolean;
+    onThisDaySyncSelectedDate: boolean;
 
     dateStampFormat: string;
     timeStampFormat: string;
@@ -234,6 +236,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
     calImageRotationInterval: 1,
     calLocation: 'tab' as LeafType.tab,
     calStartup: false,
+    calShowPastYears: true,
 
     previewLength: 250,
     openInNewPane: false,
@@ -250,6 +253,7 @@ export const DEFAULT_SETTINGS: DiarianSettings = {
 
     onThisDayLoc: 'right' as LeafType,
     onThisDayStartup: false,
+    onThisDaySyncSelectedDate: false,
 
     dateStampFormat: 'M/D/YYYY',
     timeStampFormat: 'h:mm A',
@@ -622,6 +626,26 @@ export class DiarianSettingTab extends PluginSettingTab {
                     }));
         //#endregion
 
+        //#region Show past years
+        const pastYearsDesc = new DocumentFragment;
+        pastYearsDesc.textContent = 'Show a list of notes from the selected date in past years, directly under the ';
+        pastYearsDesc.createEl('strong', { text: "Calendar" });
+        pastYearsDesc.appendText(" view.");
+
+        new Setting(containerEl)
+            .setName('Display past notes')
+            .setDesc(pastYearsDesc)
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.calShowPastYears)
+                    .onChange((value) => {
+                        this.plugin.settings.calShowPastYears = value;
+                        void this.plugin.saveSettings();
+                        this.plugin.refreshViews(true, false);
+                        this.display();
+                    }));
+        //#endregion
+
         //#endregion
 
         //#region On this day
@@ -793,6 +817,26 @@ export class DiarianSettingTab extends PluginSettingTab {
                 toggle.setValue(this.plugin.settings.onThisDayStartup).onChange((value) => {
                     this.plugin.settings.onThisDayStartup = value;
                     void this.plugin.saveSettings();
+                }));
+
+        //#endregion
+
+        //#region Sync to selected date
+        const syncOnThisDayDesc = new DocumentFragment;
+        syncOnThisDayDesc.textContent = 'Show notes relative to the ';
+        syncOnThisDayDesc.createEl('strong', { text: "Calendar" });
+        syncOnThisDayDesc.appendText("'s selected date instead of today.");
+
+        new Setting(containerEl)
+            .setName('Sync to selected date')
+            .setDesc(syncOnThisDayDesc)
+            .addToggle((toggle) =>
+                toggle.setValue(this.plugin.settings.onThisDaySyncSelectedDate).onChange((value) => {
+                    this.plugin.settings.onThisDaySyncSelectedDate = value;
+                    void this.plugin.saveSettings();
+                    if (!value) {
+                        this.plugin.refreshViews(false, true, moment());
+                    }
                 }));
 
         //#endregion

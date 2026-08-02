@@ -8,7 +8,7 @@ import { App, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar, OnArgs } from 'react-calendar';
 import type Diarian from 'src/main';
-import { getMoments, getNoteByMoment, isSameDay, getModifiedFolderAndFormat } from "src/get-daily-notes";
+import { getMoments, getMoment, getNoteByMoment, isSameDay, getModifiedFolderAndFormat, getNotesOnThisDayAcrossYears } from "src/get-daily-notes";
 import NotePreview from './note-preview';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
 import { NewDailyNote } from "./new-note";
@@ -181,6 +181,9 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     function outerSetDate(nextDate: Date) {
         innerSetDate(nextDate);
         thisComp.startDate = nextDate;
+        if (plugin.settings.onThisDaySyncSelectedDate) {
+            plugin.refreshViews(false, true, moment(nextDate));
+        }
     }
 
     function tileContent({ date, view }: any) {
@@ -270,6 +273,44 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
     }
     else {
         showNotesNode = <p>There are no notes on this day.</p>;
+    }
+
+    let pastYearsNode;
+    if (plugin.settings.calShowPastYears) {
+        const { folder, format }: any = getModifiedFolderAndFormat(plugin.settings);
+        const pastYearNotes = getNotesOnThisDayAcrossYears(dailyNotes, folder, format, moment(selectedDate));
+
+        if (pastYearNotes.length !== 0) {
+            pastYearNotes.sort((fileA, fileB) => {
+                const momentA = getMoment(fileA, folder, format);
+                const momentB = getMoment(fileB, folder, format);
+                return momentB.diff(momentA);
+            });
+
+            let groups: { year: number; notes: TFile[] }[] = [];
+            for (let note of pastYearNotes) {
+                const noteYear = getMoment(note, folder, format).year();
+                const lastGroup = groups[groups.length - 1];
+                if (lastGroup && lastGroup.year === noteYear) {
+                    lastGroup.notes.push(note);
+                } else {
+                    groups.push({ year: noteYear, notes: [note] });
+                }
+            }
+
+            pastYearsNode = groups.map((group) => (
+                <div key={group.year}>
+                    <h2>{group.year}</h2>
+                    {group.notes.map((note) => (
+                        <div key={note.name}>
+                            <NotePreview note={note} view={view} plugin={plugin} app={app} />
+                        </div>
+                    ))}
+                </div>
+            ));
+        } else {
+            pastYearsNode = <p>There are no notes from past years on this day.</p>;
+        }
     }
 
     function newDailyNote() {
@@ -416,6 +457,12 @@ const CalendarContainer = ({ view, plugin, app, thisComp, monthStep }: Container
             <div className='note-preview-container'>
                 {showNotesNode}
             </div>
+            {plugin.settings.calShowPastYears && (
+                <div className='note-preview-container cal-past-years-container'>
+                    <h1>Previous notes on this day</h1>
+                    {pastYearsNode}
+                </div>
+            )}
         </div>
     )
 };
