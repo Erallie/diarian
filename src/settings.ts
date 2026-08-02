@@ -628,12 +628,12 @@ export class DiarianSettingTab extends PluginSettingTab {
 
         //#region Show past years
         const pastYearsDesc = new DocumentFragment;
-        pastYearsDesc.textContent = 'Show a list of notes from the same calendar date in past years, directly under the ';
+        pastYearsDesc.textContent = 'Show a list of notes from the selected date in past years, directly under the ';
         pastYearsDesc.createEl('strong', { text: "Calendar" });
         pastYearsDesc.appendText(" view.");
 
         new Setting(containerEl)
-            .setName('Show past years')
+            .setName('Display past notes')
             .setDesc(pastYearsDesc)
             .addToggle((toggle) =>
                 toggle
@@ -825,7 +825,7 @@ export class DiarianSettingTab extends PluginSettingTab {
         const syncOnThisDayDesc = new DocumentFragment;
         syncOnThisDayDesc.textContent = 'Show notes relative to the ';
         syncOnThisDayDesc.createEl('strong', { text: "Calendar" });
-        syncOnThisDayDesc.appendText("'s currently selected date, instead of always showing today's date.");
+        syncOnThisDayDesc.appendText("'s selected date instead of today.");
 
         new Setting(containerEl)
             .setName('Sync to selected date')
