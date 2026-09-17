@@ -749,3 +749,45 @@ button.filled-date:enabled:focus:has(img) {
 /* #endregion */
 
 /* #endregion */
+
+/* #region Theme-aware time input */
+
+input.diarian-time-input {
+    height: var(--input-height);
+    padding-inline: var(--size-4-2);
+    color: var(--text-normal);
+    caret-color: var(--caret-color);
+    background-color: var(--background-modifier-form-field);
+    border: var(--input-border-width, var(--border-width)) solid var(--background-modifier-border);
+    border-radius: var(--input-radius, var(--radius-s));
+    box-shadow: var(--input-shadow);
+    font-family: var(--font-interface);
+    font-size: var(--font-ui-small);
+}
+
+input.diarian-time-input:hover {
+    border-color: var(--background-modifier-border-hover);
+    box-shadow: var(--input-shadow-hover);
+}
+
+input.diarian-time-input:focus,
+input.diarian-time-input:focus-visible {
+    border-color: var(--background-modifier-border-focus);
+    box-shadow: var(--input-shadow-focus);
+    outline: none;
+}
+
+input.diarian-time-input::-webkit-datetime-edit,
+input.diarian-time-input::-webkit-datetime-edit-fields-wrapper,
+input.diarian-time-input::-webkit-datetime-edit-hour-field,
+input.diarian-time-input::-webkit-datetime-edit-minute-field,
+input.diarian-time-input::-webkit-datetime-edit-ampm-field {
+    color: var(--text-normal);
+}
+
+input.diarian-time-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: var(--icon-opacity, 0.8);
+}
+
+/* #endregion */

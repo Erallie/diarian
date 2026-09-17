@@ -3,7 +3,7 @@ import { CalendarView } from 'src/views/react-nodes/calendar-view';
 import { OnThisDayView } from 'src/views/react-nodes/on-this-day-view';
 import { ImportView } from 'src/import-journal';
 import { ViewType, printToConsole, logLevel } from 'src/constants';
-import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType } from 'src/settings';
+import { DiarianSettings, DiarianSettingTab, DEFAULT_SETTINGS, LeafType, leafTypeMap, notifTypeMap, NotifType, notificationTimeMap, NotificationTime } from 'src/settings';
 import { getAllDailyNotes, isDailyNote, getMoment, isSameDay, getModifiedFolderAndFormat, getPriorNotes } from 'src/get-daily-notes';
 import { NewDailyNote } from 'src/views/react-nodes/new-note';
 import { RatingView, RatingStroke, displayRating } from 'src/views/rating-view';
@@ -18,7 +18,8 @@ export default class Diarian extends Plugin {
     defaultRating: number;
     defMaxRating: number;
     ratingStatBar: HTMLElement;
-    reminderIntervalID: number;
+    reminderIntervalID: number | null = null;
+    notificationTimeoutID: number | null = null;
 
     async onload() {
         await this.loadSettings();
@@ -89,7 +90,7 @@ export default class Diarian extends Plugin {
                     this.openLeaf(ViewType.calendarView, this.settings.calLocation);
             }, 100); // Adjust the delay as necessary
 
-            this.openNotif();
+            this.configureNotificationSchedule(true);
         });
 
         //#region Add rating status bar
@@ -364,6 +365,8 @@ export default class Diarian extends Plugin {
     }
 
     onunload() {
+        if (this.notificationTimeoutID !== null) window.clearTimeout(this.notificationTimeoutID);
+        if (this.reminderIntervalID !== null) window.clearInterval(this.reminderIntervalID);
     }
 
     openSelectView(evt?: MouseEvent) {
@@ -599,72 +602,121 @@ export default class Diarian extends Plugin {
         });
     }
 
-    openNotif() {
-        const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
-        switch (mappedNotifType) {
-            case NotifType.none:
-                break;
-            case NotifType.modal:
-                const notifInfo = this.settings.notifInfo;
-                if (isSameDay(moment(), moment(notifInfo.lastNotified)) == false || (notifInfo.needToRemind && moment().isSameOrAfter(moment(notifInfo.reminderTime)))) {
-                    const priorNotes = getPriorNotes(this.dailyNotes, this);
-                    if (priorNotes && priorNotes.length > 0) {
-                        new Notification(this.app, this).open();
-                    }
-                    else {
-                        this.settings.notifInfo = {
-                            lastNotified: moment(),
-                            needToRemind: false
-                        }
-                        this.saveSettings();
-                    }
-                }
-                else if (notifInfo.needToRemind) {
-                    this.setReminder();
-                }
-                break;
-            case NotifType.notice:
-                const priorNotes = getPriorNotes(this.dailyNotes, this);
-                if (priorNotes && priorNotes.length > 0) {
-                    const notice = new DocumentFragment;
-                    const noticeSpan = notice.createSpan()
-                    noticeSpan.textContent = 'You have daily notes from on this day!';
-                    noticeSpan.createEl('br');
-                    let noticeClick: HTMLSpanElement;
-                    if (Platform.isDesktop) {
-                        noticeClick = noticeSpan.createEl('span', { text: 'Click here to view them!', cls: 'link' });
-                        // noticeSpan.createEl('br');
-                        // noticeSpan.createEl('span', { text: 'Click elsewhere to dismiss.' });
-                    }
-                    else if (Platform.isMobile) {
-                        noticeClick = noticeSpan.createEl('span', { text: 'Tap here to view them!', cls: 'link' });
-                        // noticeSpan.createEl('br');
-                        // noticeSpan.createEl('span', { text: 'Tap elsewhere to dismiss.' });
-                    }
-                    noticeClick!.onClickEvent((ev) => {
-                        this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
-                    });
-                    new Notice(notice, 0);
-                }
-                break;
-            default:
-                printToConsole(logLevel.warn, `Cannot set notification:\n"${this.settings.revNotifType}" is not a valid notification type!`);
+    configureNotificationSchedule(notifyAtLaunch = false) {
+        if (this.notificationTimeoutID !== null) {
+            window.clearTimeout(this.notificationTimeoutID);
+            this.notificationTimeoutID = null;
         }
 
+        const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
+        if (mappedNotifType === NotifType.none) {
+            if (this.reminderIntervalID !== null) {
+                window.clearInterval(this.reminderIntervalID);
+                this.reminderIntervalID = null;
+            }
+            return;
+        }
+
+        const reminderTime = this.settings.notifInfo.reminderTime;
+        if (mappedNotifType === NotifType.modal && this.settings.notifInfo.needToRemind && reminderTime) {
+            if (moment().isSameOrAfter(moment(reminderTime))) this.openNotif();
+            else this.setReminder();
+        }
+
+        if (notificationTimeMap[this.settings.notificationTime as NotificationTime] === NotificationTime.specificTime) {
+            this.scheduleNextDailyNotification();
+        }
+        else if (notifyAtLaunch) {
+            this.openNotif();
+        }
+    }
+
+    scheduleNextDailyNotification() {
+        const time = /^([01]\d|2[0-3]):[0-5]\d$/.test(this.settings.dailyNotificationTime)
+            ? this.settings.dailyNotificationTime
+            : DEFAULT_SETTINGS.dailyNotificationTime;
+        const [hours, minutes] = time.split(':').map(Number);
+        const now = moment();
+        const nextNotification = moment()
+            .hour(hours)
+            .minute(minutes)
+            .second(0)
+            .millisecond(0);
+
+        if (nextNotification.isSameOrBefore(now)) nextNotification.add(1, 'day');
+
+        this.notificationTimeoutID = window.setTimeout(() => {
+            this.notificationTimeoutID = null;
+            this.openNotif();
+            this.scheduleNextDailyNotification();
+        }, nextNotification.diff(now));
+    }
+
+    openNotif() {
+        const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
+        if (mappedNotifType === NotifType.none) return;
+
+        const now = moment();
+        const notifInfo = this.settings.notifInfo;
+        const reminderDue = mappedNotifType === NotifType.modal
+            && notifInfo.needToRemind
+            && notifInfo.reminderTime !== undefined
+            && now.isSameOrAfter(moment(notifInfo.reminderTime));
+        const notifiedToday = notifInfo.lastNotified !== undefined
+            && isSameDay(now, moment(notifInfo.lastNotified));
+
+        if (notifiedToday && !reminderDue) return;
+
+        const priorNotes = getPriorNotes(this.dailyNotes, this);
+        this.settings.notifInfo = {
+            lastNotified: now,
+            needToRemind: false
+        };
+        void this.saveSettings();
+
+        if (!priorNotes || priorNotes.length === 0) return;
+
+        switch (mappedNotifType) {
+            case NotifType.modal:
+                new Notification(this.app, this).open();
+                break;
+            case NotifType.notice:
+                const notice = new DocumentFragment;
+                const noticeSpan = notice.createSpan();
+                noticeSpan.textContent = 'You have daily notes from on this day!';
+                noticeSpan.createEl('br');
+                let noticeClick: HTMLSpanElement;
+                if (Platform.isDesktop) {
+                    noticeClick = noticeSpan.createEl('span', { text: 'Click here to view them!', cls: 'link' });
+                }
+                else {
+                    noticeClick = noticeSpan.createEl('span', { text: 'Tap here to view them!', cls: 'link' });
+                }
+                noticeClick.onClickEvent(() => {
+                    this.openLeaf(ViewType.onThisDayView, this.settings.onThisDayLoc);
+                });
+                new Notice(notice, 0);
+                break;
+            default:
+                printToConsole(logLevel.warn, 'Cannot set notification: invalid notification type ' + this.settings.revNotifType);
+        }
     }
 
     setReminder() {
-        this.reminderIntervalID = window.setInterval(() => this.runInterval(), 60 * 1000); //Interval for every 1 minute
-        this.registerInterval(this.reminderIntervalID);
+        if (this.reminderIntervalID !== null) window.clearInterval(this.reminderIntervalID);
+        this.reminderIntervalID = window.setInterval(() => this.runInterval(), 60 * 1000);
     }
 
     runInterval() {
         const mappedNotifType = notifTypeMap[this.settings.revNotifType as NotifType];
-        if (mappedNotifType !== NotifType.modal)
-            clearInterval(this.reminderIntervalID);
+        if (mappedNotifType !== NotifType.modal || !this.settings.notifInfo.needToRemind) {
+            if (this.reminderIntervalID !== null) window.clearInterval(this.reminderIntervalID);
+            this.reminderIntervalID = null;
+        }
         else if (moment().isSameOrAfter(moment(this.settings.notifInfo.reminderTime))) {
-            new Notification(this.app, this).open();
-            clearInterval(this.reminderIntervalID);
+            this.openNotif();
+            if (this.reminderIntervalID !== null) window.clearInterval(this.reminderIntervalID);
+            this.reminderIntervalID = null;
         }
     }
 
