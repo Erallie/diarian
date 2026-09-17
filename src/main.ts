@@ -662,11 +662,6 @@ export default class Diarian extends Plugin {
             && notifInfo.needToRemind
             && notifInfo.reminderTime !== undefined
             && now.isSameOrAfter(moment(notifInfo.reminderTime));
-        const notifiedToday = notifInfo.lastNotified !== undefined
-            && isSameDay(now, moment(notifInfo.lastNotified));
-
-        if (notifiedToday && !reminderDue) return;
-
         const priorNotes = getPriorNotes(this.dailyNotes, this);
         this.settings.notifInfo = {
             lastNotified: now,
