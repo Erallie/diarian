@@ -4,7 +4,7 @@ import {
     useEffect,
     useRef
 } from "react";
-import { App, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
+import { App, IconName, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import { Calendar, OnArgs } from 'react-calendar';
 import type Diarian from 'src/main';
@@ -57,9 +57,12 @@ export class CalendarView extends ItemView {
         return "Calendar";
     }
 
+    getIcon(): IconName {
+        return 'lucide-calendar';
+    }
+
     async onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
-        this.icon = 'lucide-calendar';
         this.viewWidth = this.containerEl.getBoundingClientRect().width;
 
         if (this.viewWidth > 322) {

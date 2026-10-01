@@ -14,7 +14,7 @@ import { ConvertView } from './views/format-view';
 
 export default class Diarian extends Plugin {
     settings: DiarianSettings;
-    dailyNotes: TFile[];
+    dailyNotes: TFile[] = [];
     defaultRating: number;
     defMaxRating: number;
     ratingStatBar: HTMLElement;
@@ -24,16 +24,15 @@ export default class Diarian extends Plugin {
     async onload() {
         await this.loadSettings();
 
+        this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.app));
+        this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.app));
 
         this.app.workspace.onLayoutReady(() => {
 
             const { folder, format }: any = getModifiedFolderAndFormat(this.settings);
             this.dailyNotes = getAllDailyNotes(folder, format);
             this.sortDailyNotes(folder, format);
-
-            this.registerView(ViewType.calendarView, (leaf) => new CalendarView(leaf, this, this.app));
-            this.registerView(ViewType.onThisDayView, (leaf) => new OnThisDayView(leaf, this, this.app));
-            // this.refreshViews(true, true);
+            this.refreshViews(true, true);
 
 
             //#region Events for updating notes

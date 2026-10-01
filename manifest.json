@@ -1,9 +1,9 @@
 {
-    "id": "diarian",
-    "name": "Diarian",
-    "version": "1.2.35",
-    "minAppVersion": "1.13.0",
-    "description": "All-in-one journaling toolkit.",
-    "author": "Erika Gozar",
-    "isDesktopOnly": false
+	"id": "diarian",
+	"name": "Diarian",
+	"version": "1.2.36",
+	"minAppVersion": "1.13.0",
+	"description": "All-in-one journaling toolkit.",
+	"author": "Erika Gozar",
+	"isDesktopOnly": false
 }

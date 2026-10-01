@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { App, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
+import { App, IconName, ItemView, WorkspaceLeaf, TFile, View, moment } from "obsidian";
 import { Root, createRoot } from "react-dom/client";
 import type Diarian from 'src/main';
 import { ViewType } from 'src/constants';
@@ -35,9 +35,12 @@ export class OnThisDayView extends ItemView {
         return "On this day";
     }
 
+    getIcon(): IconName {
+        return 'lucide-history';
+    }
+
     async onOpen() {
         this.root = createRoot(this.containerEl.children[1]);
-        this.icon = 'lucide-history';
         this.root.render(
             <StrictMode>
                 <div className='on-this-day-container'>
